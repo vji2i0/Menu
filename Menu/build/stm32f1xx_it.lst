@@ -1,0 +1,1882 @@
+ARM GAS  /tmp/cceBvLtd.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"stm32f1xx_it.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.NMI_Handler,"ax",%progbits
+  19              		.align	2
+  20              		.global	NMI_Handler
+  21              		.thumb
+  22              		.thumb_func
+  24              	NMI_Handler:
+  25              	.LFB63:
+  26              		.file 1 "Src/stm32f1xx_it.c"
+   1:Src/stm32f1xx_it.c **** /**
+   2:Src/stm32f1xx_it.c ****   ******************************************************************************
+   3:Src/stm32f1xx_it.c ****   * @file    stm32f1xx_it.c
+   4:Src/stm32f1xx_it.c ****   * @brief   Interrupt Service Routines.
+   5:Src/stm32f1xx_it.c ****   ******************************************************************************
+   6:Src/stm32f1xx_it.c ****   *
+   7:Src/stm32f1xx_it.c ****   * COPYRIGHT(c) 2018 STMicroelectronics
+   8:Src/stm32f1xx_it.c ****   *
+   9:Src/stm32f1xx_it.c ****   * Redistribution and use in source and binary forms, with or without modification,
+  10:Src/stm32f1xx_it.c ****   * are permitted provided that the following conditions are met:
+  11:Src/stm32f1xx_it.c ****   *   1. Redistributions of source code must retain the above copyright notice,
+  12:Src/stm32f1xx_it.c ****   *      this list of conditions and the following disclaimer.
+  13:Src/stm32f1xx_it.c ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  14:Src/stm32f1xx_it.c ****   *      this list of conditions and the following disclaimer in the documentation
+  15:Src/stm32f1xx_it.c ****   *      and/or other materials provided with the distribution.
+  16:Src/stm32f1xx_it.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  17:Src/stm32f1xx_it.c ****   *      may be used to endorse or promote products derived from this software
+  18:Src/stm32f1xx_it.c ****   *      without specific prior written permission.
+  19:Src/stm32f1xx_it.c ****   *
+  20:Src/stm32f1xx_it.c ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:Src/stm32f1xx_it.c ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:Src/stm32f1xx_it.c ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  23:Src/stm32f1xx_it.c ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  24:Src/stm32f1xx_it.c ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  25:Src/stm32f1xx_it.c ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  26:Src/stm32f1xx_it.c ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  27:Src/stm32f1xx_it.c ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  28:Src/stm32f1xx_it.c ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  29:Src/stm32f1xx_it.c ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:Src/stm32f1xx_it.c ****   *
+  31:Src/stm32f1xx_it.c ****   ******************************************************************************
+  32:Src/stm32f1xx_it.c ****   */
+ARM GAS  /tmp/cceBvLtd.s 			page 2
+
+
+  33:Src/stm32f1xx_it.c **** /* Includes ------------------------------------------------------------------*/
+  34:Src/stm32f1xx_it.c **** #include "stm32f1xx_hal.h"
+  35:Src/stm32f1xx_it.c **** #include "stm32f1xx.h"
+  36:Src/stm32f1xx_it.c **** #include "stm32f1xx_it.h"
+  37:Src/stm32f1xx_it.c **** 
+  38:Src/stm32f1xx_it.c **** /* USER CODE BEGIN 0 */
+  39:Src/stm32f1xx_it.c **** #include <stdio.h>
+  40:Src/stm32f1xx_it.c **** #include <stdbool.h>
+  41:Src/stm32f1xx_it.c **** #include "LCD.h"
+  42:Src/stm32f1xx_it.c **** #include "MenuLibrary.h"
+  43:Src/stm32f1xx_it.c **** 
+  44:Src/stm32f1xx_it.c **** extern volatile unsigned int Lines;
+  45:Src/stm32f1xx_it.c **** extern volatile unsigned int MenuLayers;
+  46:Src/stm32f1xx_it.c **** extern volatile unsigned int CurrentLayer;
+  47:Src/stm32f1xx_it.c **** extern volatile int CurrentMenuPosition[MENU_LAYERS];
+  48:Src/stm32f1xx_it.c **** extern volatile int portAPin15Counter;
+  49:Src/stm32f1xx_it.c **** extern volatile _Bool SetLCD;
+  50:Src/stm32f1xx_it.c **** extern volatile unsigned int PeriodsToGo;
+  51:Src/stm32f1xx_it.c **** extern volatile _Bool UpdateLCD;
+  52:Src/stm32f1xx_it.c **** extern volatile unsigned int PhaseLCD;
+  53:Src/stm32f1xx_it.c **** extern volatile const int TotalPhasesLCDSetup;
+  54:Src/stm32f1xx_it.c **** extern volatile const int TotalPhasesLCDUpdate;
+  55:Src/stm32f1xx_it.c **** extern volatile char Text[4][16];
+  56:Src/stm32f1xx_it.c **** extern volatile unsigned int colomn;
+  57:Src/stm32f1xx_it.c **** extern volatile unsigned int row;
+  58:Src/stm32f1xx_it.c **** 
+  59:Src/stm32f1xx_it.c **** /*For timer debouncing*/
+  60:Src/stm32f1xx_it.c **** extern volatile int jTimer;
+  61:Src/stm32f1xx_it.c **** extern volatile int jOnDOWN; //PC10
+  62:Src/stm32f1xx_it.c **** extern volatile int jOnUP; //PA15
+  63:Src/stm32f1xx_it.c **** extern volatile int jOnOK; //PB4
+  64:Src/stm32f1xx_it.c **** extern volatile int jOnBACK; //PB5
+  65:Src/stm32f1xx_it.c **** extern volatile const int CheckCircles;
+  66:Src/stm32f1xx_it.c **** extern volatile const int jOnThreshold;
+  67:Src/stm32f1xx_it.c **** 
+  68:Src/stm32f1xx_it.c **** 
+  69:Src/stm32f1xx_it.c **** /* USER CODE END 0 */
+  70:Src/stm32f1xx_it.c **** 
+  71:Src/stm32f1xx_it.c **** /* External variables --------------------------------------------------------*/
+  72:Src/stm32f1xx_it.c **** extern TIM_HandleTypeDef htim2;
+  73:Src/stm32f1xx_it.c **** extern TIM_HandleTypeDef htim3;
+  74:Src/stm32f1xx_it.c **** 
+  75:Src/stm32f1xx_it.c **** /******************************************************************************/
+  76:Src/stm32f1xx_it.c **** /*            Cortex-M3 Processor Interruption and Exception Handlers         */
+  77:Src/stm32f1xx_it.c **** /******************************************************************************/
+  78:Src/stm32f1xx_it.c **** 
+  79:Src/stm32f1xx_it.c **** /**
+  80:Src/stm32f1xx_it.c **** * @brief This function handles Non maskable interrupt.
+  81:Src/stm32f1xx_it.c **** */
+  82:Src/stm32f1xx_it.c **** void NMI_Handler(void)
+  83:Src/stm32f1xx_it.c **** {
+  27              		.loc 1 83 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32 0000 7047     		bx	lr
+ARM GAS  /tmp/cceBvLtd.s 			page 3
+
+
+  33              		.cfi_endproc
+  34              	.LFE63:
+  36 0002 00BF     		.section	.text.HardFault_Handler,"ax",%progbits
+  37              		.align	2
+  38              		.global	HardFault_Handler
+  39              		.thumb
+  40              		.thumb_func
+  42              	HardFault_Handler:
+  43              	.LFB64:
+  84:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+  85:Src/stm32f1xx_it.c **** 
+  86:Src/stm32f1xx_it.c ****   /* USER CODE END NonMaskableInt_IRQn 0 */
+  87:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
+  88:Src/stm32f1xx_it.c **** 
+  89:Src/stm32f1xx_it.c ****   /* USER CODE END NonMaskableInt_IRQn 1 */
+  90:Src/stm32f1xx_it.c **** }
+  91:Src/stm32f1xx_it.c **** 
+  92:Src/stm32f1xx_it.c **** /**
+  93:Src/stm32f1xx_it.c **** * @brief This function handles Hard fault interrupt.
+  94:Src/stm32f1xx_it.c **** */
+  95:Src/stm32f1xx_it.c **** void HardFault_Handler(void)
+  96:Src/stm32f1xx_it.c **** {
+  44              		.loc 1 96 0
+  45              		.cfi_startproc
+  46              		@ Volatile: function does not return.
+  47              		@ args = 0, pretend = 0, frame = 0
+  48              		@ frame_needed = 0, uses_anonymous_args = 0
+  49              		@ link register save eliminated.
+  50              	.L3:
+  97:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN HardFault_IRQn 0 */
+  98:Src/stm32f1xx_it.c **** 
+  99:Src/stm32f1xx_it.c ****   /* USER CODE END HardFault_IRQn 0 */
+ 100:Src/stm32f1xx_it.c ****   while (1)
+ 101:Src/stm32f1xx_it.c ****   {
+ 102:Src/stm32f1xx_it.c ****   }
+  51              		.loc 1 102 0 discriminator 1
+  52 0000 FEE7     		b	.L3
+  53              		.cfi_endproc
+  54              	.LFE64:
+  56 0002 00BF     		.section	.text.MemManage_Handler,"ax",%progbits
+  57              		.align	2
+  58              		.global	MemManage_Handler
+  59              		.thumb
+  60              		.thumb_func
+  62              	MemManage_Handler:
+  63              	.LFB65:
+ 103:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN HardFault_IRQn 1 */
+ 104:Src/stm32f1xx_it.c **** 
+ 105:Src/stm32f1xx_it.c ****   /* USER CODE END HardFault_IRQn 1 */
+ 106:Src/stm32f1xx_it.c **** }
+ 107:Src/stm32f1xx_it.c **** 
+ 108:Src/stm32f1xx_it.c **** /**
+ 109:Src/stm32f1xx_it.c **** * @brief This function handles Memory management fault.
+ 110:Src/stm32f1xx_it.c **** */
+ 111:Src/stm32f1xx_it.c **** void MemManage_Handler(void)
+ 112:Src/stm32f1xx_it.c **** {
+  64              		.loc 1 112 0
+ARM GAS  /tmp/cceBvLtd.s 			page 4
+
+
+  65              		.cfi_startproc
+  66              		@ Volatile: function does not return.
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  70              	.L5:
+ 113:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+ 114:Src/stm32f1xx_it.c **** 
+ 115:Src/stm32f1xx_it.c ****   /* USER CODE END MemoryManagement_IRQn 0 */
+ 116:Src/stm32f1xx_it.c ****   while (1)
+ 117:Src/stm32f1xx_it.c ****   {
+ 118:Src/stm32f1xx_it.c ****   }
+  71              		.loc 1 118 0 discriminator 1
+  72 0000 FEE7     		b	.L5
+  73              		.cfi_endproc
+  74              	.LFE65:
+  76 0002 00BF     		.section	.text.BusFault_Handler,"ax",%progbits
+  77              		.align	2
+  78              		.global	BusFault_Handler
+  79              		.thumb
+  80              		.thumb_func
+  82              	BusFault_Handler:
+  83              	.LFB66:
+ 119:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN MemoryManagement_IRQn 1 */
+ 120:Src/stm32f1xx_it.c **** 
+ 121:Src/stm32f1xx_it.c ****   /* USER CODE END MemoryManagement_IRQn 1 */
+ 122:Src/stm32f1xx_it.c **** }
+ 123:Src/stm32f1xx_it.c **** 
+ 124:Src/stm32f1xx_it.c **** /**
+ 125:Src/stm32f1xx_it.c **** * @brief This function handles Prefetch fault, memory access fault.
+ 126:Src/stm32f1xx_it.c **** */
+ 127:Src/stm32f1xx_it.c **** void BusFault_Handler(void)
+ 128:Src/stm32f1xx_it.c **** {
+  84              		.loc 1 128 0
+  85              		.cfi_startproc
+  86              		@ Volatile: function does not return.
+  87              		@ args = 0, pretend = 0, frame = 0
+  88              		@ frame_needed = 0, uses_anonymous_args = 0
+  89              		@ link register save eliminated.
+  90              	.L7:
+ 129:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN BusFault_IRQn 0 */
+ 130:Src/stm32f1xx_it.c **** 
+ 131:Src/stm32f1xx_it.c ****   /* USER CODE END BusFault_IRQn 0 */
+ 132:Src/stm32f1xx_it.c ****   while (1)
+ 133:Src/stm32f1xx_it.c ****   {
+ 134:Src/stm32f1xx_it.c ****   }
+  91              		.loc 1 134 0 discriminator 1
+  92 0000 FEE7     		b	.L7
+  93              		.cfi_endproc
+  94              	.LFE66:
+  96 0002 00BF     		.section	.text.UsageFault_Handler,"ax",%progbits
+  97              		.align	2
+  98              		.global	UsageFault_Handler
+  99              		.thumb
+ 100              		.thumb_func
+ 102              	UsageFault_Handler:
+ 103              	.LFB67:
+ARM GAS  /tmp/cceBvLtd.s 			page 5
+
+
+ 135:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN BusFault_IRQn 1 */
+ 136:Src/stm32f1xx_it.c **** 
+ 137:Src/stm32f1xx_it.c ****   /* USER CODE END BusFault_IRQn 1 */
+ 138:Src/stm32f1xx_it.c **** }
+ 139:Src/stm32f1xx_it.c **** 
+ 140:Src/stm32f1xx_it.c **** /**
+ 141:Src/stm32f1xx_it.c **** * @brief This function handles Undefined instruction or illegal state.
+ 142:Src/stm32f1xx_it.c **** */
+ 143:Src/stm32f1xx_it.c **** void UsageFault_Handler(void)
+ 144:Src/stm32f1xx_it.c **** {
+ 104              		.loc 1 144 0
+ 105              		.cfi_startproc
+ 106              		@ Volatile: function does not return.
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		@ link register save eliminated.
+ 110              	.L9:
+ 145:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN UsageFault_IRQn 0 */
+ 146:Src/stm32f1xx_it.c **** 
+ 147:Src/stm32f1xx_it.c ****   /* USER CODE END UsageFault_IRQn 0 */
+ 148:Src/stm32f1xx_it.c ****   while (1)
+ 149:Src/stm32f1xx_it.c ****   {
+ 150:Src/stm32f1xx_it.c ****   }
+ 111              		.loc 1 150 0 discriminator 1
+ 112 0000 FEE7     		b	.L9
+ 113              		.cfi_endproc
+ 114              	.LFE67:
+ 116 0002 00BF     		.section	.text.SVC_Handler,"ax",%progbits
+ 117              		.align	2
+ 118              		.global	SVC_Handler
+ 119              		.thumb
+ 120              		.thumb_func
+ 122              	SVC_Handler:
+ 123              	.LFB68:
+ 151:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN UsageFault_IRQn 1 */
+ 152:Src/stm32f1xx_it.c **** 
+ 153:Src/stm32f1xx_it.c ****   /* USER CODE END UsageFault_IRQn 1 */
+ 154:Src/stm32f1xx_it.c **** }
+ 155:Src/stm32f1xx_it.c **** 
+ 156:Src/stm32f1xx_it.c **** /**
+ 157:Src/stm32f1xx_it.c **** * @brief This function handles System service call via SWI instruction.
+ 158:Src/stm32f1xx_it.c **** */
+ 159:Src/stm32f1xx_it.c **** void SVC_Handler(void)
+ 160:Src/stm32f1xx_it.c **** {
+ 124              		.loc 1 160 0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		@ link register save eliminated.
+ 129 0000 7047     		bx	lr
+ 130              		.cfi_endproc
+ 131              	.LFE68:
+ 133 0002 00BF     		.section	.text.DebugMon_Handler,"ax",%progbits
+ 134              		.align	2
+ 135              		.global	DebugMon_Handler
+ 136              		.thumb
+ 137              		.thumb_func
+ARM GAS  /tmp/cceBvLtd.s 			page 6
+
+
+ 139              	DebugMon_Handler:
+ 140              	.LFB69:
+ 161:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN SVCall_IRQn 0 */
+ 162:Src/stm32f1xx_it.c **** 
+ 163:Src/stm32f1xx_it.c ****   /* USER CODE END SVCall_IRQn 0 */
+ 164:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN SVCall_IRQn 1 */
+ 165:Src/stm32f1xx_it.c **** 
+ 166:Src/stm32f1xx_it.c ****   /* USER CODE END SVCall_IRQn 1 */
+ 167:Src/stm32f1xx_it.c **** }
+ 168:Src/stm32f1xx_it.c **** 
+ 169:Src/stm32f1xx_it.c **** /**
+ 170:Src/stm32f1xx_it.c **** * @brief This function handles Debug monitor.
+ 171:Src/stm32f1xx_it.c **** */
+ 172:Src/stm32f1xx_it.c **** void DebugMon_Handler(void)
+ 173:Src/stm32f1xx_it.c **** {
+ 141              		.loc 1 173 0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 0, uses_anonymous_args = 0
+ 145              		@ link register save eliminated.
+ 146 0000 7047     		bx	lr
+ 147              		.cfi_endproc
+ 148              	.LFE69:
+ 150 0002 00BF     		.section	.text.PendSV_Handler,"ax",%progbits
+ 151              		.align	2
+ 152              		.global	PendSV_Handler
+ 153              		.thumb
+ 154              		.thumb_func
+ 156              	PendSV_Handler:
+ 157              	.LFB70:
+ 174:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
+ 175:Src/stm32f1xx_it.c **** 
+ 176:Src/stm32f1xx_it.c ****   /* USER CODE END DebugMonitor_IRQn 0 */
+ 177:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN DebugMonitor_IRQn 1 */
+ 178:Src/stm32f1xx_it.c **** 
+ 179:Src/stm32f1xx_it.c ****   /* USER CODE END DebugMonitor_IRQn 1 */
+ 180:Src/stm32f1xx_it.c **** }
+ 181:Src/stm32f1xx_it.c **** 
+ 182:Src/stm32f1xx_it.c **** /**
+ 183:Src/stm32f1xx_it.c **** * @brief This function handles Pendable request for system service.
+ 184:Src/stm32f1xx_it.c **** */
+ 185:Src/stm32f1xx_it.c **** void PendSV_Handler(void)
+ 186:Src/stm32f1xx_it.c **** {
+ 158              		.loc 1 186 0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		@ link register save eliminated.
+ 163 0000 7047     		bx	lr
+ 164              		.cfi_endproc
+ 165              	.LFE70:
+ 167 0002 00BF     		.section	.text.SysTick_Handler,"ax",%progbits
+ 168              		.align	2
+ 169              		.global	SysTick_Handler
+ 170              		.thumb
+ 171              		.thumb_func
+ 173              	SysTick_Handler:
+ARM GAS  /tmp/cceBvLtd.s 			page 7
+
+
+ 174              	.LFB71:
+ 187:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN PendSV_IRQn 0 */
+ 188:Src/stm32f1xx_it.c **** 
+ 189:Src/stm32f1xx_it.c ****   /* USER CODE END PendSV_IRQn 0 */
+ 190:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN PendSV_IRQn 1 */
+ 191:Src/stm32f1xx_it.c **** 
+ 192:Src/stm32f1xx_it.c ****   /* USER CODE END PendSV_IRQn 1 */
+ 193:Src/stm32f1xx_it.c **** }
+ 194:Src/stm32f1xx_it.c **** 
+ 195:Src/stm32f1xx_it.c **** /**
+ 196:Src/stm32f1xx_it.c **** * @brief This function handles System tick timer.
+ 197:Src/stm32f1xx_it.c **** */
+ 198:Src/stm32f1xx_it.c **** void SysTick_Handler(void)
+ 199:Src/stm32f1xx_it.c **** {
+ 175              		.loc 1 199 0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179              		.loc 1 199 0
+ 180 0000 08B5     		push	{r3, lr}
+ 181              	.LCFI0:
+ 182              		.cfi_def_cfa_offset 8
+ 183              		.cfi_offset 3, -8
+ 184              		.cfi_offset 14, -4
+ 200:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN SysTick_IRQn 0 */
+ 201:Src/stm32f1xx_it.c **** 
+ 202:Src/stm32f1xx_it.c ****   /* USER CODE END SysTick_IRQn 0 */
+ 203:Src/stm32f1xx_it.c ****   HAL_IncTick();
+ 185              		.loc 1 203 0
+ 186 0002 FFF7FEFF 		bl	HAL_IncTick
+ 187              	.LVL0:
+ 204:Src/stm32f1xx_it.c ****   HAL_SYSTICK_IRQHandler();
+ 188              		.loc 1 204 0
+ 189 0006 FFF7FEFF 		bl	HAL_SYSTICK_IRQHandler
+ 190              	.LVL1:
+ 191 000a 08BD     		pop	{r3, pc}
+ 192              		.cfi_endproc
+ 193              	.LFE71:
+ 195              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+ 196              		.align	2
+ 197              		.global	TIM2_IRQHandler
+ 198              		.thumb
+ 199              		.thumb_func
+ 201              	TIM2_IRQHandler:
+ 202              	.LFB72:
+ 205:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN SysTick_IRQn 1 */
+ 206:Src/stm32f1xx_it.c **** 
+ 207:Src/stm32f1xx_it.c ****   /* USER CODE END SysTick_IRQn 1 */
+ 208:Src/stm32f1xx_it.c **** }
+ 209:Src/stm32f1xx_it.c **** 
+ 210:Src/stm32f1xx_it.c **** /******************************************************************************/
+ 211:Src/stm32f1xx_it.c **** /* STM32F1xx Peripheral Interrupt Handlers                                    */
+ 212:Src/stm32f1xx_it.c **** /* Add here the Interrupt Handlers for the used peripherals.                  */
+ 213:Src/stm32f1xx_it.c **** /* For the available peripheral interrupt handler names,                      */
+ 214:Src/stm32f1xx_it.c **** /* please refer to the startup file (startup_stm32f1xx.s).                    */
+ 215:Src/stm32f1xx_it.c **** /******************************************************************************/
+ 216:Src/stm32f1xx_it.c **** 
+ARM GAS  /tmp/cceBvLtd.s 			page 8
+
+
+ 217:Src/stm32f1xx_it.c **** /**
+ 218:Src/stm32f1xx_it.c **** * @brief This function handles TIM2 global interrupt.
+ 219:Src/stm32f1xx_it.c **** */
+ 220:Src/stm32f1xx_it.c **** void TIM2_IRQHandler(void)
+ 221:Src/stm32f1xx_it.c **** {
+ 203              		.loc 1 221 0
+ 204              		.cfi_startproc
+ 205              		@ args = 0, pretend = 0, frame = 48
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207 0000 30B5     		push	{r4, r5, lr}
+ 208              	.LCFI1:
+ 209              		.cfi_def_cfa_offset 12
+ 210              		.cfi_offset 4, -12
+ 211              		.cfi_offset 5, -8
+ 212              		.cfi_offset 14, -4
+ 213 0002 8DB0     		sub	sp, sp, #52
+ 214              	.LCFI2:
+ 215              		.cfi_def_cfa_offset 64
+ 222:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN TIM2_IRQn 0 */
+ 223:Src/stm32f1xx_it.c ****   jTimer+=1;
+ 216              		.loc 1 223 0
+ 217 0004 954A     		ldr	r2, .L49
+ 218 0006 1368     		ldr	r3, [r2]
+ 219 0008 0133     		adds	r3, r3, #1
+ 220 000a 1360     		str	r3, [r2]
+ 224:Src/stm32f1xx_it.c ****   if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10) & GPIO_PIN_SET){//DOWN is pressed
+ 221              		.loc 1 224 0
+ 222 000c 9448     		ldr	r0, .L49+4
+ 223 000e 4FF48061 		mov	r1, #1024
+ 224 0012 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 225              	.LVL2:
+ 226 0016 10F0010F 		tst	r0, #1
+ 227 001a 03D0     		beq	.L16
+ 225:Src/stm32f1xx_it.c ****     jOnDOWN+=1;
+ 228              		.loc 1 225 0
+ 229 001c 914A     		ldr	r2, .L49+8
+ 230 001e 1368     		ldr	r3, [r2]
+ 231 0020 0133     		adds	r3, r3, #1
+ 232 0022 1360     		str	r3, [r2]
+ 233              	.L16:
+ 226:Src/stm32f1xx_it.c ****   }
+ 227:Src/stm32f1xx_it.c ****   if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_15) & GPIO_PIN_SET){//UP is pressed
+ 234              		.loc 1 227 0
+ 235 0024 9048     		ldr	r0, .L49+12
+ 236 0026 4FF40041 		mov	r1, #32768
+ 237 002a FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 238              	.LVL3:
+ 239 002e 10F0010F 		tst	r0, #1
+ 240 0032 03D0     		beq	.L17
+ 228:Src/stm32f1xx_it.c ****     jOnUP+=1;
+ 241              		.loc 1 228 0
+ 242 0034 8D4A     		ldr	r2, .L49+16
+ 243 0036 1368     		ldr	r3, [r2]
+ 244 0038 0133     		adds	r3, r3, #1
+ 245 003a 1360     		str	r3, [r2]
+ 246              	.L17:
+ 229:Src/stm32f1xx_it.c ****   }
+ARM GAS  /tmp/cceBvLtd.s 			page 9
+
+
+ 230:Src/stm32f1xx_it.c ****   if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) & GPIO_PIN_SET){//OK is pressed
+ 247              		.loc 1 230 0
+ 248 003c 8C48     		ldr	r0, .L49+20
+ 249 003e 1021     		movs	r1, #16
+ 250 0040 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 251              	.LVL4:
+ 252 0044 10F0010F 		tst	r0, #1
+ 253 0048 03D0     		beq	.L18
+ 231:Src/stm32f1xx_it.c ****     jOnOK+=1;
+ 254              		.loc 1 231 0
+ 255 004a 8A4A     		ldr	r2, .L49+24
+ 256 004c 1368     		ldr	r3, [r2]
+ 257 004e 0133     		adds	r3, r3, #1
+ 258 0050 1360     		str	r3, [r2]
+ 259              	.L18:
+ 232:Src/stm32f1xx_it.c ****   }
+ 233:Src/stm32f1xx_it.c ****   if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) & GPIO_PIN_SET){//BACK is pressed
+ 260              		.loc 1 233 0
+ 261 0052 8748     		ldr	r0, .L49+20
+ 262 0054 2021     		movs	r1, #32
+ 263 0056 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 264              	.LVL5:
+ 265 005a 10F0010F 		tst	r0, #1
+ 266 005e 03D0     		beq	.L19
+ 234:Src/stm32f1xx_it.c ****     jOnBACK+=1;
+ 267              		.loc 1 234 0
+ 268 0060 854A     		ldr	r2, .L49+28
+ 269 0062 1368     		ldr	r3, [r2]
+ 270 0064 0133     		adds	r3, r3, #1
+ 271 0066 1360     		str	r3, [r2]
+ 272              	.L19:
+ 235:Src/stm32f1xx_it.c ****   }
+ 236:Src/stm32f1xx_it.c ****   if (jTimer == CheckCircles){
+ 273              		.loc 1 236 0
+ 274 0068 7C4B     		ldr	r3, .L49
+ 275 006a 1A68     		ldr	r2, [r3]
+ 276 006c 834B     		ldr	r3, .L49+32
+ 277 006e 1B68     		ldr	r3, [r3]
+ 278 0070 9A42     		cmp	r2, r3
+ 279 0072 40F0C482 		bne	.L20
+ 237:Src/stm32f1xx_it.c ****     if (jOnDOWN > jOnThreshold)
+ 280              		.loc 1 237 0
+ 281 0076 7B4B     		ldr	r3, .L49+8
+ 282 0078 1A68     		ldr	r2, [r3]
+ 283 007a 814B     		ldr	r3, .L49+36
+ 284 007c 1B68     		ldr	r3, [r3]
+ 285 007e 9A42     		cmp	r2, r3
+ 286 0080 40F38D80 		ble	.L21
+ 238:Src/stm32f1xx_it.c ****     {/*Button DOWN is pressed*/
+ 239:Src/stm32f1xx_it.c ****       if (CurrentMenuPosition[CurrentLayer]==1)
+ 287              		.loc 1 239 0
+ 288 0084 7F4B     		ldr	r3, .L49+40
+ 289 0086 1A68     		ldr	r2, [r3]
+ 290 0088 7F4B     		ldr	r3, .L49+44
+ 291 008a 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 292 008e 012B     		cmp	r3, #1
+ 293 0090 11D1     		bne	.L22
+ARM GAS  /tmp/cceBvLtd.s 			page 10
+
+
+ 240:Src/stm32f1xx_it.c ****       {
+ 241:Src/stm32f1xx_it.c ****         Text[1][0] = ' ';
+ 294              		.loc 1 241 0
+ 295 0092 7E4B     		ldr	r3, .L49+48
+ 296 0094 2022     		movs	r2, #32
+ 297 0096 1A74     		strb	r2, [r3, #16]
+ 242:Src/stm32f1xx_it.c ****         Text[2][0] = '>';
+ 298              		.loc 1 242 0
+ 299 0098 3E22     		movs	r2, #62
+ 300 009a 83F82020 		strb	r2, [r3, #32]
+ 243:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]+=1;
+ 301              		.loc 1 243 0
+ 302 009e 794B     		ldr	r3, .L49+40
+ 303 00a0 1968     		ldr	r1, [r3]
+ 304 00a2 794A     		ldr	r2, .L49+44
+ 305 00a4 52F82130 		ldr	r3, [r2, r1, lsl #2]
+ 306 00a8 0133     		adds	r3, r3, #1
+ 307 00aa 42F82130 		str	r3, [r2, r1, lsl #2]
+ 244:Src/stm32f1xx_it.c ****         UpdateLCD = true;
+ 308              		.loc 1 244 0
+ 309 00ae 0122     		movs	r2, #1
+ 310 00b0 774B     		ldr	r3, .L49+52
+ 311 00b2 1A70     		strb	r2, [r3]
+ 312 00b4 73E0     		b	.L21
+ 313              	.L22:
+ 314              	.LBB2:
+ 245:Src/stm32f1xx_it.c ****       }else{
+ 246:Src/stm32f1xx_it.c ****         volatile int bufPosition = CurrentMenuPosition[CurrentLayer];
+ 315              		.loc 1 246 0
+ 316 00b6 734B     		ldr	r3, .L49+40
+ 317 00b8 1A68     		ldr	r2, [r3]
+ 318 00ba 7348     		ldr	r0, .L49+44
+ 319 00bc 50F82220 		ldr	r2, [r0, r2, lsl #2]
+ 320 00c0 0192     		str	r2, [sp, #4]
+ 247:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]+=1;
+ 321              		.loc 1 247 0
+ 322 00c2 1A68     		ldr	r2, [r3]
+ 323 00c4 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 324 00c8 0133     		adds	r3, r3, #1
+ 325 00ca 40F82230 		str	r3, [r0, r2, lsl #2]
+ 248:Src/stm32f1xx_it.c ****         if (MenuOption(CurrentMenuPosition)[1]==' ')
+ 326              		.loc 1 248 0
+ 327 00ce FFF7FEFF 		bl	MenuOption
+ 328              	.LVL6:
+ 329 00d2 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 330 00d4 202B     		cmp	r3, #32
+ 331 00d6 06D1     		bne	.L23
+ 249:Src/stm32f1xx_it.c ****         {
+ 250:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 332              		.loc 1 250 0
+ 333 00d8 6A4B     		ldr	r3, .L49+40
+ 334 00da 1A68     		ldr	r2, [r3]
+ 335 00dc 0199     		ldr	r1, [sp, #4]
+ 336 00de 6A4B     		ldr	r3, .L49+44
+ 337 00e0 43F82210 		str	r1, [r3, r2, lsl #2]
+ 338 00e4 5BE0     		b	.L21
+ 339              	.L23:
+ARM GAS  /tmp/cceBvLtd.s 			page 11
+
+
+ 251:Src/stm32f1xx_it.c ****         }else{
+ 252:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]+=1;
+ 340              		.loc 1 252 0
+ 341 00e6 674B     		ldr	r3, .L49+40
+ 342 00e8 1A68     		ldr	r2, [r3]
+ 343 00ea 6748     		ldr	r0, .L49+44
+ 344 00ec 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 345 00f0 0133     		adds	r3, r3, #1
+ 346 00f2 40F82230 		str	r3, [r0, r2, lsl #2]
+ 253:Src/stm32f1xx_it.c ****           if (MenuOption(CurrentMenuPosition)[1]==' ')
+ 347              		.loc 1 253 0
+ 348 00f6 FFF7FEFF 		bl	MenuOption
+ 349              	.LVL7:
+ 350 00fa 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 351 00fc 202B     		cmp	r3, #32
+ 352 00fe 16D1     		bne	.L24
+ 254:Src/stm32f1xx_it.c ****           {
+ 255:Src/stm32f1xx_it.c ****             Text[2][0] = ' ';
+ 353              		.loc 1 255 0
+ 354 0100 624B     		ldr	r3, .L49+48
+ 355 0102 2022     		movs	r2, #32
+ 356 0104 83F82020 		strb	r2, [r3, #32]
+ 256:Src/stm32f1xx_it.c ****             Text[3][0] = '>';
+ 357              		.loc 1 256 0
+ 358 0108 3E22     		movs	r2, #62
+ 359 010a 83F83020 		strb	r2, [r3, #48]
+ 257:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 360              		.loc 1 257 0
+ 361 010e 5D4A     		ldr	r2, .L49+40
+ 362 0110 1168     		ldr	r1, [r2]
+ 363 0112 0198     		ldr	r0, [sp, #4]
+ 364 0114 5C4B     		ldr	r3, .L49+44
+ 365 0116 43F82100 		str	r0, [r3, r1, lsl #2]
+ 258:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]+=1;
+ 366              		.loc 1 258 0
+ 367 011a 1168     		ldr	r1, [r2]
+ 368 011c 53F82120 		ldr	r2, [r3, r1, lsl #2]
+ 369 0120 0132     		adds	r2, r2, #1
+ 370 0122 43F82120 		str	r2, [r3, r1, lsl #2]
+ 259:Src/stm32f1xx_it.c ****             UpdateLCD = true;
+ 371              		.loc 1 259 0
+ 372 0126 0122     		movs	r2, #1
+ 373 0128 594B     		ldr	r3, .L49+52
+ 374 012a 1A70     		strb	r2, [r3]
+ 375 012c 37E0     		b	.L21
+ 376              	.L24:
+ 377              	.LBB3:
+ 260:Src/stm32f1xx_it.c ****           }else{
+ 261:Src/stm32f1xx_it.c ****             volatile int i;
+ 262:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 378              		.loc 1 262 0
+ 379 012e 554B     		ldr	r3, .L49+40
+ 380 0130 1A68     		ldr	r2, [r3]
+ 381 0132 0199     		ldr	r1, [sp, #4]
+ 382 0134 544B     		ldr	r3, .L49+44
+ 383 0136 43F82210 		str	r1, [r3, r2, lsl #2]
+ 263:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ARM GAS  /tmp/cceBvLtd.s 			page 12
+
+
+ 384              		.loc 1 263 0
+ 385 013a 0123     		movs	r3, #1
+ 386 013c 0293     		str	r3, [sp, #8]
+ 387 013e 15E0     		b	.L25
+ 388              	.L26:
+ 264:Src/stm32f1xx_it.c ****             {
+ 265:Src/stm32f1xx_it.c ****               sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 389              		.loc 1 265 0 discriminator 3
+ 390 0140 029D     		ldr	r5, [sp, #8]
+ 391 0142 524B     		ldr	r3, .L49+48
+ 392 0144 03EB0515 		add	r5, r3, r5, lsl #4
+ 393 0148 4F4C     		ldr	r4, .L49+44
+ 394 014a 2046     		mov	r0, r4
+ 395 014c FFF7FEFF 		bl	MenuOption
+ 396              	.LVL8:
+ 397 0150 0146     		mov	r1, r0
+ 398 0152 2846     		mov	r0, r5
+ 399 0154 FFF7FEFF 		bl	sprintf
+ 400              	.LVL9:
+ 266:Src/stm32f1xx_it.c ****               CurrentMenuPosition[CurrentLayer]+=1;
+ 401              		.loc 1 266 0 discriminator 3
+ 402 0158 4A4B     		ldr	r3, .L49+40
+ 403 015a 1A68     		ldr	r2, [r3]
+ 404 015c 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 405 0160 0133     		adds	r3, r3, #1
+ 406 0162 44F82230 		str	r3, [r4, r2, lsl #2]
+ 263:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 407              		.loc 1 263 0 discriminator 3
+ 408 0166 029B     		ldr	r3, [sp, #8]
+ 409 0168 0133     		adds	r3, r3, #1
+ 410 016a 0293     		str	r3, [sp, #8]
+ 411              	.L25:
+ 263:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 412              		.loc 1 263 0 is_stmt 0 discriminator 1
+ 413 016c 029A     		ldr	r2, [sp, #8]
+ 414 016e 494B     		ldr	r3, .L49+56
+ 415 0170 1B68     		ldr	r3, [r3]
+ 416 0172 0133     		adds	r3, r3, #1
+ 417 0174 9A42     		cmp	r2, r3
+ 418 0176 E3D3     		bcc	.L26
+ 267:Src/stm32f1xx_it.c ****             };
+ 268:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 419              		.loc 1 268 0 is_stmt 1
+ 420 0178 424A     		ldr	r2, .L49+40
+ 421 017a 1168     		ldr	r1, [r2]
+ 422 017c 0198     		ldr	r0, [sp, #4]
+ 423 017e 424B     		ldr	r3, .L49+44
+ 424 0180 43F82100 		str	r0, [r3, r1, lsl #2]
+ 269:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]+=1;
+ 425              		.loc 1 269 0
+ 426 0184 1168     		ldr	r1, [r2]
+ 427 0186 53F82120 		ldr	r2, [r3, r1, lsl #2]
+ 428 018a 0132     		adds	r2, r2, #1
+ 429 018c 43F82120 		str	r2, [r3, r1, lsl #2]
+ 270:Src/stm32f1xx_it.c ****             Text[2][0] = '>';
+ 430              		.loc 1 270 0
+ 431 0190 3E22     		movs	r2, #62
+ARM GAS  /tmp/cceBvLtd.s 			page 13
+
+
+ 432 0192 3E4B     		ldr	r3, .L49+48
+ 433 0194 83F82020 		strb	r2, [r3, #32]
+ 271:Src/stm32f1xx_it.c ****             UpdateLCD = true;
+ 434              		.loc 1 271 0
+ 435 0198 0122     		movs	r2, #1
+ 436 019a 3D4B     		ldr	r3, .L49+52
+ 437 019c 1A70     		strb	r2, [r3]
+ 438              	.L21:
+ 439              	.LBE3:
+ 440              	.LBE2:
+ 272:Src/stm32f1xx_it.c ****           }
+ 273:Src/stm32f1xx_it.c ****         }
+ 274:Src/stm32f1xx_it.c ****       }
+ 275:Src/stm32f1xx_it.c ****     };/*That is all for the button DOWN*/
+ 276:Src/stm32f1xx_it.c ****     if (jOnUP > jOnThreshold)
+ 441              		.loc 1 276 0
+ 442 019e 334B     		ldr	r3, .L49+16
+ 443 01a0 1A68     		ldr	r2, [r3]
+ 444 01a2 374B     		ldr	r3, .L49+36
+ 445 01a4 1B68     		ldr	r3, [r3]
+ 446 01a6 9A42     		cmp	r2, r3
+ 447 01a8 40F3A580 		ble	.L27
+ 277:Src/stm32f1xx_it.c ****     {/*Button UP is pressed*/
+ 278:Src/stm32f1xx_it.c ****       if (CurrentMenuPosition[CurrentLayer]==1)
+ 448              		.loc 1 278 0
+ 449 01ac 354B     		ldr	r3, .L49+40
+ 450 01ae 1A68     		ldr	r2, [r3]
+ 451 01b0 354B     		ldr	r3, .L49+44
+ 452 01b2 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 453 01b6 012B     		cmp	r3, #1
+ 454 01b8 00F09D80 		beq	.L27
+ 279:Src/stm32f1xx_it.c ****       {}else if(CurrentMenuPosition[CurrentLayer]==2){
+ 455              		.loc 1 279 0
+ 456 01bc 314B     		ldr	r3, .L49+40
+ 457 01be 1A68     		ldr	r2, [r3]
+ 458 01c0 314B     		ldr	r3, .L49+44
+ 459 01c2 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 460 01c6 022B     		cmp	r3, #2
+ 461 01c8 11D1     		bne	.L28
+ 280:Src/stm32f1xx_it.c ****         Text[1][0] = '>';
+ 462              		.loc 1 280 0
+ 463 01ca 304B     		ldr	r3, .L49+48
+ 464 01cc 3E22     		movs	r2, #62
+ 465 01ce 1A74     		strb	r2, [r3, #16]
+ 281:Src/stm32f1xx_it.c ****         Text[2][0] = ' ';
+ 466              		.loc 1 281 0
+ 467 01d0 2022     		movs	r2, #32
+ 468 01d2 83F82020 		strb	r2, [r3, #32]
+ 282:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]-=1;
+ 469              		.loc 1 282 0
+ 470 01d6 2B4B     		ldr	r3, .L49+40
+ 471 01d8 1968     		ldr	r1, [r3]
+ 472 01da 2B4A     		ldr	r2, .L49+44
+ 473 01dc 52F82130 		ldr	r3, [r2, r1, lsl #2]
+ 474 01e0 013B     		subs	r3, r3, #1
+ 475 01e2 42F82130 		str	r3, [r2, r1, lsl #2]
+ 283:Src/stm32f1xx_it.c ****         UpdateLCD = true;
+ARM GAS  /tmp/cceBvLtd.s 			page 14
+
+
+ 476              		.loc 1 283 0
+ 477 01e6 0122     		movs	r2, #1
+ 478 01e8 294B     		ldr	r3, .L49+52
+ 479 01ea 1A70     		strb	r2, [r3]
+ 480 01ec 83E0     		b	.L27
+ 481              	.L28:
+ 482              	.LBB4:
+ 284:Src/stm32f1xx_it.c ****       }else{
+ 285:Src/stm32f1xx_it.c ****         volatile int bufPosition = CurrentMenuPosition[CurrentLayer];
+ 483              		.loc 1 285 0
+ 484 01ee 254B     		ldr	r3, .L49+40
+ 485 01f0 1A68     		ldr	r2, [r3]
+ 486 01f2 2548     		ldr	r0, .L49+44
+ 487 01f4 50F82220 		ldr	r2, [r0, r2, lsl #2]
+ 488 01f8 0392     		str	r2, [sp, #12]
+ 286:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]+=1;
+ 489              		.loc 1 286 0
+ 490 01fa 1A68     		ldr	r2, [r3]
+ 491 01fc 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 492 0200 0133     		adds	r3, r3, #1
+ 493 0202 40F82230 		str	r3, [r0, r2, lsl #2]
+ 287:Src/stm32f1xx_it.c ****         if (MenuOption(CurrentMenuPosition)[1]==' ')
+ 494              		.loc 1 287 0
+ 495 0206 FFF7FEFF 		bl	MenuOption
+ 496              	.LVL10:
+ 497 020a 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 498 020c 202B     		cmp	r3, #32
+ 499 020e 16D1     		bne	.L29
+ 288:Src/stm32f1xx_it.c ****         {
+ 289:Src/stm32f1xx_it.c ****           Text[2][0] = '>';
+ 500              		.loc 1 289 0
+ 501 0210 1E4B     		ldr	r3, .L49+48
+ 502 0212 3E22     		movs	r2, #62
+ 503 0214 83F82020 		strb	r2, [r3, #32]
+ 290:Src/stm32f1xx_it.c ****           Text[3][0] = ' ';
+ 504              		.loc 1 290 0
+ 505 0218 2022     		movs	r2, #32
+ 506 021a 83F83020 		strb	r2, [r3, #48]
+ 291:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 507              		.loc 1 291 0
+ 508 021e 194A     		ldr	r2, .L49+40
+ 509 0220 1168     		ldr	r1, [r2]
+ 510 0222 0398     		ldr	r0, [sp, #12]
+ 511 0224 184B     		ldr	r3, .L49+44
+ 512 0226 43F82100 		str	r0, [r3, r1, lsl #2]
+ 292:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]-=1;
+ 513              		.loc 1 292 0
+ 514 022a 1168     		ldr	r1, [r2]
+ 515 022c 53F82120 		ldr	r2, [r3, r1, lsl #2]
+ 516 0230 013A     		subs	r2, r2, #1
+ 517 0232 43F82120 		str	r2, [r3, r1, lsl #2]
+ 293:Src/stm32f1xx_it.c ****           UpdateLCD = true;
+ 518              		.loc 1 293 0
+ 519 0236 0122     		movs	r2, #1
+ 520 0238 154B     		ldr	r3, .L49+52
+ 521 023a 1A70     		strb	r2, [r3]
+ 522 023c 5BE0     		b	.L27
+ARM GAS  /tmp/cceBvLtd.s 			page 15
+
+
+ 523              	.L29:
+ 524              	.LBB5:
+ 294:Src/stm32f1xx_it.c ****         }else{
+ 295:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 525              		.loc 1 295 0
+ 526 023e 114A     		ldr	r2, .L49+40
+ 527 0240 1168     		ldr	r1, [r2]
+ 528 0242 0398     		ldr	r0, [sp, #12]
+ 529 0244 104B     		ldr	r3, .L49+44
+ 530 0246 43F82100 		str	r0, [r3, r1, lsl #2]
+ 296:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]-=2;
+ 531              		.loc 1 296 0
+ 532 024a 1168     		ldr	r1, [r2]
+ 533 024c 53F82120 		ldr	r2, [r3, r1, lsl #2]
+ 534 0250 023A     		subs	r2, r2, #2
+ 535 0252 43F82120 		str	r2, [r3, r1, lsl #2]
+ 297:Src/stm32f1xx_it.c ****           volatile int i;
+ 298:Src/stm32f1xx_it.c ****           for (i=1; i<Lines+1; i++)
+ 536              		.loc 1 298 0
+ 537 0256 0123     		movs	r3, #1
+ 538 0258 0493     		str	r3, [sp, #16]
+ 539 025a 33E0     		b	.L30
+ 540              	.L50:
+ 541              		.align	2
+ 542              	.L49:
+ 543 025c 00000000 		.word	jTimer
+ 544 0260 00100140 		.word	1073811456
+ 545 0264 00000000 		.word	jOnDOWN
+ 546 0268 00080140 		.word	1073809408
+ 547 026c 00000000 		.word	jOnUP
+ 548 0270 000C0140 		.word	1073810432
+ 549 0274 00000000 		.word	jOnOK
+ 550 0278 00000000 		.word	jOnBACK
+ 551 027c 00000000 		.word	CheckCircles
+ 552 0280 00000000 		.word	jOnThreshold
+ 553 0284 00000000 		.word	CurrentLayer
+ 554 0288 00000000 		.word	CurrentMenuPosition
+ 555 028c 00000000 		.word	Text
+ 556 0290 00000000 		.word	UpdateLCD
+ 557 0294 00000000 		.word	Lines
+ 558              	.L31:
+ 299:Src/stm32f1xx_it.c ****           {
+ 300:Src/stm32f1xx_it.c ****             sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 559              		.loc 1 300 0 discriminator 3
+ 560 0298 049D     		ldr	r5, [sp, #16]
+ 561 029a AF4B     		ldr	r3, .L51
+ 562 029c 03EB0515 		add	r5, r3, r5, lsl #4
+ 563 02a0 AE4C     		ldr	r4, .L51+4
+ 564 02a2 2046     		mov	r0, r4
+ 565 02a4 FFF7FEFF 		bl	MenuOption
+ 566              	.LVL11:
+ 567 02a8 0146     		mov	r1, r0
+ 568 02aa 2846     		mov	r0, r5
+ 569 02ac FFF7FEFF 		bl	sprintf
+ 570              	.LVL12:
+ 301:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]+=1;
+ 571              		.loc 1 301 0 discriminator 3
+ARM GAS  /tmp/cceBvLtd.s 			page 16
+
+
+ 572 02b0 AB4B     		ldr	r3, .L51+8
+ 573 02b2 1A68     		ldr	r2, [r3]
+ 574 02b4 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 575 02b8 0133     		adds	r3, r3, #1
+ 576 02ba 44F82230 		str	r3, [r4, r2, lsl #2]
+ 298:Src/stm32f1xx_it.c ****           {
+ 577              		.loc 1 298 0 discriminator 3
+ 578 02be 049B     		ldr	r3, [sp, #16]
+ 579 02c0 0133     		adds	r3, r3, #1
+ 580 02c2 0493     		str	r3, [sp, #16]
+ 581              	.L30:
+ 298:Src/stm32f1xx_it.c ****           {
+ 582              		.loc 1 298 0 is_stmt 0 discriminator 1
+ 583 02c4 049A     		ldr	r2, [sp, #16]
+ 584 02c6 A74B     		ldr	r3, .L51+12
+ 585 02c8 1B68     		ldr	r3, [r3]
+ 586 02ca 0133     		adds	r3, r3, #1
+ 587 02cc 9A42     		cmp	r2, r3
+ 588 02ce E3D3     		bcc	.L31
+ 302:Src/stm32f1xx_it.c ****           };
+ 303:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 589              		.loc 1 303 0 is_stmt 1
+ 590 02d0 A34A     		ldr	r2, .L51+8
+ 591 02d2 1168     		ldr	r1, [r2]
+ 592 02d4 0398     		ldr	r0, [sp, #12]
+ 593 02d6 A14B     		ldr	r3, .L51+4
+ 594 02d8 43F82100 		str	r0, [r3, r1, lsl #2]
+ 304:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]-=1;
+ 595              		.loc 1 304 0
+ 596 02dc 1168     		ldr	r1, [r2]
+ 597 02de 53F82120 		ldr	r2, [r3, r1, lsl #2]
+ 598 02e2 013A     		subs	r2, r2, #1
+ 599 02e4 43F82120 		str	r2, [r3, r1, lsl #2]
+ 305:Src/stm32f1xx_it.c ****           Text[2][0] = '>';
+ 600              		.loc 1 305 0
+ 601 02e8 3E22     		movs	r2, #62
+ 602 02ea 9B4B     		ldr	r3, .L51
+ 603 02ec 83F82020 		strb	r2, [r3, #32]
+ 306:Src/stm32f1xx_it.c ****           UpdateLCD = true;
+ 604              		.loc 1 306 0
+ 605 02f0 0122     		movs	r2, #1
+ 606 02f2 9D4B     		ldr	r3, .L51+16
+ 607 02f4 1A70     		strb	r2, [r3]
+ 608              	.L27:
+ 609              	.LBE5:
+ 610              	.LBE4:
+ 307:Src/stm32f1xx_it.c ****         }
+ 308:Src/stm32f1xx_it.c ****       }
+ 309:Src/stm32f1xx_it.c ****     };/*That is all for the button UP*/
+ 310:Src/stm32f1xx_it.c ****     if (jOnOK > jOnThreshold)
+ 611              		.loc 1 310 0
+ 612 02f6 9D4B     		ldr	r3, .L51+20
+ 613 02f8 1A68     		ldr	r2, [r3]
+ 614 02fa 9D4B     		ldr	r3, .L51+24
+ 615 02fc 1B68     		ldr	r3, [r3]
+ 616 02fe 9A42     		cmp	r2, r3
+ 617 0300 4EDD     		ble	.L32
+ARM GAS  /tmp/cceBvLtd.s 			page 17
+
+
+ 311:Src/stm32f1xx_it.c ****     {/*Button OK is pressed*/
+ 312:Src/stm32f1xx_it.c ****       CurrentLayer+=1;
+ 618              		.loc 1 312 0
+ 619 0302 974B     		ldr	r3, .L51+8
+ 620 0304 1A68     		ldr	r2, [r3]
+ 621 0306 0132     		adds	r2, r2, #1
+ 622 0308 1A60     		str	r2, [r3]
+ 313:Src/stm32f1xx_it.c ****       CurrentMenuPosition[CurrentLayer]=1;
+ 623              		.loc 1 313 0
+ 624 030a 1B68     		ldr	r3, [r3]
+ 625 030c 9348     		ldr	r0, .L51+4
+ 626 030e 0122     		movs	r2, #1
+ 627 0310 40F82320 		str	r2, [r0, r3, lsl #2]
+ 314:Src/stm32f1xx_it.c ****       if (MenuOption(CurrentMenuPosition)[1]==' ')
+ 628              		.loc 1 314 0
+ 629 0314 FFF7FEFF 		bl	MenuOption
+ 630              	.LVL13:
+ 631 0318 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 632 031a 202B     		cmp	r3, #32
+ 633 031c 09D1     		bne	.L33
+ 315:Src/stm32f1xx_it.c ****       {
+ 316:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]=0;
+ 634              		.loc 1 316 0
+ 635 031e 904B     		ldr	r3, .L51+8
+ 636 0320 1968     		ldr	r1, [r3]
+ 637 0322 0020     		movs	r0, #0
+ 638 0324 8D4A     		ldr	r2, .L51+4
+ 639 0326 42F82100 		str	r0, [r2, r1, lsl #2]
+ 317:Src/stm32f1xx_it.c ****         CurrentLayer-=1;
+ 640              		.loc 1 317 0
+ 641 032a 1A68     		ldr	r2, [r3]
+ 642 032c 013A     		subs	r2, r2, #1
+ 643 032e 1A60     		str	r2, [r3]
+ 644 0330 36E0     		b	.L32
+ 645              	.L33:
+ 646              	.LBB6:
+ 318:Src/stm32f1xx_it.c ****       }else{
+ 319:Src/stm32f1xx_it.c ****         volatile int bufPosition=CurrentMenuPosition[CurrentLayer];
+ 647              		.loc 1 319 0
+ 648 0332 8B4B     		ldr	r3, .L51+8
+ 649 0334 1B68     		ldr	r3, [r3]
+ 650 0336 8948     		ldr	r0, .L51+4
+ 651 0338 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 652 033c 0593     		str	r3, [sp, #20]
+ 320:Src/stm32f1xx_it.c ****         sprintf(Text[0],MenuTitle(CurrentMenuPosition));
+ 653              		.loc 1 320 0
+ 654 033e FFF7FEFF 		bl	MenuTitle
+ 655              	.LVL14:
+ 656 0342 0146     		mov	r1, r0
+ 657 0344 8448     		ldr	r0, .L51
+ 658 0346 FFF7FEFF 		bl	sprintf
+ 659              	.LVL15:
+ 321:Src/stm32f1xx_it.c ****         volatile int i;
+ 322:Src/stm32f1xx_it.c ****         for (i=1; i<Lines+1; i++)
+ 660              		.loc 1 322 0
+ 661 034a 0123     		movs	r3, #1
+ 662 034c 0693     		str	r3, [sp, #24]
+ARM GAS  /tmp/cceBvLtd.s 			page 18
+
+
+ 663 034e 15E0     		b	.L34
+ 664              	.L35:
+ 323:Src/stm32f1xx_it.c ****         {
+ 324:Src/stm32f1xx_it.c ****           sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 665              		.loc 1 324 0 discriminator 3
+ 666 0350 069D     		ldr	r5, [sp, #24]
+ 667 0352 814B     		ldr	r3, .L51
+ 668 0354 03EB0515 		add	r5, r3, r5, lsl #4
+ 669 0358 804C     		ldr	r4, .L51+4
+ 670 035a 2046     		mov	r0, r4
+ 671 035c FFF7FEFF 		bl	MenuOption
+ 672              	.LVL16:
+ 673 0360 0146     		mov	r1, r0
+ 674 0362 2846     		mov	r0, r5
+ 675 0364 FFF7FEFF 		bl	sprintf
+ 676              	.LVL17:
+ 325:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]+=1;
+ 677              		.loc 1 325 0 discriminator 3
+ 678 0368 7D4B     		ldr	r3, .L51+8
+ 679 036a 1A68     		ldr	r2, [r3]
+ 680 036c 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 681 0370 0133     		adds	r3, r3, #1
+ 682 0372 44F82230 		str	r3, [r4, r2, lsl #2]
+ 322:Src/stm32f1xx_it.c ****         {
+ 683              		.loc 1 322 0 discriminator 3
+ 684 0376 069B     		ldr	r3, [sp, #24]
+ 685 0378 0133     		adds	r3, r3, #1
+ 686 037a 0693     		str	r3, [sp, #24]
+ 687              	.L34:
+ 322:Src/stm32f1xx_it.c ****         {
+ 688              		.loc 1 322 0 is_stmt 0 discriminator 1
+ 689 037c 069A     		ldr	r2, [sp, #24]
+ 690 037e 794B     		ldr	r3, .L51+12
+ 691 0380 1B68     		ldr	r3, [r3]
+ 692 0382 0133     		adds	r3, r3, #1
+ 693 0384 9A42     		cmp	r2, r3
+ 694 0386 E3D3     		bcc	.L35
+ 326:Src/stm32f1xx_it.c ****         };
+ 327:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 695              		.loc 1 327 0 is_stmt 1
+ 696 0388 754B     		ldr	r3, .L51+8
+ 697 038a 1A68     		ldr	r2, [r3]
+ 698 038c 0599     		ldr	r1, [sp, #20]
+ 699 038e 734B     		ldr	r3, .L51+4
+ 700 0390 43F82210 		str	r1, [r3, r2, lsl #2]
+ 328:Src/stm32f1xx_it.c ****         Text[1][0] = '>';
+ 701              		.loc 1 328 0
+ 702 0394 3E22     		movs	r2, #62
+ 703 0396 704B     		ldr	r3, .L51
+ 704 0398 1A74     		strb	r2, [r3, #16]
+ 329:Src/stm32f1xx_it.c ****         UpdateLCD = true;
+ 705              		.loc 1 329 0
+ 706 039a 0122     		movs	r2, #1
+ 707 039c 724B     		ldr	r3, .L51+16
+ 708 039e 1A70     		strb	r2, [r3]
+ 709              	.L32:
+ 710              	.LBE6:
+ARM GAS  /tmp/cceBvLtd.s 			page 19
+
+
+ 330:Src/stm32f1xx_it.c ****       }
+ 331:Src/stm32f1xx_it.c ****     };/*That is all for the button OK*/
+ 332:Src/stm32f1xx_it.c ****     if (jOnBACK > jOnThreshold)
+ 711              		.loc 1 332 0
+ 712 03a0 744B     		ldr	r3, .L51+28
+ 713 03a2 1A68     		ldr	r2, [r3]
+ 714 03a4 724B     		ldr	r3, .L51+24
+ 715 03a6 1B68     		ldr	r3, [r3]
+ 716 03a8 9A42     		cmp	r2, r3
+ 717 03aa 40F31D81 		ble	.L36
+ 333:Src/stm32f1xx_it.c ****     {/*Button BACK is pressed*/
+ 334:Src/stm32f1xx_it.c ****       if (CurrentLayer > 0)
+ 718              		.loc 1 334 0
+ 719 03ae 6C4B     		ldr	r3, .L51+8
+ 720 03b0 1B68     		ldr	r3, [r3]
+ 721 03b2 002B     		cmp	r3, #0
+ 722 03b4 00F01881 		beq	.L36
+ 723              	.LBB7:
+ 335:Src/stm32f1xx_it.c ****       {
+ 336:Src/stm32f1xx_it.c ****         CurrentMenuPosition[CurrentLayer]=0;
+ 724              		.loc 1 336 0
+ 725 03b8 694C     		ldr	r4, .L51+8
+ 726 03ba 2368     		ldr	r3, [r4]
+ 727 03bc 674D     		ldr	r5, .L51+4
+ 728 03be 0022     		movs	r2, #0
+ 729 03c0 45F82320 		str	r2, [r5, r3, lsl #2]
+ 337:Src/stm32f1xx_it.c ****         CurrentLayer-=1;
+ 730              		.loc 1 337 0
+ 731 03c4 2368     		ldr	r3, [r4]
+ 732 03c6 013B     		subs	r3, r3, #1
+ 733 03c8 2360     		str	r3, [r4]
+ 338:Src/stm32f1xx_it.c ****         volatile int bufPosition=CurrentMenuPosition[CurrentLayer];
+ 734              		.loc 1 338 0
+ 735 03ca 2368     		ldr	r3, [r4]
+ 736 03cc 55F82330 		ldr	r3, [r5, r3, lsl #2]
+ 737 03d0 0793     		str	r3, [sp, #28]
+ 339:Src/stm32f1xx_it.c ****         sprintf(Text[0],MenuTitle(CurrentMenuPosition));
+ 738              		.loc 1 339 0
+ 739 03d2 2846     		mov	r0, r5
+ 740 03d4 FFF7FEFF 		bl	MenuTitle
+ 741              	.LVL18:
+ 742 03d8 0146     		mov	r1, r0
+ 743 03da 5F48     		ldr	r0, .L51
+ 744 03dc FFF7FEFF 		bl	sprintf
+ 745              	.LVL19:
+ 340:Src/stm32f1xx_it.c **** 
+ 341:Src/stm32f1xx_it.c **** 
+ 342:Src/stm32f1xx_it.c **** 
+ 343:Src/stm32f1xx_it.c ****         if (CurrentMenuPosition[CurrentLayer]==1)
+ 746              		.loc 1 343 0
+ 747 03e0 2368     		ldr	r3, [r4]
+ 748 03e2 55F82330 		ldr	r3, [r5, r3, lsl #2]
+ 749 03e6 012B     		cmp	r3, #1
+ 750 03e8 2FD1     		bne	.L37
+ 751              	.LBB8:
+ 344:Src/stm32f1xx_it.c ****         {
+ 345:Src/stm32f1xx_it.c ****           volatile int i;
+ARM GAS  /tmp/cceBvLtd.s 			page 20
+
+
+ 346:Src/stm32f1xx_it.c ****           for (i=1; i<Lines+1; i++)
+ 752              		.loc 1 346 0
+ 753 03ea 0893     		str	r3, [sp, #32]
+ 754 03ec 15E0     		b	.L38
+ 755              	.L39:
+ 347:Src/stm32f1xx_it.c ****           {
+ 348:Src/stm32f1xx_it.c ****             sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 756              		.loc 1 348 0 discriminator 3
+ 757 03ee 089D     		ldr	r5, [sp, #32]
+ 758 03f0 594B     		ldr	r3, .L51
+ 759 03f2 03EB0515 		add	r5, r3, r5, lsl #4
+ 760 03f6 594C     		ldr	r4, .L51+4
+ 761 03f8 2046     		mov	r0, r4
+ 762 03fa FFF7FEFF 		bl	MenuOption
+ 763              	.LVL20:
+ 764 03fe 0146     		mov	r1, r0
+ 765 0400 2846     		mov	r0, r5
+ 766 0402 FFF7FEFF 		bl	sprintf
+ 767              	.LVL21:
+ 349:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]+=1;
+ 768              		.loc 1 349 0 discriminator 3
+ 769 0406 564B     		ldr	r3, .L51+8
+ 770 0408 1A68     		ldr	r2, [r3]
+ 771 040a 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 772 040e 0133     		adds	r3, r3, #1
+ 773 0410 44F82230 		str	r3, [r4, r2, lsl #2]
+ 346:Src/stm32f1xx_it.c ****           {
+ 774              		.loc 1 346 0 discriminator 3
+ 775 0414 089B     		ldr	r3, [sp, #32]
+ 776 0416 0133     		adds	r3, r3, #1
+ 777 0418 0893     		str	r3, [sp, #32]
+ 778              	.L38:
+ 346:Src/stm32f1xx_it.c ****           {
+ 779              		.loc 1 346 0 is_stmt 0 discriminator 1
+ 780 041a 089A     		ldr	r2, [sp, #32]
+ 781 041c 514B     		ldr	r3, .L51+12
+ 782 041e 1B68     		ldr	r3, [r3]
+ 783 0420 0133     		adds	r3, r3, #1
+ 784 0422 9A42     		cmp	r2, r3
+ 785 0424 E3D3     		bcc	.L39
+ 350:Src/stm32f1xx_it.c ****           };
+ 351:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 786              		.loc 1 351 0 is_stmt 1
+ 787 0426 4E4B     		ldr	r3, .L51+8
+ 788 0428 1A68     		ldr	r2, [r3]
+ 789 042a 0799     		ldr	r1, [sp, #28]
+ 790 042c 4B4B     		ldr	r3, .L51+4
+ 791 042e 43F82210 		str	r1, [r3, r2, lsl #2]
+ 352:Src/stm32f1xx_it.c ****           Text[1][0] = '>';
+ 792              		.loc 1 352 0
+ 793 0432 494B     		ldr	r3, .L51
+ 794 0434 3E22     		movs	r2, #62
+ 795 0436 1A74     		strb	r2, [r3, #16]
+ 353:Src/stm32f1xx_it.c ****           Text[2][0] = ' ';
+ 796              		.loc 1 353 0
+ 797 0438 2022     		movs	r2, #32
+ 798 043a 83F82020 		strb	r2, [r3, #32]
+ARM GAS  /tmp/cceBvLtd.s 			page 21
+
+
+ 354:Src/stm32f1xx_it.c ****           Text[3][0] = ' ';
+ 799              		.loc 1 354 0
+ 800 043e 83F83020 		strb	r2, [r3, #48]
+ 355:Src/stm32f1xx_it.c ****           UpdateLCD = true;
+ 801              		.loc 1 355 0
+ 802 0442 0122     		movs	r2, #1
+ 803 0444 484B     		ldr	r3, .L51+16
+ 804 0446 1A70     		strb	r2, [r3]
+ 805              	.LBE8:
+ 806 0448 CEE0     		b	.L36
+ 807              	.L37:
+ 356:Src/stm32f1xx_it.c ****         }else if (CurrentMenuPosition[CurrentLayer]==2){
+ 808              		.loc 1 356 0
+ 809 044a 454B     		ldr	r3, .L51+8
+ 810 044c 1A68     		ldr	r2, [r3]
+ 811 044e 434B     		ldr	r3, .L51+4
+ 812 0450 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 813 0454 022B     		cmp	r3, #2
+ 814 0456 38D1     		bne	.L40
+ 815              	.LBB9:
+ 357:Src/stm32f1xx_it.c ****           volatile int i;
+ 358:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]-=1;
+ 816              		.loc 1 358 0
+ 817 0458 414B     		ldr	r3, .L51+8
+ 818 045a 1968     		ldr	r1, [r3]
+ 819 045c 3F4A     		ldr	r2, .L51+4
+ 820 045e 52F82130 		ldr	r3, [r2, r1, lsl #2]
+ 821 0462 013B     		subs	r3, r3, #1
+ 822 0464 42F82130 		str	r3, [r2, r1, lsl #2]
+ 359:Src/stm32f1xx_it.c ****           for (i=1; i<Lines+1; i++)
+ 823              		.loc 1 359 0
+ 824 0468 0123     		movs	r3, #1
+ 825 046a 0993     		str	r3, [sp, #36]
+ 826 046c 15E0     		b	.L41
+ 827              	.L42:
+ 360:Src/stm32f1xx_it.c ****           {
+ 361:Src/stm32f1xx_it.c ****             sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 828              		.loc 1 361 0 discriminator 3
+ 829 046e 099D     		ldr	r5, [sp, #36]
+ 830 0470 394B     		ldr	r3, .L51
+ 831 0472 03EB0515 		add	r5, r3, r5, lsl #4
+ 832 0476 394C     		ldr	r4, .L51+4
+ 833 0478 2046     		mov	r0, r4
+ 834 047a FFF7FEFF 		bl	MenuOption
+ 835              	.LVL22:
+ 836 047e 0146     		mov	r1, r0
+ 837 0480 2846     		mov	r0, r5
+ 838 0482 FFF7FEFF 		bl	sprintf
+ 839              	.LVL23:
+ 362:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]+=1;
+ 840              		.loc 1 362 0 discriminator 3
+ 841 0486 364B     		ldr	r3, .L51+8
+ 842 0488 1A68     		ldr	r2, [r3]
+ 843 048a 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 844 048e 0133     		adds	r3, r3, #1
+ 845 0490 44F82230 		str	r3, [r4, r2, lsl #2]
+ 359:Src/stm32f1xx_it.c ****           for (i=1; i<Lines+1; i++)
+ARM GAS  /tmp/cceBvLtd.s 			page 22
+
+
+ 846              		.loc 1 359 0 discriminator 3
+ 847 0494 099B     		ldr	r3, [sp, #36]
+ 848 0496 0133     		adds	r3, r3, #1
+ 849 0498 0993     		str	r3, [sp, #36]
+ 850              	.L41:
+ 359:Src/stm32f1xx_it.c ****           for (i=1; i<Lines+1; i++)
+ 851              		.loc 1 359 0 is_stmt 0 discriminator 1
+ 852 049a 099A     		ldr	r2, [sp, #36]
+ 853 049c 314B     		ldr	r3, .L51+12
+ 854 049e 1B68     		ldr	r3, [r3]
+ 855 04a0 0133     		adds	r3, r3, #1
+ 856 04a2 9A42     		cmp	r2, r3
+ 857 04a4 E3D3     		bcc	.L42
+ 363:Src/stm32f1xx_it.c ****           };
+ 364:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 858              		.loc 1 364 0 is_stmt 1
+ 859 04a6 2E4B     		ldr	r3, .L51+8
+ 860 04a8 1A68     		ldr	r2, [r3]
+ 861 04aa 0799     		ldr	r1, [sp, #28]
+ 862 04ac 2B4B     		ldr	r3, .L51+4
+ 863 04ae 43F82210 		str	r1, [r3, r2, lsl #2]
+ 365:Src/stm32f1xx_it.c ****           Text[1][0] = ' ';
+ 864              		.loc 1 365 0
+ 865 04b2 294B     		ldr	r3, .L51
+ 866 04b4 2022     		movs	r2, #32
+ 867 04b6 1A74     		strb	r2, [r3, #16]
+ 366:Src/stm32f1xx_it.c ****           Text[2][0] = '>';
+ 868              		.loc 1 366 0
+ 869 04b8 3E21     		movs	r1, #62
+ 870 04ba 83F82010 		strb	r1, [r3, #32]
+ 367:Src/stm32f1xx_it.c ****           Text[3][0] = ' ';
+ 871              		.loc 1 367 0
+ 872 04be 83F83020 		strb	r2, [r3, #48]
+ 368:Src/stm32f1xx_it.c ****           UpdateLCD = true;
+ 873              		.loc 1 368 0
+ 874 04c2 0122     		movs	r2, #1
+ 875 04c4 284B     		ldr	r3, .L51+16
+ 876 04c6 1A70     		strb	r2, [r3]
+ 877              	.LBE9:
+ 878 04c8 8EE0     		b	.L36
+ 879              	.L40:
+ 369:Src/stm32f1xx_it.c ****         }else{
+ 370:Src/stm32f1xx_it.c ****           CurrentMenuPosition[CurrentLayer]+=1;
+ 880              		.loc 1 370 0
+ 881 04ca 254B     		ldr	r3, .L51+8
+ 882 04cc 1A68     		ldr	r2, [r3]
+ 883 04ce 2348     		ldr	r0, .L51+4
+ 884 04d0 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 885 04d4 0133     		adds	r3, r3, #1
+ 886 04d6 40F82230 		str	r3, [r0, r2, lsl #2]
+ 371:Src/stm32f1xx_it.c ****           if (MenuOption(CurrentMenuPosition)[1]==' ')
+ 887              		.loc 1 371 0
+ 888 04da FFF7FEFF 		bl	MenuOption
+ 889              	.LVL24:
+ 890 04de 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 891 04e0 202B     		cmp	r3, #32
+ 892 04e2 49D1     		bne	.L43
+ARM GAS  /tmp/cceBvLtd.s 			page 23
+
+
+ 893              	.LBB10:
+ 372:Src/stm32f1xx_it.c ****           {
+ 373:Src/stm32f1xx_it.c ****             volatile int i;
+ 374:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]-=3;
+ 894              		.loc 1 374 0
+ 895 04e4 1E4B     		ldr	r3, .L51+8
+ 896 04e6 1968     		ldr	r1, [r3]
+ 897 04e8 1C4A     		ldr	r2, .L51+4
+ 898 04ea 52F82130 		ldr	r3, [r2, r1, lsl #2]
+ 899 04ee 033B     		subs	r3, r3, #3
+ 900 04f0 42F82130 		str	r3, [r2, r1, lsl #2]
+ 375:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 901              		.loc 1 375 0
+ 902 04f4 0123     		movs	r3, #1
+ 903 04f6 0A93     		str	r3, [sp, #40]
+ 904 04f8 15E0     		b	.L44
+ 905              	.L45:
+ 376:Src/stm32f1xx_it.c ****             {
+ 377:Src/stm32f1xx_it.c ****               sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 906              		.loc 1 377 0 discriminator 3
+ 907 04fa 0A9D     		ldr	r5, [sp, #40]
+ 908 04fc 164B     		ldr	r3, .L51
+ 909 04fe 03EB0515 		add	r5, r3, r5, lsl #4
+ 910 0502 164C     		ldr	r4, .L51+4
+ 911 0504 2046     		mov	r0, r4
+ 912 0506 FFF7FEFF 		bl	MenuOption
+ 913              	.LVL25:
+ 914 050a 0146     		mov	r1, r0
+ 915 050c 2846     		mov	r0, r5
+ 916 050e FFF7FEFF 		bl	sprintf
+ 917              	.LVL26:
+ 378:Src/stm32f1xx_it.c ****               CurrentMenuPosition[CurrentLayer]+=1;
+ 918              		.loc 1 378 0 discriminator 3
+ 919 0512 134B     		ldr	r3, .L51+8
+ 920 0514 1A68     		ldr	r2, [r3]
+ 921 0516 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 922 051a 0133     		adds	r3, r3, #1
+ 923 051c 44F82230 		str	r3, [r4, r2, lsl #2]
+ 375:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 924              		.loc 1 375 0 discriminator 3
+ 925 0520 0A9B     		ldr	r3, [sp, #40]
+ 926 0522 0133     		adds	r3, r3, #1
+ 927 0524 0A93     		str	r3, [sp, #40]
+ 928              	.L44:
+ 375:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 929              		.loc 1 375 0 is_stmt 0 discriminator 1
+ 930 0526 0A9A     		ldr	r2, [sp, #40]
+ 931 0528 0E4B     		ldr	r3, .L51+12
+ 932 052a 1B68     		ldr	r3, [r3]
+ 933 052c 0133     		adds	r3, r3, #1
+ 934 052e 9A42     		cmp	r2, r3
+ 935 0530 E3D3     		bcc	.L45
+ 379:Src/stm32f1xx_it.c ****             };
+ 380:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 936              		.loc 1 380 0 is_stmt 1
+ 937 0532 0B4B     		ldr	r3, .L51+8
+ 938 0534 1A68     		ldr	r2, [r3]
+ARM GAS  /tmp/cceBvLtd.s 			page 24
+
+
+ 939 0536 0799     		ldr	r1, [sp, #28]
+ 940 0538 084B     		ldr	r3, .L51+4
+ 941 053a 43F82210 		str	r1, [r3, r2, lsl #2]
+ 381:Src/stm32f1xx_it.c ****             Text[1][0] = ' ';
+ 942              		.loc 1 381 0
+ 943 053e 064B     		ldr	r3, .L51
+ 944 0540 2022     		movs	r2, #32
+ 945 0542 1A74     		strb	r2, [r3, #16]
+ 382:Src/stm32f1xx_it.c ****             Text[2][0] = ' ';
+ 946              		.loc 1 382 0
+ 947 0544 83F82020 		strb	r2, [r3, #32]
+ 383:Src/stm32f1xx_it.c ****             Text[3][0] = '>';
+ 948              		.loc 1 383 0
+ 949 0548 3E22     		movs	r2, #62
+ 950 054a 83F83020 		strb	r2, [r3, #48]
+ 384:Src/stm32f1xx_it.c ****             UpdateLCD = true;
+ 951              		.loc 1 384 0
+ 952 054e 0122     		movs	r2, #1
+ 953 0550 054B     		ldr	r3, .L51+16
+ 954 0552 1A70     		strb	r2, [r3]
+ 955              	.LBE10:
+ 956 0554 48E0     		b	.L36
+ 957              	.L52:
+ 958 0556 00BF     		.align	2
+ 959              	.L51:
+ 960 0558 00000000 		.word	Text
+ 961 055c 00000000 		.word	CurrentMenuPosition
+ 962 0560 00000000 		.word	CurrentLayer
+ 963 0564 00000000 		.word	Lines
+ 964 0568 00000000 		.word	UpdateLCD
+ 965 056c 00000000 		.word	jOnOK
+ 966 0570 00000000 		.word	jOnThreshold
+ 967 0574 00000000 		.word	jOnBACK
+ 968              	.L43:
+ 969              	.LBB11:
+ 385:Src/stm32f1xx_it.c ****           }else{
+ 386:Src/stm32f1xx_it.c ****             volatile int i;
+ 387:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]-=2;
+ 970              		.loc 1 387 0
+ 971 0578 234B     		ldr	r3, .L53
+ 972 057a 1968     		ldr	r1, [r3]
+ 973 057c 234A     		ldr	r2, .L53+4
+ 974 057e 52F82130 		ldr	r3, [r2, r1, lsl #2]
+ 975 0582 023B     		subs	r3, r3, #2
+ 976 0584 42F82130 		str	r3, [r2, r1, lsl #2]
+ 388:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 977              		.loc 1 388 0
+ 978 0588 0123     		movs	r3, #1
+ 979 058a 0B93     		str	r3, [sp, #44]
+ 980 058c 15E0     		b	.L46
+ 981              	.L47:
+ 389:Src/stm32f1xx_it.c ****             {
+ 390:Src/stm32f1xx_it.c ****               sprintf(Text[i],MenuOption(CurrentMenuPosition));
+ 982              		.loc 1 390 0 discriminator 3
+ 983 058e 0B9D     		ldr	r5, [sp, #44]
+ 984 0590 1F4B     		ldr	r3, .L53+8
+ 985 0592 03EB0515 		add	r5, r3, r5, lsl #4
+ARM GAS  /tmp/cceBvLtd.s 			page 25
+
+
+ 986 0596 1D4C     		ldr	r4, .L53+4
+ 987 0598 2046     		mov	r0, r4
+ 988 059a FFF7FEFF 		bl	MenuOption
+ 989              	.LVL27:
+ 990 059e 0146     		mov	r1, r0
+ 991 05a0 2846     		mov	r0, r5
+ 992 05a2 FFF7FEFF 		bl	sprintf
+ 993              	.LVL28:
+ 391:Src/stm32f1xx_it.c ****               CurrentMenuPosition[CurrentLayer]+=1;
+ 994              		.loc 1 391 0 discriminator 3
+ 995 05a6 184B     		ldr	r3, .L53
+ 996 05a8 1A68     		ldr	r2, [r3]
+ 997 05aa 54F82230 		ldr	r3, [r4, r2, lsl #2]
+ 998 05ae 0133     		adds	r3, r3, #1
+ 999 05b0 44F82230 		str	r3, [r4, r2, lsl #2]
+ 388:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 1000              		.loc 1 388 0 discriminator 3
+ 1001 05b4 0B9B     		ldr	r3, [sp, #44]
+ 1002 05b6 0133     		adds	r3, r3, #1
+ 1003 05b8 0B93     		str	r3, [sp, #44]
+ 1004              	.L46:
+ 388:Src/stm32f1xx_it.c ****             for (i=1; i<Lines+1; i++)
+ 1005              		.loc 1 388 0 is_stmt 0 discriminator 1
+ 1006 05ba 0B9A     		ldr	r2, [sp, #44]
+ 1007 05bc 154B     		ldr	r3, .L53+12
+ 1008 05be 1B68     		ldr	r3, [r3]
+ 1009 05c0 0133     		adds	r3, r3, #1
+ 1010 05c2 9A42     		cmp	r2, r3
+ 1011 05c4 E3D3     		bcc	.L47
+ 392:Src/stm32f1xx_it.c ****             };
+ 393:Src/stm32f1xx_it.c ****             CurrentMenuPosition[CurrentLayer]=bufPosition;
+ 1012              		.loc 1 393 0 is_stmt 1
+ 1013 05c6 104B     		ldr	r3, .L53
+ 1014 05c8 1A68     		ldr	r2, [r3]
+ 1015 05ca 0799     		ldr	r1, [sp, #28]
+ 1016 05cc 0F4B     		ldr	r3, .L53+4
+ 1017 05ce 43F82210 		str	r1, [r3, r2, lsl #2]
+ 394:Src/stm32f1xx_it.c ****             Text[1][0] = ' ';
+ 1018              		.loc 1 394 0
+ 1019 05d2 0F4B     		ldr	r3, .L53+8
+ 1020 05d4 2022     		movs	r2, #32
+ 1021 05d6 1A74     		strb	r2, [r3, #16]
+ 395:Src/stm32f1xx_it.c ****             Text[2][0] = '>';
+ 1022              		.loc 1 395 0
+ 1023 05d8 3E21     		movs	r1, #62
+ 1024 05da 83F82010 		strb	r1, [r3, #32]
+ 396:Src/stm32f1xx_it.c ****             Text[3][0] = ' ';
+ 1025              		.loc 1 396 0
+ 1026 05de 83F83020 		strb	r2, [r3, #48]
+ 397:Src/stm32f1xx_it.c ****             UpdateLCD = true;
+ 1027              		.loc 1 397 0
+ 1028 05e2 0122     		movs	r2, #1
+ 1029 05e4 0C4B     		ldr	r3, .L53+16
+ 1030 05e6 1A70     		strb	r2, [r3]
+ 1031              	.L36:
+ 1032              	.LBE11:
+ 1033              	.LBE7:
+ARM GAS  /tmp/cceBvLtd.s 			page 26
+
+
+ 398:Src/stm32f1xx_it.c ****           }
+ 399:Src/stm32f1xx_it.c ****         }
+ 400:Src/stm32f1xx_it.c ****       }
+ 401:Src/stm32f1xx_it.c ****     };/*That is all for the button BACK*/
+ 402:Src/stm32f1xx_it.c ****     jTimer=0;
+ 1034              		.loc 1 402 0
+ 1035 05e8 0023     		movs	r3, #0
+ 1036 05ea 0C4A     		ldr	r2, .L53+20
+ 1037 05ec 1360     		str	r3, [r2]
+ 403:Src/stm32f1xx_it.c ****     jOnUP=0;
+ 1038              		.loc 1 403 0
+ 1039 05ee 0C4A     		ldr	r2, .L53+24
+ 1040 05f0 1360     		str	r3, [r2]
+ 404:Src/stm32f1xx_it.c ****     jOnDOWN=0;
+ 1041              		.loc 1 404 0
+ 1042 05f2 0C4A     		ldr	r2, .L53+28
+ 1043 05f4 1360     		str	r3, [r2]
+ 405:Src/stm32f1xx_it.c ****     jOnOK=0;
+ 1044              		.loc 1 405 0
+ 1045 05f6 0C4A     		ldr	r2, .L53+32
+ 1046 05f8 1360     		str	r3, [r2]
+ 406:Src/stm32f1xx_it.c ****     jOnBACK=0;
+ 1047              		.loc 1 406 0
+ 1048 05fa 0C4A     		ldr	r2, .L53+36
+ 1049 05fc 1360     		str	r3, [r2]
+ 1050              	.L20:
+ 407:Src/stm32f1xx_it.c ****   }
+ 408:Src/stm32f1xx_it.c **** 
+ 409:Src/stm32f1xx_it.c ****   /* USER CODE END TIM2_IRQn 0 */
+ 410:Src/stm32f1xx_it.c ****   HAL_TIM_IRQHandler(&htim2);
+ 1051              		.loc 1 410 0
+ 1052 05fe 0C48     		ldr	r0, .L53+40
+ 1053 0600 FFF7FEFF 		bl	HAL_TIM_IRQHandler
+ 1054              	.LVL29:
+ 411:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN TIM2_IRQn 1 */
+ 412:Src/stm32f1xx_it.c **** 
+ 413:Src/stm32f1xx_it.c ****   /* USER CODE END TIM2_IRQn 1 */
+ 414:Src/stm32f1xx_it.c **** }
+ 1055              		.loc 1 414 0
+ 1056 0604 0DB0     		add	sp, sp, #52
+ 1057              	.LCFI3:
+ 1058              		.cfi_def_cfa_offset 12
+ 1059              		@ sp needed
+ 1060 0606 30BD     		pop	{r4, r5, pc}
+ 1061              	.L54:
+ 1062              		.align	2
+ 1063              	.L53:
+ 1064 0608 00000000 		.word	CurrentLayer
+ 1065 060c 00000000 		.word	CurrentMenuPosition
+ 1066 0610 00000000 		.word	Text
+ 1067 0614 00000000 		.word	Lines
+ 1068 0618 00000000 		.word	UpdateLCD
+ 1069 061c 00000000 		.word	jTimer
+ 1070 0620 00000000 		.word	jOnUP
+ 1071 0624 00000000 		.word	jOnDOWN
+ 1072 0628 00000000 		.word	jOnOK
+ 1073 062c 00000000 		.word	jOnBACK
+ARM GAS  /tmp/cceBvLtd.s 			page 27
+
+
+ 1074 0630 00000000 		.word	htim2
+ 1075              		.cfi_endproc
+ 1076              	.LFE72:
+ 1078              		.section	.text.TIM3_IRQHandler,"ax",%progbits
+ 1079              		.align	2
+ 1080              		.global	TIM3_IRQHandler
+ 1081              		.thumb
+ 1082              		.thumb_func
+ 1084              	TIM3_IRQHandler:
+ 1085              	.LFB73:
+ 415:Src/stm32f1xx_it.c **** 
+ 416:Src/stm32f1xx_it.c **** /**
+ 417:Src/stm32f1xx_it.c **** * @brief This function handles TIM3 global interrupt.
+ 418:Src/stm32f1xx_it.c **** */
+ 419:Src/stm32f1xx_it.c **** void TIM3_IRQHandler(void)
+ 420:Src/stm32f1xx_it.c **** {
+ 1086              		.loc 1 420 0
+ 1087              		.cfi_startproc
+ 1088              		@ args = 0, pretend = 0, frame = 0
+ 1089              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1090 0000 38B5     		push	{r3, r4, r5, lr}
+ 1091              	.LCFI4:
+ 1092              		.cfi_def_cfa_offset 16
+ 1093              		.cfi_offset 3, -16
+ 1094              		.cfi_offset 4, -12
+ 1095              		.cfi_offset 5, -8
+ 1096              		.cfi_offset 14, -4
+ 421:Src/stm32f1xx_it.c ****   /* USER CODE BEGIN TIM3_IRQn 0 */
+ 422:Src/stm32f1xx_it.c ****   //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+ 423:Src/stm32f1xx_it.c ****   if (PeriodsToGo == 0)
+ 1097              		.loc 1 423 0
+ 1098 0002 344B     		ldr	r3, .L63
+ 1099 0004 1B68     		ldr	r3, [r3]
+ 1100 0006 002B     		cmp	r3, #0
+ 1101 0008 5CD1     		bne	.L56
+ 424:Src/stm32f1xx_it.c ****   {
+ 425:Src/stm32f1xx_it.c ****     if (SetLCD)
+ 1102              		.loc 1 425 0
+ 1103 000a 334B     		ldr	r3, .L63+4
+ 1104 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1105 000e 13F0FF0F 		tst	r3, #255
+ 1106 0012 3BD0     		beq	.L57
+ 426:Src/stm32f1xx_it.c ****     {
+ 427:Src/stm32f1xx_it.c ****       if (UpdateLCD)
+ 1107              		.loc 1 427 0
+ 1108 0014 314B     		ldr	r3, .L63+8
+ 1109 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1110 0018 13F0FF0F 		tst	r3, #255
+ 1111 001c 56D0     		beq	.L58
+ 428:Src/stm32f1xx_it.c ****       {
+ 429:Src/stm32f1xx_it.c ****         LCDUpdate(PhaseLCD,Text[row-1][colomn-1],row,colomn);
+ 1112              		.loc 1 429 0
+ 1113 001e 304C     		ldr	r4, .L63+12
+ 1114 0020 2068     		ldr	r0, [r4]
+ 1115 0022 304A     		ldr	r2, .L63+16
+ 1116 0024 1168     		ldr	r1, [r2]
+ 1117 0026 304D     		ldr	r5, .L63+20
+ARM GAS  /tmp/cceBvLtd.s 			page 28
+
+
+ 1118 0028 2B68     		ldr	r3, [r5]
+ 1119 002a 03EB0113 		add	r3, r3, r1, lsl #4
+ 1120 002e 113B     		subs	r3, r3, #17
+ 1121 0030 2E49     		ldr	r1, .L63+24
+ 1122 0032 C95C     		ldrb	r1, [r1, r3]	@ zero_extendqisi2
+ 1123 0034 1268     		ldr	r2, [r2]
+ 1124 0036 2B68     		ldr	r3, [r5]
+ 1125 0038 FFF7FEFF 		bl	LCDUpdate
+ 1126              	.LVL30:
+ 430:Src/stm32f1xx_it.c ****         PeriodsToGo = LCDUpdatePeriodsToGo(PhaseLCD);
+ 1127              		.loc 1 430 0
+ 1128 003c 2068     		ldr	r0, [r4]
+ 1129 003e FFF7FEFF 		bl	LCDUpdatePeriodsToGo
+ 1130              	.LVL31:
+ 1131 0042 244B     		ldr	r3, .L63
+ 1132 0044 1860     		str	r0, [r3]
+ 431:Src/stm32f1xx_it.c ****         if (PhaseLCD == TotalPhasesLCDSetup)
+ 1133              		.loc 1 431 0
+ 1134 0046 2A4B     		ldr	r3, .L63+28
+ 1135 0048 1A68     		ldr	r2, [r3]
+ 1136 004a 2368     		ldr	r3, [r4]
+ 1137 004c 9A42     		cmp	r2, r3
+ 1138 004e 18D1     		bne	.L59
+ 432:Src/stm32f1xx_it.c ****         {
+ 433:Src/stm32f1xx_it.c ****           PhaseLCD=1;
+ 1139              		.loc 1 433 0
+ 1140 0050 0122     		movs	r2, #1
+ 1141 0052 2260     		str	r2, [r4]
+ 434:Src/stm32f1xx_it.c ****           colomn+=1;
+ 1142              		.loc 1 434 0
+ 1143 0054 2A68     		ldr	r2, [r5]
+ 1144 0056 0132     		adds	r2, r2, #1
+ 1145 0058 2A60     		str	r2, [r5]
+ 435:Src/stm32f1xx_it.c ****           if (colomn>16)
+ 1146              		.loc 1 435 0
+ 1147 005a 2B68     		ldr	r3, [r5]
+ 1148 005c 102B     		cmp	r3, #16
+ 1149 005e 05D9     		bls	.L60
+ 436:Src/stm32f1xx_it.c ****           {
+ 437:Src/stm32f1xx_it.c ****            colomn=1;
+ 1150              		.loc 1 437 0
+ 1151 0060 0122     		movs	r2, #1
+ 1152 0062 2A60     		str	r2, [r5]
+ 438:Src/stm32f1xx_it.c ****            row+=1;
+ 1153              		.loc 1 438 0
+ 1154 0064 1F4A     		ldr	r2, .L63+16
+ 1155 0066 1368     		ldr	r3, [r2]
+ 1156 0068 0133     		adds	r3, r3, #1
+ 1157 006a 1360     		str	r3, [r2]
+ 1158              	.L60:
+ 439:Src/stm32f1xx_it.c ****           }
+ 440:Src/stm32f1xx_it.c ****           if (row>4)
+ 1159              		.loc 1 440 0
+ 1160 006c 1D4B     		ldr	r3, .L63+16
+ 1161 006e 1B68     		ldr	r3, [r3]
+ 1162 0070 042B     		cmp	r3, #4
+ 1163 0072 2BD9     		bls	.L58
+ARM GAS  /tmp/cceBvLtd.s 			page 29
+
+
+ 441:Src/stm32f1xx_it.c ****           {
+ 442:Src/stm32f1xx_it.c ****             row=1;
+ 1164              		.loc 1 442 0
+ 1165 0074 0122     		movs	r2, #1
+ 1166 0076 1B4B     		ldr	r3, .L63+16
+ 1167 0078 1A60     		str	r2, [r3]
+ 443:Src/stm32f1xx_it.c ****             UpdateLCD=false;
+ 1168              		.loc 1 443 0
+ 1169 007a 0022     		movs	r2, #0
+ 1170 007c 174B     		ldr	r3, .L63+8
+ 1171 007e 1A70     		strb	r2, [r3]
+ 1172 0080 24E0     		b	.L58
+ 1173              	.L59:
+ 444:Src/stm32f1xx_it.c ****           }
+ 445:Src/stm32f1xx_it.c ****         }else{
+ 446:Src/stm32f1xx_it.c ****           PhaseLCD+=1;
+ 1174              		.loc 1 446 0
+ 1175 0082 174A     		ldr	r2, .L63+12
+ 1176 0084 1368     		ldr	r3, [r2]
+ 1177 0086 0133     		adds	r3, r3, #1
+ 1178 0088 1360     		str	r3, [r2]
+ 1179 008a 1FE0     		b	.L58
+ 1180              	.L57:
+ 447:Src/stm32f1xx_it.c ****         }
+ 448:Src/stm32f1xx_it.c ****       }
+ 449:Src/stm32f1xx_it.c ****       //LCDUpdate(PhaseLCD, text[colomn][row])
+ 450:Src/stm32f1xx_it.c ****       //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+ 451:Src/stm32f1xx_it.c ****     }else{
+ 452:Src/stm32f1xx_it.c ****       LCDSet(PhaseLCD);
+ 1181              		.loc 1 452 0
+ 1182 008c 144C     		ldr	r4, .L63+12
+ 1183 008e 2068     		ldr	r0, [r4]
+ 1184 0090 FFF7FEFF 		bl	LCDSet
+ 1185              	.LVL32:
+ 453:Src/stm32f1xx_it.c ****       PeriodsToGo = LCDSetPeriodsToGo(PhaseLCD);
+ 1186              		.loc 1 453 0
+ 1187 0094 2068     		ldr	r0, [r4]
+ 1188 0096 FFF7FEFF 		bl	LCDSetPeriodsToGo
+ 1189              	.LVL33:
+ 1190 009a 0E4B     		ldr	r3, .L63
+ 1191 009c 1860     		str	r0, [r3]
+ 454:Src/stm32f1xx_it.c ****       if (PhaseLCD == TotalPhasesLCDSetup)
+ 1192              		.loc 1 454 0
+ 1193 009e 144B     		ldr	r3, .L63+28
+ 1194 00a0 1A68     		ldr	r2, [r3]
+ 1195 00a2 2368     		ldr	r3, [r4]
+ 1196 00a4 9A42     		cmp	r2, r3
+ 1197 00a6 08D1     		bne	.L61
+ 455:Src/stm32f1xx_it.c ****       {
+ 456:Src/stm32f1xx_it.c ****         PhaseLCD=1;
+ 1198              		.loc 1 456 0
+ 1199 00a8 0123     		movs	r3, #1
+ 1200 00aa 2360     		str	r3, [r4]
+ 457:Src/stm32f1xx_it.c ****         SetLCD=true;
+ 1201              		.loc 1 457 0
+ 1202 00ac 0A4A     		ldr	r2, .L63+4
+ 1203 00ae 1370     		strb	r3, [r2]
+ARM GAS  /tmp/cceBvLtd.s 			page 30
+
+
+ 458:Src/stm32f1xx_it.c ****         colomn=1;
+ 1204              		.loc 1 458 0
+ 1205 00b0 0D4A     		ldr	r2, .L63+20
+ 1206 00b2 1360     		str	r3, [r2]
+ 459:Src/stm32f1xx_it.c ****         row=1;
+ 1207              		.loc 1 459 0
+ 1208 00b4 0B4A     		ldr	r2, .L63+16
+ 1209 00b6 1360     		str	r3, [r2]
+ 1210 00b8 08E0     		b	.L58
+ 1211              	.L61:
+ 460:Src/stm32f1xx_it.c ****         //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+ 461:Src/stm32f1xx_it.c ****       }else{
+ 462:Src/stm32f1xx_it.c ****         PhaseLCD+=1;
+ 1212              		.loc 1 462 0
+ 1213 00ba 094A     		ldr	r2, .L63+12
+ 1214 00bc 1368     		ldr	r3, [r2]
+ 1215 00be 0133     		adds	r3, r3, #1
+ 1216 00c0 1360     		str	r3, [r2]
+ 1217 00c2 03E0     		b	.L58
+ 1218              	.L56:
+ 463:Src/stm32f1xx_it.c ****       }
+ 464:Src/stm32f1xx_it.c ****     }
+ 465:Src/stm32f1xx_it.c ****   }else{PeriodsToGo-=1;}
+ 1219              		.loc 1 465 0
+ 1220 00c4 034A     		ldr	r2, .L63
+ 1221 00c6 1368     		ldr	r3, [r2]
+ 1222 00c8 013B     		subs	r3, r3, #1
+ 1223 00ca 1360     		str	r3, [r2]
+ 1224              	.L58:
+ 466:Src/stm32f1xx_it.c **** 
+ 467:Src/stm32f1xx_it.c ****   /* USER CODE END TIM3_IRQn 0 */
+ 468:Src/stm32f1xx_it.c ****   HAL_TIM_IRQHandler(&htim3);
+ 1225              		.loc 1 468 0
+ 1226 00cc 0948     		ldr	r0, .L63+32
+ 1227 00ce FFF7FEFF 		bl	HAL_TIM_IRQHandler
+ 1228              	.LVL34:
+ 1229 00d2 38BD     		pop	{r3, r4, r5, pc}
+ 1230              	.L64:
+ 1231              		.align	2
+ 1232              	.L63:
+ 1233 00d4 00000000 		.word	PeriodsToGo
+ 1234 00d8 00000000 		.word	SetLCD
+ 1235 00dc 00000000 		.word	UpdateLCD
+ 1236 00e0 00000000 		.word	PhaseLCD
+ 1237 00e4 00000000 		.word	row
+ 1238 00e8 00000000 		.word	colomn
+ 1239 00ec 00000000 		.word	Text
+ 1240 00f0 00000000 		.word	TotalPhasesLCDSetup
+ 1241 00f4 00000000 		.word	htim3
+ 1242              		.cfi_endproc
+ 1243              	.LFE73:
+ 1245              		.text
+ 1246              	.Letext0:
+ 1247              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 1248              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 1249              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f100xb.h"
+ 1250              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ARM GAS  /tmp/cceBvLtd.s 			page 31
+
+
+ 1251              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 1252              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1253              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 1254              		.file 9 "Drivers/CMSIS/Include/core_cm3.h"
+ 1255              		.file 10 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 1256              		.file 11 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h"
+ 1257              		.file 12 "Inc/MenuLibrary.h"
+ 1258              		.file 13 "/usr/include/newlib/stdio.h"
+ 1259              		.file 14 "Inc/LCD.h"
+ARM GAS  /tmp/cceBvLtd.s 			page 32
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f1xx_it.c
+     /tmp/cceBvLtd.s:19     .text.NMI_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:24     .text.NMI_Handler:0000000000000000 NMI_Handler
+     /tmp/cceBvLtd.s:37     .text.HardFault_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:42     .text.HardFault_Handler:0000000000000000 HardFault_Handler
+     /tmp/cceBvLtd.s:57     .text.MemManage_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:62     .text.MemManage_Handler:0000000000000000 MemManage_Handler
+     /tmp/cceBvLtd.s:77     .text.BusFault_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:82     .text.BusFault_Handler:0000000000000000 BusFault_Handler
+     /tmp/cceBvLtd.s:97     .text.UsageFault_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:102    .text.UsageFault_Handler:0000000000000000 UsageFault_Handler
+     /tmp/cceBvLtd.s:117    .text.SVC_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:122    .text.SVC_Handler:0000000000000000 SVC_Handler
+     /tmp/cceBvLtd.s:134    .text.DebugMon_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:139    .text.DebugMon_Handler:0000000000000000 DebugMon_Handler
+     /tmp/cceBvLtd.s:151    .text.PendSV_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:156    .text.PendSV_Handler:0000000000000000 PendSV_Handler
+     /tmp/cceBvLtd.s:168    .text.SysTick_Handler:0000000000000000 $t
+     /tmp/cceBvLtd.s:173    .text.SysTick_Handler:0000000000000000 SysTick_Handler
+     /tmp/cceBvLtd.s:196    .text.TIM2_IRQHandler:0000000000000000 $t
+     /tmp/cceBvLtd.s:201    .text.TIM2_IRQHandler:0000000000000000 TIM2_IRQHandler
+     /tmp/cceBvLtd.s:543    .text.TIM2_IRQHandler:000000000000025c $d
+     /tmp/cceBvLtd.s:560    .text.TIM2_IRQHandler:0000000000000298 $t
+     /tmp/cceBvLtd.s:960    .text.TIM2_IRQHandler:0000000000000558 $d
+     /tmp/cceBvLtd.s:971    .text.TIM2_IRQHandler:0000000000000578 $t
+     /tmp/cceBvLtd.s:1064   .text.TIM2_IRQHandler:0000000000000608 $d
+     /tmp/cceBvLtd.s:1079   .text.TIM3_IRQHandler:0000000000000000 $t
+     /tmp/cceBvLtd.s:1084   .text.TIM3_IRQHandler:0000000000000000 TIM3_IRQHandler
+     /tmp/cceBvLtd.s:1233   .text.TIM3_IRQHandler:00000000000000d4 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+HAL_IncTick
+HAL_SYSTICK_IRQHandler
+HAL_GPIO_ReadPin
+MenuOption
+sprintf
+jTimer
+jOnDOWN
+jOnUP
+jOnOK
+jOnBACK
+CheckCircles
+jOnThreshold
+CurrentLayer
+CurrentMenuPosition
+Text
+UpdateLCD
+Lines
+MenuTitle
+HAL_TIM_IRQHandler
+htim2
+LCDUpdate
+LCDUpdatePeriodsToGo
+LCDSet
+LCDSetPeriodsToGo
+ARM GAS  /tmp/cceBvLtd.s 			page 33
+
+
+PeriodsToGo
+SetLCD
+PhaseLCD
+row
+colomn
+TotalPhasesLCDSetup
+htim3

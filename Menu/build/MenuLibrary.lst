@@ -1,0 +1,2108 @@
+ARM GAS  /tmp/cccjoBhE.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"MenuLibrary.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.NumberToString,"ax",%progbits
+  19              		.align	2
+  20              		.global	NumberToString
+  21              		.thumb
+  22              		.thumb_func
+  24              	NumberToString:
+  25              	.LFB0:
+  26              		.file 1 "Src/MenuLibrary.c"
+   1:Src/MenuLibrary.c **** #include "LCD.h"
+   2:Src/MenuLibrary.c **** #include "MenuLibrary.h"
+   3:Src/MenuLibrary.c **** #include <stdio.h>
+   4:Src/MenuLibrary.c **** 
+   5:Src/MenuLibrary.c **** 
+   6:Src/MenuLibrary.c **** 
+   7:Src/MenuLibrary.c ****   char *NumberToString(int number)
+   8:Src/MenuLibrary.c ****   {
+  27              		.loc 1 8 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  37 0002 0246     		mov	r2, r0
+   9:Src/MenuLibrary.c ****     static char snumber[6];
+  10:Src/MenuLibrary.c ****     if (number<10)
+  38              		.loc 1 10 0
+  39 0004 0928     		cmp	r0, #9
+  40 0006 04DC     		bgt	.L2
+  11:Src/MenuLibrary.c ****     {
+  12:Src/MenuLibrary.c ****       sprintf(snumber, "    %d", number);
+  41              		.loc 1 12 0
+  42 0008 1248     		ldr	r0, .L8
+  43              	.LVL1:
+  44 000a 1349     		ldr	r1, .L8+4
+  45 000c FFF7FEFF 		bl	sprintf
+  46              	.LVL2:
+ARM GAS  /tmp/cccjoBhE.s 			page 2
+
+
+  47 0010 1EE0     		b	.L3
+  48              	.LVL3:
+  49              	.L2:
+  13:Src/MenuLibrary.c ****     }else if (number<100){
+  50              		.loc 1 13 0
+  51 0012 6328     		cmp	r0, #99
+  52 0014 04DC     		bgt	.L4
+  14:Src/MenuLibrary.c ****       sprintf(snumber, "   %d", number);
+  53              		.loc 1 14 0
+  54 0016 0F48     		ldr	r0, .L8
+  55              	.LVL4:
+  56 0018 1049     		ldr	r1, .L8+8
+  57 001a FFF7FEFF 		bl	sprintf
+  58              	.LVL5:
+  59 001e 17E0     		b	.L3
+  60              	.LVL6:
+  61              	.L4:
+  15:Src/MenuLibrary.c ****     }else if (number<1000){
+  62              		.loc 1 15 0
+  63 0020 B0F57A7F 		cmp	r0, #1000
+  64 0024 04DA     		bge	.L5
+  16:Src/MenuLibrary.c ****       sprintf(snumber, "  %d", number);
+  65              		.loc 1 16 0
+  66 0026 0B48     		ldr	r0, .L8
+  67              	.LVL7:
+  68 0028 0D49     		ldr	r1, .L8+12
+  69 002a FFF7FEFF 		bl	sprintf
+  70              	.LVL8:
+  71 002e 0FE0     		b	.L3
+  72              	.LVL9:
+  73              	.L5:
+  17:Src/MenuLibrary.c ****     }else if (number<10000){
+  74              		.loc 1 17 0
+  75 0030 42F20F73 		movw	r3, #9999
+  76 0034 9842     		cmp	r0, r3
+  77 0036 04DC     		bgt	.L6
+  18:Src/MenuLibrary.c ****       sprintf(snumber, " %d", number);
+  78              		.loc 1 18 0
+  79 0038 0648     		ldr	r0, .L8
+  80              	.LVL10:
+  81 003a 0A49     		ldr	r1, .L8+16
+  82 003c FFF7FEFF 		bl	sprintf
+  83              	.LVL11:
+  84 0040 06E0     		b	.L3
+  85              	.LVL12:
+  86              	.L6:
+  19:Src/MenuLibrary.c ****     }else if (number<100000){
+  87              		.loc 1 19 0
+  88 0042 094B     		ldr	r3, .L8+20
+  89 0044 9842     		cmp	r0, r3
+  90 0046 03DC     		bgt	.L3
+  20:Src/MenuLibrary.c ****       sprintf(snumber, "%d", number);
+  91              		.loc 1 20 0
+  92 0048 0248     		ldr	r0, .L8
+  93              	.LVL13:
+  94 004a 0849     		ldr	r1, .L8+24
+  95 004c FFF7FEFF 		bl	sprintf
+ARM GAS  /tmp/cccjoBhE.s 			page 3
+
+
+  96              	.LVL14:
+  97              	.L3:
+  21:Src/MenuLibrary.c ****     }
+  22:Src/MenuLibrary.c ****     return snumber;
+  23:Src/MenuLibrary.c ****   }
+  98              		.loc 1 23 0
+  99 0050 0048     		ldr	r0, .L8
+ 100 0052 08BD     		pop	{r3, pc}
+ 101              	.L9:
+ 102              		.align	2
+ 103              	.L8:
+ 104 0054 00000000 		.word	.LANCHOR0
+ 105 0058 00000000 		.word	.LC0
+ 106 005c 08000000 		.word	.LC1
+ 107 0060 10000000 		.word	.LC2
+ 108 0064 18000000 		.word	.LC3
+ 109 0068 9F860100 		.word	99999
+ 110 006c 1C000000 		.word	.LC4
+ 111              		.cfi_endproc
+ 112              	.LFE0:
+ 114              		.section	.text.LCDUpdate,"ax",%progbits
+ 115              		.align	2
+ 116              		.global	LCDUpdate
+ 117              		.thumb
+ 118              		.thumb_func
+ 120              	LCDUpdate:
+ 121              	.LFB1:
+  24:Src/MenuLibrary.c **** 
+  25:Src/MenuLibrary.c **** 
+  26:Src/MenuLibrary.c ****   void LCDUpdate(unsigned int phase, char character, int row, int colomn)
+  27:Src/MenuLibrary.c ****   {
+ 122              		.loc 1 27 0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              	.LVL15:
+ 127 0000 08B5     		push	{r3, lr}
+ 128              	.LCFI1:
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 3, -8
+ 131              		.cfi_offset 14, -4
+  28:Src/MenuLibrary.c ****     switch (phase)
+ 132              		.loc 1 28 0
+ 133 0002 0138     		subs	r0, r0, #1
+ 134              	.LVL16:
+ 135 0004 0728     		cmp	r0, #7
+ 136 0006 23D8     		bhi	.L10
+ 137 0008 DFE800F0 		tbb	[pc, r0]
+ 138              	.L13:
+ 139 000c 04       		.byte	(.L12-.L13)/2
+ 140 000d 09       		.byte	(.L14-.L13)/2
+ 141 000e 0C       		.byte	(.L15-.L13)/2
+ 142 000f 11       		.byte	(.L16-.L13)/2
+ 143 0010 14       		.byte	(.L17-.L13)/2
+ 144 0011 19       		.byte	(.L18-.L13)/2
+ 145 0012 1C       		.byte	(.L19-.L13)/2
+ 146 0013 20       		.byte	(.L20-.L13)/2
+ARM GAS  /tmp/cccjoBhE.s 			page 4
+
+
+ 147              		.p2align 1
+ 148              	.L12:
+  29:Src/MenuLibrary.c ****     {
+  30:Src/MenuLibrary.c ****       case 1:
+  31:Src/MenuLibrary.c ****       {
+  32:Src/MenuLibrary.c ****         LCDSetToWrite();
+ 149              		.loc 1 32 0
+ 150 0014 FFF7FEFF 		bl	LCDSetToWrite
+ 151              	.LVL17:
+  33:Src/MenuLibrary.c ****         LCDSetCommandMode();
+ 152              		.loc 1 33 0
+ 153 0018 FFF7FEFF 		bl	LCDSetCommandMode
+ 154              	.LVL18:
+  34:Src/MenuLibrary.c ****         break;
+ 155              		.loc 1 34 0
+ 156 001c 08BD     		pop	{r3, pc}
+ 157              	.LVL19:
+ 158              	.L14:
+  35:Src/MenuLibrary.c ****       }
+  36:Src/MenuLibrary.c ****       case 2:
+  37:Src/MenuLibrary.c ****       {
+  38:Src/MenuLibrary.c ****         LCDEnableOn();
+ 159              		.loc 1 38 0
+ 160 001e FFF7FEFF 		bl	LCDEnableOn
+ 161              	.LVL20:
+  39:Src/MenuLibrary.c ****         break;
+ 162              		.loc 1 39 0
+ 163 0022 08BD     		pop	{r3, pc}
+ 164              	.LVL21:
+ 165              	.L15:
+  40:Src/MenuLibrary.c ****       }
+  41:Src/MenuLibrary.c ****       case 3:
+  42:Src/MenuLibrary.c ****       {
+  43:Src/MenuLibrary.c ****         LCDSetCursorPosition(row, colomn);
+ 166              		.loc 1 43 0
+ 167 0024 1046     		mov	r0, r2
+ 168 0026 1946     		mov	r1, r3
+ 169              	.LVL22:
+ 170 0028 FFF7FEFF 		bl	LCDSetCursorPosition
+ 171              	.LVL23:
+  44:Src/MenuLibrary.c ****         break;
+ 172              		.loc 1 44 0
+ 173 002c 08BD     		pop	{r3, pc}
+ 174              	.LVL24:
+ 175              	.L16:
+  45:Src/MenuLibrary.c ****       }
+  46:Src/MenuLibrary.c ****       case 4:
+  47:Src/MenuLibrary.c ****       {
+  48:Src/MenuLibrary.c ****         LCDEnableOff();
+ 176              		.loc 1 48 0
+ 177 002e FFF7FEFF 		bl	LCDEnableOff
+ 178              	.LVL25:
+  49:Src/MenuLibrary.c ****         break;
+ 179              		.loc 1 49 0
+ 180 0032 08BD     		pop	{r3, pc}
+ 181              	.LVL26:
+ 182              	.L17:
+ARM GAS  /tmp/cccjoBhE.s 			page 5
+
+
+  50:Src/MenuLibrary.c ****       }
+  51:Src/MenuLibrary.c ****       case 5:
+  52:Src/MenuLibrary.c ****       {
+  53:Src/MenuLibrary.c ****         LCDSetToWrite();
+ 183              		.loc 1 53 0
+ 184 0034 FFF7FEFF 		bl	LCDSetToWrite
+ 185              	.LVL27:
+  54:Src/MenuLibrary.c ****         LCDSetCharacterMode();
+ 186              		.loc 1 54 0
+ 187 0038 FFF7FEFF 		bl	LCDSetCharacterMode
+ 188              	.LVL28:
+  55:Src/MenuLibrary.c ****         break;
+ 189              		.loc 1 55 0
+ 190 003c 08BD     		pop	{r3, pc}
+ 191              	.LVL29:
+ 192              	.L18:
+  56:Src/MenuLibrary.c ****       }
+  57:Src/MenuLibrary.c ****       case 6:
+  58:Src/MenuLibrary.c ****       {
+  59:Src/MenuLibrary.c ****         LCDEnableOn();
+ 193              		.loc 1 59 0
+ 194 003e FFF7FEFF 		bl	LCDEnableOn
+ 195              	.LVL30:
+  60:Src/MenuLibrary.c ****         break;
+ 196              		.loc 1 60 0
+ 197 0042 08BD     		pop	{r3, pc}
+ 198              	.LVL31:
+ 199              	.L19:
+  61:Src/MenuLibrary.c ****       }
+  62:Src/MenuLibrary.c ****       case 7:
+  63:Src/MenuLibrary.c ****       {
+  64:Src/MenuLibrary.c ****         LCDSetACharacter(character);
+ 200              		.loc 1 64 0
+ 201 0044 0846     		mov	r0, r1
+ 202 0046 FFF7FEFF 		bl	LCDSetACharacter
+ 203              	.LVL32:
+  65:Src/MenuLibrary.c ****         break;
+ 204              		.loc 1 65 0
+ 205 004a 08BD     		pop	{r3, pc}
+ 206              	.LVL33:
+ 207              	.L20:
+  66:Src/MenuLibrary.c ****       }
+  67:Src/MenuLibrary.c ****       case 8:
+  68:Src/MenuLibrary.c ****       {
+  69:Src/MenuLibrary.c ****         LCDEnableOff();
+ 208              		.loc 1 69 0
+ 209 004c FFF7FEFF 		bl	LCDEnableOff
+ 210              	.LVL34:
+ 211              	.L10:
+ 212 0050 08BD     		pop	{r3, pc}
+ 213              		.cfi_endproc
+ 214              	.LFE1:
+ 216 0052 00BF     		.section	.text.LCDUpdatePeriodsToGo,"ax",%progbits
+ 217              		.align	2
+ 218              		.global	LCDUpdatePeriodsToGo
+ 219              		.thumb
+ 220              		.thumb_func
+ARM GAS  /tmp/cccjoBhE.s 			page 6
+
+
+ 222              	LCDUpdatePeriodsToGo:
+ 223              	.LFB2:
+  70:Src/MenuLibrary.c ****         break;
+  71:Src/MenuLibrary.c ****       }
+  72:Src/MenuLibrary.c ****     }
+  73:Src/MenuLibrary.c ****   }
+  74:Src/MenuLibrary.c **** 
+  75:Src/MenuLibrary.c ****   unsigned int LCDUpdatePeriodsToGo(unsigned int phase)
+  76:Src/MenuLibrary.c ****   {
+ 224              		.loc 1 76 0
+ 225              		.cfi_startproc
+ 226              		@ args = 0, pretend = 0, frame = 8
+ 227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 228              		@ link register save eliminated.
+ 229              	.LVL35:
+ 230 0000 82B0     		sub	sp, sp, #8
+ 231              	.LCFI2:
+ 232              		.cfi_def_cfa_offset 8
+  77:Src/MenuLibrary.c ****     volatile int j=0;
+ 233              		.loc 1 77 0
+ 234 0002 0023     		movs	r3, #0
+ 235 0004 0193     		str	r3, [sp, #4]
+  78:Src/MenuLibrary.c ****     switch (phase)
+ 236              		.loc 1 78 0
+ 237 0006 0138     		subs	r0, r0, #1
+ 238              	.LVL36:
+ 239 0008 0728     		cmp	r0, #7
+ 240 000a 1CD8     		bhi	.L23
+ 241 000c DFE800F0 		tbb	[pc, r0]
+ 242              	.L25:
+ 243 0010 04       		.byte	(.L24-.L25)/2
+ 244 0011 07       		.byte	(.L26-.L25)/2
+ 245 0012 0A       		.byte	(.L27-.L25)/2
+ 246 0013 0D       		.byte	(.L28-.L25)/2
+ 247 0014 10       		.byte	(.L29-.L25)/2
+ 248 0015 13       		.byte	(.L30-.L25)/2
+ 249 0016 16       		.byte	(.L31-.L25)/2
+ 250 0017 19       		.byte	(.L32-.L25)/2
+ 251              		.p2align 1
+ 252              	.L24:
+  79:Src/MenuLibrary.c ****     {
+  80:Src/MenuLibrary.c ****       case 1:
+  81:Src/MenuLibrary.c ****       {
+  82:Src/MenuLibrary.c ****         j=0;
+ 253              		.loc 1 82 0
+ 254 0018 0023     		movs	r3, #0
+ 255 001a 0193     		str	r3, [sp, #4]
+  83:Src/MenuLibrary.c ****         break;
+ 256              		.loc 1 83 0
+ 257 001c 13E0     		b	.L23
+ 258              	.L26:
+  84:Src/MenuLibrary.c ****       }
+  85:Src/MenuLibrary.c ****       case 2:
+  86:Src/MenuLibrary.c ****       {
+  87:Src/MenuLibrary.c ****         j=0;
+ 259              		.loc 1 87 0
+ 260 001e 0023     		movs	r3, #0
+ARM GAS  /tmp/cccjoBhE.s 			page 7
+
+
+ 261 0020 0193     		str	r3, [sp, #4]
+  88:Src/MenuLibrary.c ****         break;
+ 262              		.loc 1 88 0
+ 263 0022 10E0     		b	.L23
+ 264              	.L27:
+  89:Src/MenuLibrary.c ****       }
+  90:Src/MenuLibrary.c ****       case 3:
+  91:Src/MenuLibrary.c ****       {
+  92:Src/MenuLibrary.c ****         j=0;
+ 265              		.loc 1 92 0
+ 266 0024 0023     		movs	r3, #0
+ 267 0026 0193     		str	r3, [sp, #4]
+  93:Src/MenuLibrary.c ****         break;
+ 268              		.loc 1 93 0
+ 269 0028 0DE0     		b	.L23
+ 270              	.L28:
+  94:Src/MenuLibrary.c ****       }
+  95:Src/MenuLibrary.c ****       case 4:
+  96:Src/MenuLibrary.c ****       {
+  97:Src/MenuLibrary.c ****         j=9;
+ 271              		.loc 1 97 0
+ 272 002a 0923     		movs	r3, #9
+ 273 002c 0193     		str	r3, [sp, #4]
+  98:Src/MenuLibrary.c ****         break;
+ 274              		.loc 1 98 0
+ 275 002e 0AE0     		b	.L23
+ 276              	.L29:
+  99:Src/MenuLibrary.c ****       }
+ 100:Src/MenuLibrary.c ****       case 5:
+ 101:Src/MenuLibrary.c ****       {
+ 102:Src/MenuLibrary.c ****         j=0;
+ 277              		.loc 1 102 0
+ 278 0030 0023     		movs	r3, #0
+ 279 0032 0193     		str	r3, [sp, #4]
+ 103:Src/MenuLibrary.c ****         break;
+ 280              		.loc 1 103 0
+ 281 0034 07E0     		b	.L23
+ 282              	.L30:
+ 104:Src/MenuLibrary.c ****       }
+ 105:Src/MenuLibrary.c ****       case 6:
+ 106:Src/MenuLibrary.c ****       {
+ 107:Src/MenuLibrary.c ****         j=0;
+ 283              		.loc 1 107 0
+ 284 0036 0023     		movs	r3, #0
+ 285 0038 0193     		str	r3, [sp, #4]
+ 108:Src/MenuLibrary.c ****         break;
+ 286              		.loc 1 108 0
+ 287 003a 04E0     		b	.L23
+ 288              	.L31:
+ 109:Src/MenuLibrary.c ****       }
+ 110:Src/MenuLibrary.c ****       case 7:
+ 111:Src/MenuLibrary.c ****       {
+ 112:Src/MenuLibrary.c ****         j=0;
+ 289              		.loc 1 112 0
+ 290 003c 0023     		movs	r3, #0
+ 291 003e 0193     		str	r3, [sp, #4]
+ 113:Src/MenuLibrary.c ****         break;
+ARM GAS  /tmp/cccjoBhE.s 			page 8
+
+
+ 292              		.loc 1 113 0
+ 293 0040 01E0     		b	.L23
+ 294              	.L32:
+ 114:Src/MenuLibrary.c ****       }
+ 115:Src/MenuLibrary.c ****       case 8:
+ 116:Src/MenuLibrary.c ****       {
+ 117:Src/MenuLibrary.c ****         j=9;
+ 295              		.loc 1 117 0
+ 296 0042 0923     		movs	r3, #9
+ 297 0044 0193     		str	r3, [sp, #4]
+ 298              	.L23:
+ 118:Src/MenuLibrary.c ****         break;
+ 119:Src/MenuLibrary.c ****       }
+ 120:Src/MenuLibrary.c ****      }
+ 121:Src/MenuLibrary.c ****     return j;
+ 299              		.loc 1 121 0
+ 300 0046 0198     		ldr	r0, [sp, #4]
+ 301              	.LVL37:
+ 122:Src/MenuLibrary.c ****   }
+ 302              		.loc 1 122 0
+ 303 0048 02B0     		add	sp, sp, #8
+ 304              	.LCFI3:
+ 305              		.cfi_def_cfa_offset 0
+ 306              		@ sp needed
+ 307 004a 7047     		bx	lr
+ 308              		.cfi_endproc
+ 309              	.LFE2:
+ 311              		.section	.text.MenuOption,"ax",%progbits
+ 312              		.align	2
+ 313              		.global	MenuOption
+ 314              		.thumb
+ 315              		.thumb_func
+ 317              	MenuOption:
+ 318              	.LFB3:
+ 123:Src/MenuLibrary.c **** 
+ 124:Src/MenuLibrary.c **** 
+ 125:Src/MenuLibrary.c **** char* MenuOption(volatile int* pointer)
+ 126:Src/MenuLibrary.c **** {
+ 319              		.loc 1 126 0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 323              		@ link register save eliminated.
+ 324              	.LVL38:
+ 325 0000 70B4     		push	{r4, r5, r6}
+ 326              	.LCFI4:
+ 327              		.cfi_def_cfa_offset 12
+ 328              		.cfi_offset 4, -12
+ 329              		.cfi_offset 5, -8
+ 330              		.cfi_offset 6, -4
+ 331 0002 0646     		mov	r6, r0
+ 127:Src/MenuLibrary.c ****   static char str[16];
+ 128:Src/MenuLibrary.c ****   sprintf(str, "                ");
+ 332              		.loc 1 128 0
+ 333 0004 7A4C     		ldr	r4, .L80
+ 334 0006 7B4D     		ldr	r5, .L80+4
+ 335 0008 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ARM GAS  /tmp/cccjoBhE.s 			page 9
+
+
+ 336              	.LVL39:
+ 337 000a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 338 000c 2B68     		ldr	r3, [r5]
+ 339 000e 2370     		strb	r3, [r4]
+ 129:Src/MenuLibrary.c ****   switch (pointer[0])
+ 340              		.loc 1 129 0
+ 341 0010 3368     		ldr	r3, [r6]
+ 342 0012 013B     		subs	r3, r3, #1
+ 343 0014 032B     		cmp	r3, #3
+ 344 0016 00F2E780 		bhi	.L35
+ 345 001a DFE813F0 		tbh	[pc, r3, lsl #1]
+ 346              	.L37:
+ 347 001e 0400     		.2byte	(.L36-.L37)/2
+ 348 0020 4B00     		.2byte	(.L38-.L37)/2
+ 349 0022 D400     		.2byte	(.L39-.L37)/2
+ 350 0024 DD00     		.2byte	(.L40-.L37)/2
+ 351              		.p2align 1
+ 352              	.L36:
+ 130:Src/MenuLibrary.c ****   {
+ 131:Src/MenuLibrary.c ****     case 1:
+ 132:Src/MenuLibrary.c ****     {
+ 133:Src/MenuLibrary.c ****       switch (pointer[1])
+ 353              		.loc 1 133 0
+ 354 0026 7368     		ldr	r3, [r6, #4]
+ 355 0028 052B     		cmp	r3, #5
+ 356 002a 00F2DD80 		bhi	.L35
+ 357 002e DFE803F0 		tbb	[pc, r3]
+ 358              	.L42:
+ 359 0032 03       		.byte	(.L41-.L42)/2
+ 360 0033 0A       		.byte	(.L43-.L42)/2
+ 361 0034 15       		.byte	(.L44-.L42)/2
+ 362 0035 20       		.byte	(.L45-.L42)/2
+ 363 0036 2B       		.byte	(.L46-.L42)/2
+ 364 0037 36       		.byte	(.L47-.L42)/2
+ 365              		.p2align 1
+ 366              	.L41:
+ 134:Src/MenuLibrary.c ****       {
+ 135:Src/MenuLibrary.c ****         case 0:
+ 136:Src/MenuLibrary.c ****         {
+ 137:Src/MenuLibrary.c ****           sprintf(str," Print          ");
+ 367              		.loc 1 137 0
+ 368 0038 6D4C     		ldr	r4, .L80
+ 369 003a 6F4D     		ldr	r5, .L80+8
+ 370 003c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 371 003e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 372 0040 2B68     		ldr	r3, [r5]
+ 373 0042 2370     		strb	r3, [r4]
+ 138:Src/MenuLibrary.c ****           //sprintf(str,"___MAIN MENU____");
+ 139:Src/MenuLibrary.c ****           break;
+ 374              		.loc 1 139 0
+ 375 0044 D0E0     		b	.L35
+ 376              	.L43:
+ 140:Src/MenuLibrary.c ****         }
+ 141:Src/MenuLibrary.c ****         case 1:
+ 142:Src/MenuLibrary.c ****         {
+ 143:Src/MenuLibrary.c ****           switch (pointer[2])
+ 377              		.loc 1 143 0
+ARM GAS  /tmp/cccjoBhE.s 			page 10
+
+
+ 378 0046 B368     		ldr	r3, [r6, #8]
+ 379 0048 002B     		cmp	r3, #0
+ 380 004a 40F0CD80 		bne	.L35
+ 144:Src/MenuLibrary.c ****           {
+ 145:Src/MenuLibrary.c ****             case 0:
+ 146:Src/MenuLibrary.c ****             {
+ 147:Src/MenuLibrary.c ****               sprintf(str," file 1         ");
+ 381              		.loc 1 147 0
+ 382 004e 684C     		ldr	r4, .L80
+ 383 0050 6A4D     		ldr	r5, .L80+12
+ 384 0052 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 385 0054 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 386 0056 2B68     		ldr	r3, [r5]
+ 387 0058 2370     		strb	r3, [r4]
+ 148:Src/MenuLibrary.c ****               //sprintf(str,"__SELECT FILE___");
+ 149:Src/MenuLibrary.c ****               break;
+ 388              		.loc 1 149 0
+ 389 005a C5E0     		b	.L35
+ 390              	.L44:
+ 150:Src/MenuLibrary.c ****             }
+ 151:Src/MenuLibrary.c ****           }
+ 152:Src/MenuLibrary.c ****           break;
+ 153:Src/MenuLibrary.c ****         }
+ 154:Src/MenuLibrary.c ****         case 2:
+ 155:Src/MenuLibrary.c ****         {
+ 156:Src/MenuLibrary.c ****           switch (pointer[2])
+ 391              		.loc 1 156 0
+ 392 005c B368     		ldr	r3, [r6, #8]
+ 393 005e 002B     		cmp	r3, #0
+ 394 0060 40F0C280 		bne	.L35
+ 157:Src/MenuLibrary.c ****           {
+ 158:Src/MenuLibrary.c ****             case 0:
+ 159:Src/MenuLibrary.c ****             {
+ 160:Src/MenuLibrary.c ****               sprintf(str," file 2         ");
+ 395              		.loc 1 160 0
+ 396 0064 624C     		ldr	r4, .L80
+ 397 0066 664D     		ldr	r5, .L80+16
+ 398 0068 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 399 006a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 400 006c 2B68     		ldr	r3, [r5]
+ 401 006e 2370     		strb	r3, [r4]
+ 161:Src/MenuLibrary.c ****               //sprintf(str,"__SELECT FILE___");
+ 162:Src/MenuLibrary.c ****               break;
+ 402              		.loc 1 162 0
+ 403 0070 BAE0     		b	.L35
+ 404              	.L45:
+ 163:Src/MenuLibrary.c ****             }
+ 164:Src/MenuLibrary.c ****           }
+ 165:Src/MenuLibrary.c ****           break;
+ 166:Src/MenuLibrary.c ****         }
+ 167:Src/MenuLibrary.c ****         case 3:
+ 168:Src/MenuLibrary.c ****         {
+ 169:Src/MenuLibrary.c ****           switch (pointer[2])
+ 405              		.loc 1 169 0
+ 406 0072 B368     		ldr	r3, [r6, #8]
+ 407 0074 002B     		cmp	r3, #0
+ 408 0076 40F0B780 		bne	.L35
+ARM GAS  /tmp/cccjoBhE.s 			page 11
+
+
+ 170:Src/MenuLibrary.c ****           {
+ 171:Src/MenuLibrary.c ****             case 0:
+ 172:Src/MenuLibrary.c ****             {
+ 173:Src/MenuLibrary.c ****               sprintf(str," file 3         ");
+ 409              		.loc 1 173 0
+ 410 007a 5D4C     		ldr	r4, .L80
+ 411 007c 614D     		ldr	r5, .L80+20
+ 412 007e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 413 0080 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 414 0082 2B68     		ldr	r3, [r5]
+ 415 0084 2370     		strb	r3, [r4]
+ 174:Src/MenuLibrary.c ****               //sprintf(str,"__SELECT FILE___");
+ 175:Src/MenuLibrary.c ****               break;
+ 416              		.loc 1 175 0
+ 417 0086 AFE0     		b	.L35
+ 418              	.L46:
+ 176:Src/MenuLibrary.c ****             }
+ 177:Src/MenuLibrary.c ****           }
+ 178:Src/MenuLibrary.c ****           break;
+ 179:Src/MenuLibrary.c ****         }
+ 180:Src/MenuLibrary.c ****         case 4:
+ 181:Src/MenuLibrary.c ****         {
+ 182:Src/MenuLibrary.c ****           switch (pointer[2])
+ 419              		.loc 1 182 0
+ 420 0088 B368     		ldr	r3, [r6, #8]
+ 421 008a 002B     		cmp	r3, #0
+ 422 008c 40F0AC80 		bne	.L35
+ 183:Src/MenuLibrary.c ****           {
+ 184:Src/MenuLibrary.c ****             case 0:
+ 185:Src/MenuLibrary.c ****             {
+ 186:Src/MenuLibrary.c ****               sprintf(str," file 4         ");
+ 423              		.loc 1 186 0
+ 424 0090 574C     		ldr	r4, .L80
+ 425 0092 5D4D     		ldr	r5, .L80+24
+ 426 0094 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 427 0096 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 428 0098 2B68     		ldr	r3, [r5]
+ 429 009a 2370     		strb	r3, [r4]
+ 187:Src/MenuLibrary.c ****               //sprintf(str,"__SELECT FILE___");
+ 188:Src/MenuLibrary.c ****               break;
+ 430              		.loc 1 188 0
+ 431 009c A4E0     		b	.L35
+ 432              	.L47:
+ 189:Src/MenuLibrary.c ****             }
+ 190:Src/MenuLibrary.c ****           }
+ 191:Src/MenuLibrary.c ****           break;
+ 192:Src/MenuLibrary.c ****         }
+ 193:Src/MenuLibrary.c ****         case 5:
+ 194:Src/MenuLibrary.c ****         {
+ 195:Src/MenuLibrary.c ****           switch (pointer[2])
+ 433              		.loc 1 195 0
+ 434 009e B368     		ldr	r3, [r6, #8]
+ 435 00a0 002B     		cmp	r3, #0
+ 436 00a2 40F0A180 		bne	.L35
+ 196:Src/MenuLibrary.c ****           {
+ 197:Src/MenuLibrary.c ****             case 0:
+ 198:Src/MenuLibrary.c ****             {
+ARM GAS  /tmp/cccjoBhE.s 			page 12
+
+
+ 199:Src/MenuLibrary.c ****               sprintf(str," file 5         ");
+ 437              		.loc 1 199 0
+ 438 00a6 524C     		ldr	r4, .L80
+ 439 00a8 584D     		ldr	r5, .L80+28
+ 440 00aa 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 441 00ac 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 442 00ae 2B68     		ldr	r3, [r5]
+ 443 00b0 2370     		strb	r3, [r4]
+ 200:Src/MenuLibrary.c ****               //sprintf(str,"__SELECT FILE___");
+ 201:Src/MenuLibrary.c ****               break;
+ 444              		.loc 1 201 0
+ 445 00b2 99E0     		b	.L35
+ 446              	.L38:
+ 202:Src/MenuLibrary.c ****             }
+ 203:Src/MenuLibrary.c ****           }
+ 204:Src/MenuLibrary.c ****           break;
+ 205:Src/MenuLibrary.c ****         }
+ 206:Src/MenuLibrary.c ****       }
+ 207:Src/MenuLibrary.c ****       break;
+ 208:Src/MenuLibrary.c ****     }
+ 209:Src/MenuLibrary.c ****     case 2:
+ 210:Src/MenuLibrary.c ****     {
+ 211:Src/MenuLibrary.c ****       switch (pointer[1])
+ 447              		.loc 1 211 0
+ 448 00b4 7368     		ldr	r3, [r6, #4]
+ 449 00b6 052B     		cmp	r3, #5
+ 450 00b8 00F29680 		bhi	.L35
+ 451 00bc DFE803F0 		tbb	[pc, r3]
+ 452              	.L54:
+ 453 00c0 03       		.byte	(.L53-.L54)/2
+ 454 00c1 0A       		.byte	(.L55-.L54)/2
+ 455 00c2 2D       		.byte	(.L56-.L54)/2
+ 456 00c3 37       		.byte	(.L57-.L54)/2
+ 457 00c4 59       		.byte	(.L58-.L54)/2
+ 458 00c5 63       		.byte	(.L59-.L54)/2
+ 459              		.p2align 1
+ 460              	.L53:
+ 212:Src/MenuLibrary.c ****       {
+ 213:Src/MenuLibrary.c ****         case 0:
+ 214:Src/MenuLibrary.c ****         {
+ 215:Src/MenuLibrary.c ****           sprintf(str, " Settings       ");
+ 461              		.loc 1 215 0
+ 462 00c6 4A4C     		ldr	r4, .L80
+ 463 00c8 514D     		ldr	r5, .L80+32
+ 464 00ca 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 465 00cc 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 466 00ce 2B68     		ldr	r3, [r5]
+ 467 00d0 2370     		strb	r3, [r4]
+ 216:Src/MenuLibrary.c ****           //sprintf(str,"___MAIN MENU____");
+ 217:Src/MenuLibrary.c ****           break;
+ 468              		.loc 1 217 0
+ 469 00d2 89E0     		b	.L35
+ 470              	.L55:
+ 218:Src/MenuLibrary.c ****         }
+ 219:Src/MenuLibrary.c ****         case 1:
+ 220:Src/MenuLibrary.c ****         {
+ 221:Src/MenuLibrary.c ****           switch (pointer[2])
+ARM GAS  /tmp/cccjoBhE.s 			page 13
+
+
+ 471              		.loc 1 221 0
+ 472 00d4 B368     		ldr	r3, [r6, #8]
+ 473 00d6 012B     		cmp	r3, #1
+ 474 00d8 0BD0     		beq	.L60
+ 475 00da 022B     		cmp	r3, #2
+ 476 00dc 13D0     		beq	.L61
+ 477 00de 002B     		cmp	r3, #0
+ 478 00e0 40F08280 		bne	.L35
+ 222:Src/MenuLibrary.c ****           {
+ 223:Src/MenuLibrary.c ****             case 0:
+ 224:Src/MenuLibrary.c ****             {
+ 225:Src/MenuLibrary.c ****               sprintf(str, " Type of plastic");
+ 479              		.loc 1 225 0
+ 480 00e4 424C     		ldr	r4, .L80
+ 481 00e6 4B4D     		ldr	r5, .L80+36
+ 482 00e8 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 483 00ea 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 484 00ec 2B68     		ldr	r3, [r5]
+ 485 00ee 2370     		strb	r3, [r4]
+ 226:Src/MenuLibrary.c ****               //sprintf(str,"____SETTINGS____");
+ 227:Src/MenuLibrary.c ****               break;
+ 486              		.loc 1 227 0
+ 487 00f0 7AE0     		b	.L35
+ 488              	.L60:
+ 228:Src/MenuLibrary.c ****             }
+ 229:Src/MenuLibrary.c ****             case 1:
+ 230:Src/MenuLibrary.c ****             {
+ 231:Src/MenuLibrary.c ****               switch (pointer[3])
+ 489              		.loc 1 231 0
+ 490 00f2 F368     		ldr	r3, [r6, #12]
+ 491 00f4 002B     		cmp	r3, #0
+ 492 00f6 77D1     		bne	.L35
+ 232:Src/MenuLibrary.c ****               {
+ 233:Src/MenuLibrary.c ****                 case 0:
+ 234:Src/MenuLibrary.c ****                 {
+ 235:Src/MenuLibrary.c ****                   sprintf(str, " ABS plastic    ");
+ 493              		.loc 1 235 0
+ 494 00f8 3D4C     		ldr	r4, .L80
+ 495 00fa 474D     		ldr	r5, .L80+40
+ 496 00fc 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 497 00fe 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 498 0100 2B68     		ldr	r3, [r5]
+ 499 0102 2370     		strb	r3, [r4]
+ 236:Src/MenuLibrary.c ****                   //sprintf(str,"TYPE OF PLASTIC_");
+ 237:Src/MenuLibrary.c ****                   break;
+ 500              		.loc 1 237 0
+ 501 0104 70E0     		b	.L35
+ 502              	.L61:
+ 238:Src/MenuLibrary.c ****                 }
+ 239:Src/MenuLibrary.c ****               }
+ 240:Src/MenuLibrary.c ****               break;
+ 241:Src/MenuLibrary.c ****             }
+ 242:Src/MenuLibrary.c ****             case 2:
+ 243:Src/MenuLibrary.c ****             {
+ 244:Src/MenuLibrary.c ****               switch (pointer[3])
+ 503              		.loc 1 244 0
+ 504 0106 F368     		ldr	r3, [r6, #12]
+ARM GAS  /tmp/cccjoBhE.s 			page 14
+
+
+ 505 0108 002B     		cmp	r3, #0
+ 506 010a 6DD1     		bne	.L35
+ 245:Src/MenuLibrary.c ****               {
+ 246:Src/MenuLibrary.c ****                 case 0:
+ 247:Src/MenuLibrary.c ****                 sprintf(str, " PLA plastic    ");
+ 507              		.loc 1 247 0
+ 508 010c 384C     		ldr	r4, .L80
+ 509 010e 434D     		ldr	r5, .L80+44
+ 510 0110 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 511 0112 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 512 0114 2B68     		ldr	r3, [r5]
+ 513 0116 2370     		strb	r3, [r4]
+ 248:Src/MenuLibrary.c ****                 //sprintf(str,"TYPE OF PLASTIC_");
+ 249:Src/MenuLibrary.c ****                 break;
+ 514              		.loc 1 249 0
+ 515 0118 66E0     		b	.L35
+ 516              	.L56:
+ 250:Src/MenuLibrary.c ****               }
+ 251:Src/MenuLibrary.c ****               break;
+ 252:Src/MenuLibrary.c ****             }
+ 253:Src/MenuLibrary.c ****           }
+ 254:Src/MenuLibrary.c ****           break;
+ 255:Src/MenuLibrary.c ****         }
+ 256:Src/MenuLibrary.c ****         case 2:
+ 257:Src/MenuLibrary.c ****         {
+ 258:Src/MenuLibrary.c ****           switch (pointer[2])
+ 517              		.loc 1 258 0
+ 518 011a B368     		ldr	r3, [r6, #8]
+ 519 011c 002B     		cmp	r3, #0
+ 520 011e 63D1     		bne	.L35
+ 259:Src/MenuLibrary.c ****           {
+ 260:Src/MenuLibrary.c ****             case 0:
+ 261:Src/MenuLibrary.c ****             {
+ 262:Src/MenuLibrary.c ****               sprintf(str, " Extruder temp. ");
+ 521              		.loc 1 262 0
+ 522 0120 334C     		ldr	r4, .L80
+ 523 0122 3F4D     		ldr	r5, .L80+48
+ 524 0124 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 525 0126 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 526 0128 2B68     		ldr	r3, [r5]
+ 527 012a 2370     		strb	r3, [r4]
+ 263:Src/MenuLibrary.c ****               //sprintf(str, "____SETTINGS____");
+ 264:Src/MenuLibrary.c ****               break;
+ 528              		.loc 1 264 0
+ 529 012c 5CE0     		b	.L35
+ 530              	.L57:
+ 265:Src/MenuLibrary.c ****             }
+ 266:Src/MenuLibrary.c ****           }
+ 267:Src/MenuLibrary.c ****           break;
+ 268:Src/MenuLibrary.c ****         }
+ 269:Src/MenuLibrary.c ****         case 3:
+ 270:Src/MenuLibrary.c ****         {
+ 271:Src/MenuLibrary.c ****           switch (pointer[2])
+ 531              		.loc 1 271 0
+ 532 012e B368     		ldr	r3, [r6, #8]
+ 533 0130 012B     		cmp	r3, #1
+ 534 0132 0AD0     		beq	.L66
+ARM GAS  /tmp/cccjoBhE.s 			page 15
+
+
+ 535 0134 022B     		cmp	r3, #2
+ 536 0136 12D0     		beq	.L67
+ 537 0138 002B     		cmp	r3, #0
+ 538 013a 55D1     		bne	.L35
+ 272:Src/MenuLibrary.c ****           {
+ 273:Src/MenuLibrary.c ****             case 0:
+ 274:Src/MenuLibrary.c ****             {
+ 275:Src/MenuLibrary.c ****               sprintf(str, " Calibrate      ");
+ 539              		.loc 1 275 0
+ 540 013c 2C4C     		ldr	r4, .L80
+ 541 013e 394D     		ldr	r5, .L80+52
+ 542 0140 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 543 0142 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 544 0144 2B68     		ldr	r3, [r5]
+ 545 0146 2370     		strb	r3, [r4]
+ 276:Src/MenuLibrary.c ****               //sprintf(str, "____SETTINGS____");
+ 277:Src/MenuLibrary.c ****               break;
+ 546              		.loc 1 277 0
+ 547 0148 4EE0     		b	.L35
+ 548              	.L66:
+ 278:Src/MenuLibrary.c ****             }
+ 279:Src/MenuLibrary.c ****             case 1:
+ 280:Src/MenuLibrary.c ****             {
+ 281:Src/MenuLibrary.c ****               switch (pointer[3])
+ 549              		.loc 1 281 0
+ 550 014a F368     		ldr	r3, [r6, #12]
+ 551 014c 002B     		cmp	r3, #0
+ 552 014e 4BD1     		bne	.L35
+ 282:Src/MenuLibrary.c ****               {
+ 283:Src/MenuLibrary.c ****                 case 0:
+ 284:Src/MenuLibrary.c ****                 {
+ 285:Src/MenuLibrary.c ****                   sprintf(str, " Yes, do it     ");
+ 553              		.loc 1 285 0
+ 554 0150 274C     		ldr	r4, .L80
+ 555 0152 354D     		ldr	r5, .L80+56
+ 556 0154 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 557 0156 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 558 0158 2B68     		ldr	r3, [r5]
+ 559 015a 2370     		strb	r3, [r4]
+ 286:Src/MenuLibrary.c ****                   //sprintf(str, "___CALIBRATE?___");
+ 287:Src/MenuLibrary.c ****                   break;
+ 560              		.loc 1 287 0
+ 561 015c 44E0     		b	.L35
+ 562              	.L67:
+ 288:Src/MenuLibrary.c ****                 }
+ 289:Src/MenuLibrary.c ****               }
+ 290:Src/MenuLibrary.c ****               break;
+ 291:Src/MenuLibrary.c ****             }
+ 292:Src/MenuLibrary.c ****             case 2:
+ 293:Src/MenuLibrary.c ****             {
+ 294:Src/MenuLibrary.c ****               switch (pointer[3])
+ 563              		.loc 1 294 0
+ 564 015e F368     		ldr	r3, [r6, #12]
+ 565 0160 002B     		cmp	r3, #0
+ 566 0162 41D1     		bne	.L35
+ 295:Src/MenuLibrary.c ****               {
+ 296:Src/MenuLibrary.c ****                 case 0:
+ARM GAS  /tmp/cccjoBhE.s 			page 16
+
+
+ 297:Src/MenuLibrary.c ****                 {
+ 298:Src/MenuLibrary.c ****                   sprintf(str, " No, don't do it");
+ 567              		.loc 1 298 0
+ 568 0164 224C     		ldr	r4, .L80
+ 569 0166 314D     		ldr	r5, .L80+60
+ 570 0168 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 571 016a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 572 016c 2B68     		ldr	r3, [r5]
+ 573 016e 2370     		strb	r3, [r4]
+ 299:Src/MenuLibrary.c ****                   //sprintf(str, "___CALIBRATE?___");
+ 300:Src/MenuLibrary.c ****                   break;
+ 574              		.loc 1 300 0
+ 575 0170 3AE0     		b	.L35
+ 576              	.L58:
+ 301:Src/MenuLibrary.c ****                 }
+ 302:Src/MenuLibrary.c ****               }
+ 303:Src/MenuLibrary.c ****               break;
+ 304:Src/MenuLibrary.c ****             }
+ 305:Src/MenuLibrary.c ****           }
+ 306:Src/MenuLibrary.c ****           break;
+ 307:Src/MenuLibrary.c ****         }
+ 308:Src/MenuLibrary.c ****         case 4:
+ 309:Src/MenuLibrary.c ****         {
+ 310:Src/MenuLibrary.c ****           switch (pointer[2])
+ 577              		.loc 1 310 0
+ 578 0172 B368     		ldr	r3, [r6, #8]
+ 579 0174 002B     		cmp	r3, #0
+ 580 0176 37D1     		bne	.L35
+ 311:Src/MenuLibrary.c ****           {
+ 312:Src/MenuLibrary.c ****             case 0:
+ 313:Src/MenuLibrary.c ****             {
+ 314:Src/MenuLibrary.c ****               sprintf(str, " Brightness     ");
+ 581              		.loc 1 314 0
+ 582 0178 1D4C     		ldr	r4, .L80
+ 583 017a 2D4D     		ldr	r5, .L80+64
+ 584 017c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 585 017e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 586 0180 2B68     		ldr	r3, [r5]
+ 587 0182 2370     		strb	r3, [r4]
+ 315:Src/MenuLibrary.c ****               //sprintf(str, "____SETTINGS____");
+ 316:Src/MenuLibrary.c ****               break;
+ 588              		.loc 1 316 0
+ 589 0184 30E0     		b	.L35
+ 590              	.L59:
+ 317:Src/MenuLibrary.c ****             }
+ 318:Src/MenuLibrary.c ****           }
+ 319:Src/MenuLibrary.c ****           break;
+ 320:Src/MenuLibrary.c ****         }
+ 321:Src/MenuLibrary.c ****         case 5:
+ 322:Src/MenuLibrary.c ****         {
+ 323:Src/MenuLibrary.c ****           switch (pointer[2])
+ 591              		.loc 1 323 0
+ 592 0186 B368     		ldr	r3, [r6, #8]
+ 593 0188 012B     		cmp	r3, #1
+ 594 018a 0AD0     		beq	.L72
+ 595 018c 022B     		cmp	r3, #2
+ 596 018e 11D0     		beq	.L73
+ARM GAS  /tmp/cccjoBhE.s 			page 17
+
+
+ 597 0190 002B     		cmp	r3, #0
+ 598 0192 29D1     		bne	.L35
+ 324:Src/MenuLibrary.c ****           {
+ 325:Src/MenuLibrary.c ****             case 0:
+ 326:Src/MenuLibrary.c ****             {
+ 327:Src/MenuLibrary.c ****               sprintf(str, " Language       ");
+ 599              		.loc 1 327 0
+ 600 0194 164C     		ldr	r4, .L80
+ 601 0196 274D     		ldr	r5, .L80+68
+ 602 0198 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 603 019a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 604 019c 2B68     		ldr	r3, [r5]
+ 605 019e 2370     		strb	r3, [r4]
+ 328:Src/MenuLibrary.c ****               //sprintf(str, "____SETTINGS____");
+ 329:Src/MenuLibrary.c ****               break;
+ 606              		.loc 1 329 0
+ 607 01a0 22E0     		b	.L35
+ 608              	.L72:
+ 330:Src/MenuLibrary.c ****             }
+ 331:Src/MenuLibrary.c ****             case 1:
+ 332:Src/MenuLibrary.c ****             {
+ 333:Src/MenuLibrary.c ****               switch (pointer[3])
+ 609              		.loc 1 333 0
+ 610 01a2 F368     		ldr	r3, [r6, #12]
+ 611 01a4 03BB     		cbnz	r3, .L35
+ 334:Src/MenuLibrary.c ****               {
+ 335:Src/MenuLibrary.c ****                 case 0:
+ 336:Src/MenuLibrary.c ****                 {
+ 337:Src/MenuLibrary.c ****                   sprintf(str, " English        ");
+ 612              		.loc 1 337 0
+ 613 01a6 124C     		ldr	r4, .L80
+ 614 01a8 234D     		ldr	r5, .L80+72
+ 615 01aa 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 616 01ac 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 617 01ae 2B68     		ldr	r3, [r5]
+ 618 01b0 2370     		strb	r3, [r4]
+ 338:Src/MenuLibrary.c ****                   //sprintf(str, "____LANGUAGE____");
+ 339:Src/MenuLibrary.c ****                   break;
+ 619              		.loc 1 339 0
+ 620 01b2 19E0     		b	.L35
+ 621              	.L73:
+ 340:Src/MenuLibrary.c ****                 }
+ 341:Src/MenuLibrary.c ****               }
+ 342:Src/MenuLibrary.c ****               break;
+ 343:Src/MenuLibrary.c ****             }
+ 344:Src/MenuLibrary.c ****             case 2:
+ 345:Src/MenuLibrary.c ****             {
+ 346:Src/MenuLibrary.c ****               switch (pointer[3])
+ 622              		.loc 1 346 0
+ 623 01b4 F368     		ldr	r3, [r6, #12]
+ 624 01b6 BBB9     		cbnz	r3, .L35
+ 347:Src/MenuLibrary.c ****               {
+ 348:Src/MenuLibrary.c ****                 case 0:
+ 349:Src/MenuLibrary.c ****                 {
+ 350:Src/MenuLibrary.c ****                   sprintf(str, " Russian        ");
+ 625              		.loc 1 350 0
+ 626 01b8 0D4C     		ldr	r4, .L80
+ARM GAS  /tmp/cccjoBhE.s 			page 18
+
+
+ 627 01ba 204D     		ldr	r5, .L80+76
+ 628 01bc 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 629 01be 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 630 01c0 2B68     		ldr	r3, [r5]
+ 631 01c2 2370     		strb	r3, [r4]
+ 351:Src/MenuLibrary.c ****                   //sprintf(str, "____LANGUAGE____");
+ 352:Src/MenuLibrary.c ****                   break;
+ 632              		.loc 1 352 0
+ 633 01c4 10E0     		b	.L35
+ 634              	.L39:
+ 353:Src/MenuLibrary.c ****                 }
+ 354:Src/MenuLibrary.c ****               }
+ 355:Src/MenuLibrary.c ****               break;
+ 356:Src/MenuLibrary.c ****             }
+ 357:Src/MenuLibrary.c ****           }
+ 358:Src/MenuLibrary.c ****           break;
+ 359:Src/MenuLibrary.c ****         }
+ 360:Src/MenuLibrary.c ****       }
+ 361:Src/MenuLibrary.c ****       break;
+ 362:Src/MenuLibrary.c ****     }
+ 363:Src/MenuLibrary.c ****     case 3:
+ 364:Src/MenuLibrary.c ****     {
+ 365:Src/MenuLibrary.c ****       switch (pointer[1])
+ 635              		.loc 1 365 0
+ 636 01c6 7368     		ldr	r3, [r6, #4]
+ 637 01c8 73B9     		cbnz	r3, .L35
+ 366:Src/MenuLibrary.c ****       {
+ 367:Src/MenuLibrary.c ****         case 0:
+ 368:Src/MenuLibrary.c ****         {
+ 369:Src/MenuLibrary.c ****           sprintf(str, " Change filament");
+ 638              		.loc 1 369 0
+ 639 01ca 094C     		ldr	r4, .L80
+ 640 01cc 1C4D     		ldr	r5, .L80+80
+ 641 01ce 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 642 01d0 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 643 01d2 2B68     		ldr	r3, [r5]
+ 644 01d4 2370     		strb	r3, [r4]
+ 370:Src/MenuLibrary.c ****           //sprintf(str,"___MAIN MENU____");
+ 371:Src/MenuLibrary.c ****           break;
+ 645              		.loc 1 371 0
+ 646 01d6 07E0     		b	.L35
+ 647              	.L40:
+ 372:Src/MenuLibrary.c ****         }
+ 373:Src/MenuLibrary.c ****       }
+ 374:Src/MenuLibrary.c ****       break;
+ 375:Src/MenuLibrary.c ****     }
+ 376:Src/MenuLibrary.c ****     case 4:
+ 377:Src/MenuLibrary.c ****     {
+ 378:Src/MenuLibrary.c ****       switch (pointer[1])
+ 648              		.loc 1 378 0
+ 649 01d8 7368     		ldr	r3, [r6, #4]
+ 650 01da 2BB9     		cbnz	r3, .L35
+ 379:Src/MenuLibrary.c ****       {
+ 380:Src/MenuLibrary.c ****         case 0:
+ 381:Src/MenuLibrary.c ****         {
+ 382:Src/MenuLibrary.c ****           sprintf(str, " Help           ");
+ 651              		.loc 1 382 0
+ARM GAS  /tmp/cccjoBhE.s 			page 19
+
+
+ 652 01dc 044C     		ldr	r4, .L80
+ 653 01de 194D     		ldr	r5, .L80+84
+ 654 01e0 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 655 01e2 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 656 01e4 2B68     		ldr	r3, [r5]
+ 657 01e6 2370     		strb	r3, [r4]
+ 658              	.L35:
+ 383:Src/MenuLibrary.c ****           //sprintf(str,"___MAIN MENU____");
+ 384:Src/MenuLibrary.c ****           break;
+ 385:Src/MenuLibrary.c ****         }
+ 386:Src/MenuLibrary.c ****       }
+ 387:Src/MenuLibrary.c ****       break;
+ 388:Src/MenuLibrary.c ****     }
+ 389:Src/MenuLibrary.c ****   }
+ 390:Src/MenuLibrary.c ****   return str;
+ 391:Src/MenuLibrary.c **** }
+ 659              		.loc 1 391 0
+ 660 01e8 0148     		ldr	r0, .L80
+ 661 01ea 70BC     		pop	{r4, r5, r6}
+ 662              	.LCFI5:
+ 663              		.cfi_restore 6
+ 664              		.cfi_restore 5
+ 665              		.cfi_restore 4
+ 666              		.cfi_def_cfa_offset 0
+ 667              	.LVL40:
+ 668 01ec 7047     		bx	lr
+ 669              	.L81:
+ 670 01ee 00BF     		.align	2
+ 671              	.L80:
+ 672 01f0 00000000 		.word	.LANCHOR1
+ 673 01f4 20000000 		.word	.LC5
+ 674 01f8 34000000 		.word	.LC6
+ 675 01fc 48000000 		.word	.LC7
+ 676 0200 5C000000 		.word	.LC8
+ 677 0204 70000000 		.word	.LC9
+ 678 0208 84000000 		.word	.LC10
+ 679 020c 98000000 		.word	.LC11
+ 680 0210 AC000000 		.word	.LC12
+ 681 0214 C0000000 		.word	.LC13
+ 682 0218 D4000000 		.word	.LC14
+ 683 021c E8000000 		.word	.LC15
+ 684 0220 FC000000 		.word	.LC16
+ 685 0224 10010000 		.word	.LC17
+ 686 0228 24010000 		.word	.LC18
+ 687 022c 38010000 		.word	.LC19
+ 688 0230 4C010000 		.word	.LC20
+ 689 0234 60010000 		.word	.LC21
+ 690 0238 74010000 		.word	.LC22
+ 691 023c 88010000 		.word	.LC23
+ 692 0240 9C010000 		.word	.LC24
+ 693 0244 B0010000 		.word	.LC25
+ 694              		.cfi_endproc
+ 695              	.LFE3:
+ 697              		.section	.text.MenuTitle,"ax",%progbits
+ 698              		.align	2
+ 699              		.global	MenuTitle
+ 700              		.thumb
+ARM GAS  /tmp/cccjoBhE.s 			page 20
+
+
+ 701              		.thumb_func
+ 703              	MenuTitle:
+ 704              	.LFB4:
+ 392:Src/MenuLibrary.c **** 
+ 393:Src/MenuLibrary.c **** 
+ 394:Src/MenuLibrary.c **** char* MenuTitle(volatile int* pointer)
+ 395:Src/MenuLibrary.c **** {
+ 705              		.loc 1 395 0
+ 706              		.cfi_startproc
+ 707              		@ args = 0, pretend = 0, frame = 0
+ 708              		@ frame_needed = 0, uses_anonymous_args = 0
+ 709              		@ link register save eliminated.
+ 710              	.LVL41:
+ 711 0000 70B4     		push	{r4, r5, r6}
+ 712              	.LCFI6:
+ 713              		.cfi_def_cfa_offset 12
+ 714              		.cfi_offset 4, -12
+ 715              		.cfi_offset 5, -8
+ 716              		.cfi_offset 6, -4
+ 717 0002 0646     		mov	r6, r0
+ 396:Src/MenuLibrary.c ****   static char str[16];
+ 397:Src/MenuLibrary.c ****   sprintf(str, "                ");
+ 718              		.loc 1 397 0
+ 719 0004 7A4C     		ldr	r4, .L128
+ 720 0006 7B4D     		ldr	r5, .L128+4
+ 721 0008 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 722              	.LVL42:
+ 723 000a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 724 000c 2B68     		ldr	r3, [r5]
+ 725 000e 2370     		strb	r3, [r4]
+ 398:Src/MenuLibrary.c ****   switch (pointer[0])
+ 726              		.loc 1 398 0
+ 727 0010 3368     		ldr	r3, [r6]
+ 728 0012 013B     		subs	r3, r3, #1
+ 729 0014 032B     		cmp	r3, #3
+ 730 0016 00F2E780 		bhi	.L83
+ 731 001a DFE813F0 		tbh	[pc, r3, lsl #1]
+ 732              	.L85:
+ 733 001e 0400     		.2byte	(.L84-.L85)/2
+ 734 0020 4B00     		.2byte	(.L86-.L85)/2
+ 735 0022 D400     		.2byte	(.L87-.L85)/2
+ 736 0024 DD00     		.2byte	(.L88-.L85)/2
+ 737              		.p2align 1
+ 738              	.L84:
+ 399:Src/MenuLibrary.c ****   {
+ 400:Src/MenuLibrary.c ****     case 1:
+ 401:Src/MenuLibrary.c ****     {
+ 402:Src/MenuLibrary.c ****       switch (pointer[1])
+ 739              		.loc 1 402 0
+ 740 0026 7368     		ldr	r3, [r6, #4]
+ 741 0028 052B     		cmp	r3, #5
+ 742 002a 00F2DD80 		bhi	.L83
+ 743 002e DFE803F0 		tbb	[pc, r3]
+ 744              	.L90:
+ 745 0032 03       		.byte	(.L89-.L90)/2
+ 746 0033 0A       		.byte	(.L91-.L90)/2
+ 747 0034 15       		.byte	(.L92-.L90)/2
+ARM GAS  /tmp/cccjoBhE.s 			page 21
+
+
+ 748 0035 20       		.byte	(.L93-.L90)/2
+ 749 0036 2B       		.byte	(.L94-.L90)/2
+ 750 0037 36       		.byte	(.L95-.L90)/2
+ 751              		.p2align 1
+ 752              	.L89:
+ 403:Src/MenuLibrary.c ****       {
+ 404:Src/MenuLibrary.c ****         case 0:
+ 405:Src/MenuLibrary.c ****         {
+ 406:Src/MenuLibrary.c ****           //sprintf(str," Print          ");
+ 407:Src/MenuLibrary.c ****           sprintf(str,"___MAIN MENU____");
+ 753              		.loc 1 407 0
+ 754 0038 6D4C     		ldr	r4, .L128
+ 755 003a 6F4D     		ldr	r5, .L128+8
+ 756 003c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 757 003e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 758 0040 2B68     		ldr	r3, [r5]
+ 759 0042 2370     		strb	r3, [r4]
+ 408:Src/MenuLibrary.c ****           break;
+ 760              		.loc 1 408 0
+ 761 0044 D0E0     		b	.L83
+ 762              	.L91:
+ 409:Src/MenuLibrary.c ****         }
+ 410:Src/MenuLibrary.c ****         case 1:
+ 411:Src/MenuLibrary.c ****         {
+ 412:Src/MenuLibrary.c ****           switch (pointer[2])
+ 763              		.loc 1 412 0
+ 764 0046 B368     		ldr	r3, [r6, #8]
+ 765 0048 002B     		cmp	r3, #0
+ 766 004a 40F0CD80 		bne	.L83
+ 413:Src/MenuLibrary.c ****           {
+ 414:Src/MenuLibrary.c ****             case 0:
+ 415:Src/MenuLibrary.c ****             {
+ 416:Src/MenuLibrary.c ****               //sprintf(str," file 1         ");
+ 417:Src/MenuLibrary.c ****               sprintf(str,"__SELECT FILE___");
+ 767              		.loc 1 417 0
+ 768 004e 684C     		ldr	r4, .L128
+ 769 0050 6A4D     		ldr	r5, .L128+12
+ 770 0052 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 771 0054 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 772 0056 2B68     		ldr	r3, [r5]
+ 773 0058 2370     		strb	r3, [r4]
+ 418:Src/MenuLibrary.c ****               break;
+ 774              		.loc 1 418 0
+ 775 005a C5E0     		b	.L83
+ 776              	.L92:
+ 419:Src/MenuLibrary.c ****             }
+ 420:Src/MenuLibrary.c ****           }
+ 421:Src/MenuLibrary.c ****           break;
+ 422:Src/MenuLibrary.c ****         }
+ 423:Src/MenuLibrary.c ****         case 2:
+ 424:Src/MenuLibrary.c ****         {
+ 425:Src/MenuLibrary.c ****           switch (pointer[2])
+ 777              		.loc 1 425 0
+ 778 005c B368     		ldr	r3, [r6, #8]
+ 779 005e 002B     		cmp	r3, #0
+ 780 0060 40F0C280 		bne	.L83
+ 426:Src/MenuLibrary.c ****           {
+ARM GAS  /tmp/cccjoBhE.s 			page 22
+
+
+ 427:Src/MenuLibrary.c ****             case 0:
+ 428:Src/MenuLibrary.c ****             {
+ 429:Src/MenuLibrary.c ****               //sprintf(str," file 2         ");
+ 430:Src/MenuLibrary.c ****               sprintf(str,"__SELECT FILE___");
+ 781              		.loc 1 430 0
+ 782 0064 624C     		ldr	r4, .L128
+ 783 0066 654D     		ldr	r5, .L128+12
+ 784 0068 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 785 006a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 786 006c 2B68     		ldr	r3, [r5]
+ 787 006e 2370     		strb	r3, [r4]
+ 431:Src/MenuLibrary.c ****               break;
+ 788              		.loc 1 431 0
+ 789 0070 BAE0     		b	.L83
+ 790              	.L93:
+ 432:Src/MenuLibrary.c ****             }
+ 433:Src/MenuLibrary.c ****           }
+ 434:Src/MenuLibrary.c ****           break;
+ 435:Src/MenuLibrary.c ****         }
+ 436:Src/MenuLibrary.c ****         case 3:
+ 437:Src/MenuLibrary.c ****         {
+ 438:Src/MenuLibrary.c ****           switch (pointer[2])
+ 791              		.loc 1 438 0
+ 792 0072 B368     		ldr	r3, [r6, #8]
+ 793 0074 002B     		cmp	r3, #0
+ 794 0076 40F0B780 		bne	.L83
+ 439:Src/MenuLibrary.c ****           {
+ 440:Src/MenuLibrary.c ****             case 0:
+ 441:Src/MenuLibrary.c ****             {
+ 442:Src/MenuLibrary.c ****               //sprintf(str," file 3         ");
+ 443:Src/MenuLibrary.c ****               sprintf(str,"__SELECT FILE___");
+ 795              		.loc 1 443 0
+ 796 007a 5D4C     		ldr	r4, .L128
+ 797 007c 5F4D     		ldr	r5, .L128+12
+ 798 007e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 799 0080 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 800 0082 2B68     		ldr	r3, [r5]
+ 801 0084 2370     		strb	r3, [r4]
+ 444:Src/MenuLibrary.c ****               break;
+ 802              		.loc 1 444 0
+ 803 0086 AFE0     		b	.L83
+ 804              	.L94:
+ 445:Src/MenuLibrary.c ****             }
+ 446:Src/MenuLibrary.c ****           }
+ 447:Src/MenuLibrary.c ****           break;
+ 448:Src/MenuLibrary.c ****         }
+ 449:Src/MenuLibrary.c ****         case 4:
+ 450:Src/MenuLibrary.c ****         {
+ 451:Src/MenuLibrary.c ****           switch (pointer[2])
+ 805              		.loc 1 451 0
+ 806 0088 B368     		ldr	r3, [r6, #8]
+ 807 008a 002B     		cmp	r3, #0
+ 808 008c 40F0AC80 		bne	.L83
+ 452:Src/MenuLibrary.c ****           {
+ 453:Src/MenuLibrary.c ****             case 0:
+ 454:Src/MenuLibrary.c ****             {
+ 455:Src/MenuLibrary.c ****               //sprintf(str," file 4         ");
+ARM GAS  /tmp/cccjoBhE.s 			page 23
+
+
+ 456:Src/MenuLibrary.c ****               sprintf(str,"__SELECT FILE___");
+ 809              		.loc 1 456 0
+ 810 0090 574C     		ldr	r4, .L128
+ 811 0092 5A4D     		ldr	r5, .L128+12
+ 812 0094 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 813 0096 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 814 0098 2B68     		ldr	r3, [r5]
+ 815 009a 2370     		strb	r3, [r4]
+ 457:Src/MenuLibrary.c ****               break;
+ 816              		.loc 1 457 0
+ 817 009c A4E0     		b	.L83
+ 818              	.L95:
+ 458:Src/MenuLibrary.c ****             }
+ 459:Src/MenuLibrary.c ****           }
+ 460:Src/MenuLibrary.c ****           break;
+ 461:Src/MenuLibrary.c ****         }
+ 462:Src/MenuLibrary.c ****         case 5:
+ 463:Src/MenuLibrary.c ****         {
+ 464:Src/MenuLibrary.c ****           switch (pointer[2])
+ 819              		.loc 1 464 0
+ 820 009e B368     		ldr	r3, [r6, #8]
+ 821 00a0 002B     		cmp	r3, #0
+ 822 00a2 40F0A180 		bne	.L83
+ 465:Src/MenuLibrary.c ****           {
+ 466:Src/MenuLibrary.c ****             case 0:
+ 467:Src/MenuLibrary.c ****             {
+ 468:Src/MenuLibrary.c ****               //sprintf(str," file 5         ");
+ 469:Src/MenuLibrary.c ****               sprintf(str,"__SELECT FILE___");
+ 823              		.loc 1 469 0
+ 824 00a6 524C     		ldr	r4, .L128
+ 825 00a8 544D     		ldr	r5, .L128+12
+ 826 00aa 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 827 00ac 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 828 00ae 2B68     		ldr	r3, [r5]
+ 829 00b0 2370     		strb	r3, [r4]
+ 470:Src/MenuLibrary.c ****               break;
+ 830              		.loc 1 470 0
+ 831 00b2 99E0     		b	.L83
+ 832              	.L86:
+ 471:Src/MenuLibrary.c ****             }
+ 472:Src/MenuLibrary.c ****           }
+ 473:Src/MenuLibrary.c ****           break;
+ 474:Src/MenuLibrary.c ****         }
+ 475:Src/MenuLibrary.c ****       }
+ 476:Src/MenuLibrary.c ****       break;
+ 477:Src/MenuLibrary.c ****     }
+ 478:Src/MenuLibrary.c ****     case 2:
+ 479:Src/MenuLibrary.c ****     {
+ 480:Src/MenuLibrary.c ****       switch (pointer[1])
+ 833              		.loc 1 480 0
+ 834 00b4 7368     		ldr	r3, [r6, #4]
+ 835 00b6 052B     		cmp	r3, #5
+ 836 00b8 00F29680 		bhi	.L83
+ 837 00bc DFE803F0 		tbb	[pc, r3]
+ 838              	.L102:
+ 839 00c0 03       		.byte	(.L101-.L102)/2
+ 840 00c1 0A       		.byte	(.L103-.L102)/2
+ARM GAS  /tmp/cccjoBhE.s 			page 24
+
+
+ 841 00c2 2D       		.byte	(.L104-.L102)/2
+ 842 00c3 37       		.byte	(.L105-.L102)/2
+ 843 00c4 59       		.byte	(.L106-.L102)/2
+ 844 00c5 63       		.byte	(.L107-.L102)/2
+ 845              		.p2align 1
+ 846              	.L101:
+ 481:Src/MenuLibrary.c ****       {
+ 482:Src/MenuLibrary.c ****         case 0:
+ 483:Src/MenuLibrary.c ****         {
+ 484:Src/MenuLibrary.c ****           //sprintf(str, " Settings       ");
+ 485:Src/MenuLibrary.c ****           sprintf(str,"___MAIN MENU____");
+ 847              		.loc 1 485 0
+ 848 00c6 4A4C     		ldr	r4, .L128
+ 849 00c8 4B4D     		ldr	r5, .L128+8
+ 850 00ca 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 851 00cc 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 852 00ce 2B68     		ldr	r3, [r5]
+ 853 00d0 2370     		strb	r3, [r4]
+ 486:Src/MenuLibrary.c ****           break;
+ 854              		.loc 1 486 0
+ 855 00d2 89E0     		b	.L83
+ 856              	.L103:
+ 487:Src/MenuLibrary.c ****         }
+ 488:Src/MenuLibrary.c ****         case 1:
+ 489:Src/MenuLibrary.c ****         {
+ 490:Src/MenuLibrary.c ****           switch (pointer[2])
+ 857              		.loc 1 490 0
+ 858 00d4 B368     		ldr	r3, [r6, #8]
+ 859 00d6 012B     		cmp	r3, #1
+ 860 00d8 0BD0     		beq	.L108
+ 861 00da 022B     		cmp	r3, #2
+ 862 00dc 13D0     		beq	.L109
+ 863 00de 002B     		cmp	r3, #0
+ 864 00e0 40F08280 		bne	.L83
+ 491:Src/MenuLibrary.c ****           {
+ 492:Src/MenuLibrary.c ****             case 0:
+ 493:Src/MenuLibrary.c ****             {
+ 494:Src/MenuLibrary.c ****               //sprintf(str, " Type of plastic");
+ 495:Src/MenuLibrary.c ****               sprintf(str,"____SETTINGS____");
+ 865              		.loc 1 495 0
+ 866 00e4 424C     		ldr	r4, .L128
+ 867 00e6 464D     		ldr	r5, .L128+16
+ 868 00e8 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 869 00ea 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 870 00ec 2B68     		ldr	r3, [r5]
+ 871 00ee 2370     		strb	r3, [r4]
+ 496:Src/MenuLibrary.c ****               break;
+ 872              		.loc 1 496 0
+ 873 00f0 7AE0     		b	.L83
+ 874              	.L108:
+ 497:Src/MenuLibrary.c ****             }
+ 498:Src/MenuLibrary.c ****             case 1:
+ 499:Src/MenuLibrary.c ****             {
+ 500:Src/MenuLibrary.c ****               switch (pointer[3])
+ 875              		.loc 1 500 0
+ 876 00f2 F368     		ldr	r3, [r6, #12]
+ 877 00f4 002B     		cmp	r3, #0
+ARM GAS  /tmp/cccjoBhE.s 			page 25
+
+
+ 878 00f6 77D1     		bne	.L83
+ 501:Src/MenuLibrary.c ****               {
+ 502:Src/MenuLibrary.c ****                 case 0:
+ 503:Src/MenuLibrary.c ****                 {
+ 504:Src/MenuLibrary.c ****                   //sprintf(str, " ABS plastic    ");
+ 505:Src/MenuLibrary.c ****                   sprintf(str,"TYPE OF PLASTIC_");
+ 879              		.loc 1 505 0
+ 880 00f8 3D4C     		ldr	r4, .L128
+ 881 00fa 424D     		ldr	r5, .L128+20
+ 882 00fc 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 883 00fe 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 884 0100 2B68     		ldr	r3, [r5]
+ 885 0102 2370     		strb	r3, [r4]
+ 506:Src/MenuLibrary.c ****                   break;
+ 886              		.loc 1 506 0
+ 887 0104 70E0     		b	.L83
+ 888              	.L109:
+ 507:Src/MenuLibrary.c ****                 }
+ 508:Src/MenuLibrary.c ****               }
+ 509:Src/MenuLibrary.c ****               break;
+ 510:Src/MenuLibrary.c ****             }
+ 511:Src/MenuLibrary.c ****             case 2:
+ 512:Src/MenuLibrary.c ****             {
+ 513:Src/MenuLibrary.c ****               switch (pointer[3])
+ 889              		.loc 1 513 0
+ 890 0106 F368     		ldr	r3, [r6, #12]
+ 891 0108 002B     		cmp	r3, #0
+ 892 010a 6DD1     		bne	.L83
+ 514:Src/MenuLibrary.c ****               {
+ 515:Src/MenuLibrary.c ****                 case 0:
+ 516:Src/MenuLibrary.c ****                 //sprintf(str, " PLA plastic    ");
+ 517:Src/MenuLibrary.c ****                 sprintf(str,"TYPE OF PLASTIC_");
+ 893              		.loc 1 517 0
+ 894 010c 384C     		ldr	r4, .L128
+ 895 010e 3D4D     		ldr	r5, .L128+20
+ 896 0110 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 897 0112 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 898 0114 2B68     		ldr	r3, [r5]
+ 899 0116 2370     		strb	r3, [r4]
+ 518:Src/MenuLibrary.c ****                 break;
+ 900              		.loc 1 518 0
+ 901 0118 66E0     		b	.L83
+ 902              	.L104:
+ 519:Src/MenuLibrary.c ****               }
+ 520:Src/MenuLibrary.c ****               break;
+ 521:Src/MenuLibrary.c ****             }
+ 522:Src/MenuLibrary.c ****           }
+ 523:Src/MenuLibrary.c ****           break;
+ 524:Src/MenuLibrary.c ****         }
+ 525:Src/MenuLibrary.c ****         case 2:
+ 526:Src/MenuLibrary.c ****         {
+ 527:Src/MenuLibrary.c ****           switch (pointer[2])
+ 903              		.loc 1 527 0
+ 904 011a B368     		ldr	r3, [r6, #8]
+ 905 011c 002B     		cmp	r3, #0
+ 906 011e 63D1     		bne	.L83
+ 528:Src/MenuLibrary.c ****           {
+ARM GAS  /tmp/cccjoBhE.s 			page 26
+
+
+ 529:Src/MenuLibrary.c ****             case 0:
+ 530:Src/MenuLibrary.c ****             {
+ 531:Src/MenuLibrary.c ****               //sprintf(str, " Extruder temp. ");
+ 532:Src/MenuLibrary.c ****               sprintf(str, "____SETTINGS____");
+ 907              		.loc 1 532 0
+ 908 0120 334C     		ldr	r4, .L128
+ 909 0122 374D     		ldr	r5, .L128+16
+ 910 0124 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 911 0126 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 912 0128 2B68     		ldr	r3, [r5]
+ 913 012a 2370     		strb	r3, [r4]
+ 533:Src/MenuLibrary.c ****               break;
+ 914              		.loc 1 533 0
+ 915 012c 5CE0     		b	.L83
+ 916              	.L105:
+ 534:Src/MenuLibrary.c ****             }
+ 535:Src/MenuLibrary.c ****           }
+ 536:Src/MenuLibrary.c ****           break;
+ 537:Src/MenuLibrary.c ****         }
+ 538:Src/MenuLibrary.c ****         case 3:
+ 539:Src/MenuLibrary.c ****         {
+ 540:Src/MenuLibrary.c ****           switch (pointer[2])
+ 917              		.loc 1 540 0
+ 918 012e B368     		ldr	r3, [r6, #8]
+ 919 0130 012B     		cmp	r3, #1
+ 920 0132 0AD0     		beq	.L114
+ 921 0134 022B     		cmp	r3, #2
+ 922 0136 12D0     		beq	.L115
+ 923 0138 002B     		cmp	r3, #0
+ 924 013a 55D1     		bne	.L83
+ 541:Src/MenuLibrary.c ****           {
+ 542:Src/MenuLibrary.c ****             case 0:
+ 543:Src/MenuLibrary.c ****             {
+ 544:Src/MenuLibrary.c ****               //sprintf(str, " Calibrate      ");
+ 545:Src/MenuLibrary.c ****               sprintf(str, "____SETTINGS____");
+ 925              		.loc 1 545 0
+ 926 013c 2C4C     		ldr	r4, .L128
+ 927 013e 304D     		ldr	r5, .L128+16
+ 928 0140 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 929 0142 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 930 0144 2B68     		ldr	r3, [r5]
+ 931 0146 2370     		strb	r3, [r4]
+ 546:Src/MenuLibrary.c ****               break;
+ 932              		.loc 1 546 0
+ 933 0148 4EE0     		b	.L83
+ 934              	.L114:
+ 547:Src/MenuLibrary.c ****             }
+ 548:Src/MenuLibrary.c ****             case 1:
+ 549:Src/MenuLibrary.c ****             {
+ 550:Src/MenuLibrary.c ****               switch (pointer[3])
+ 935              		.loc 1 550 0
+ 936 014a F368     		ldr	r3, [r6, #12]
+ 937 014c 002B     		cmp	r3, #0
+ 938 014e 4BD1     		bne	.L83
+ 551:Src/MenuLibrary.c ****               {
+ 552:Src/MenuLibrary.c ****                 case 0:
+ 553:Src/MenuLibrary.c ****                 {
+ARM GAS  /tmp/cccjoBhE.s 			page 27
+
+
+ 554:Src/MenuLibrary.c ****                   //sprintf(str, " Yes, do it     ");
+ 555:Src/MenuLibrary.c ****                   sprintf(str, "___CALIBRATE?___");
+ 939              		.loc 1 555 0
+ 940 0150 274C     		ldr	r4, .L128
+ 941 0152 2D4D     		ldr	r5, .L128+24
+ 942 0154 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 943 0156 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 944 0158 2B68     		ldr	r3, [r5]
+ 945 015a 2370     		strb	r3, [r4]
+ 556:Src/MenuLibrary.c ****                   break;
+ 946              		.loc 1 556 0
+ 947 015c 44E0     		b	.L83
+ 948              	.L115:
+ 557:Src/MenuLibrary.c ****                 }
+ 558:Src/MenuLibrary.c ****               }
+ 559:Src/MenuLibrary.c ****               break;
+ 560:Src/MenuLibrary.c ****             }
+ 561:Src/MenuLibrary.c ****             case 2:
+ 562:Src/MenuLibrary.c ****             {
+ 563:Src/MenuLibrary.c ****               switch (pointer[3])
+ 949              		.loc 1 563 0
+ 950 015e F368     		ldr	r3, [r6, #12]
+ 951 0160 002B     		cmp	r3, #0
+ 952 0162 41D1     		bne	.L83
+ 564:Src/MenuLibrary.c ****               {
+ 565:Src/MenuLibrary.c ****                 case 0:
+ 566:Src/MenuLibrary.c ****                 {
+ 567:Src/MenuLibrary.c ****                   //sprintf(str, " No, don't do it");
+ 568:Src/MenuLibrary.c ****                   sprintf(str, "___CALIBRATE?___");
+ 953              		.loc 1 568 0
+ 954 0164 224C     		ldr	r4, .L128
+ 955 0166 284D     		ldr	r5, .L128+24
+ 956 0168 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 957 016a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 958 016c 2B68     		ldr	r3, [r5]
+ 959 016e 2370     		strb	r3, [r4]
+ 569:Src/MenuLibrary.c ****                   break;
+ 960              		.loc 1 569 0
+ 961 0170 3AE0     		b	.L83
+ 962              	.L106:
+ 570:Src/MenuLibrary.c ****                 }
+ 571:Src/MenuLibrary.c ****               }
+ 572:Src/MenuLibrary.c ****               break;
+ 573:Src/MenuLibrary.c ****             }
+ 574:Src/MenuLibrary.c ****           }
+ 575:Src/MenuLibrary.c ****           break;
+ 576:Src/MenuLibrary.c ****         }
+ 577:Src/MenuLibrary.c ****         case 4:
+ 578:Src/MenuLibrary.c ****         {
+ 579:Src/MenuLibrary.c ****           switch (pointer[2])
+ 963              		.loc 1 579 0
+ 964 0172 B368     		ldr	r3, [r6, #8]
+ 965 0174 002B     		cmp	r3, #0
+ 966 0176 37D1     		bne	.L83
+ 580:Src/MenuLibrary.c ****           {
+ 581:Src/MenuLibrary.c ****             case 0:
+ 582:Src/MenuLibrary.c ****             {
+ARM GAS  /tmp/cccjoBhE.s 			page 28
+
+
+ 583:Src/MenuLibrary.c ****               //sprintf(str, " Brightness     ");
+ 584:Src/MenuLibrary.c ****               sprintf(str, "____SETTINGS____");
+ 967              		.loc 1 584 0
+ 968 0178 1D4C     		ldr	r4, .L128
+ 969 017a 214D     		ldr	r5, .L128+16
+ 970 017c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 971 017e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 972 0180 2B68     		ldr	r3, [r5]
+ 973 0182 2370     		strb	r3, [r4]
+ 585:Src/MenuLibrary.c ****               break;
+ 974              		.loc 1 585 0
+ 975 0184 30E0     		b	.L83
+ 976              	.L107:
+ 586:Src/MenuLibrary.c ****             }
+ 587:Src/MenuLibrary.c ****           }
+ 588:Src/MenuLibrary.c ****           break;
+ 589:Src/MenuLibrary.c ****         }
+ 590:Src/MenuLibrary.c ****         case 5:
+ 591:Src/MenuLibrary.c ****         {
+ 592:Src/MenuLibrary.c ****           switch (pointer[2])
+ 977              		.loc 1 592 0
+ 978 0186 B368     		ldr	r3, [r6, #8]
+ 979 0188 012B     		cmp	r3, #1
+ 980 018a 0AD0     		beq	.L120
+ 981 018c 022B     		cmp	r3, #2
+ 982 018e 11D0     		beq	.L121
+ 983 0190 002B     		cmp	r3, #0
+ 984 0192 29D1     		bne	.L83
+ 593:Src/MenuLibrary.c ****           {
+ 594:Src/MenuLibrary.c ****             case 0:
+ 595:Src/MenuLibrary.c ****             {
+ 596:Src/MenuLibrary.c ****               //sprintf(str, " Language       ");
+ 597:Src/MenuLibrary.c ****               sprintf(str, "____SETTINGS____");
+ 985              		.loc 1 597 0
+ 986 0194 164C     		ldr	r4, .L128
+ 987 0196 1A4D     		ldr	r5, .L128+16
+ 988 0198 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 989 019a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 990 019c 2B68     		ldr	r3, [r5]
+ 991 019e 2370     		strb	r3, [r4]
+ 598:Src/MenuLibrary.c ****               break;
+ 992              		.loc 1 598 0
+ 993 01a0 22E0     		b	.L83
+ 994              	.L120:
+ 599:Src/MenuLibrary.c ****             }
+ 600:Src/MenuLibrary.c ****             case 1:
+ 601:Src/MenuLibrary.c ****             {
+ 602:Src/MenuLibrary.c ****               switch (pointer[3])
+ 995              		.loc 1 602 0
+ 996 01a2 F368     		ldr	r3, [r6, #12]
+ 997 01a4 03BB     		cbnz	r3, .L83
+ 603:Src/MenuLibrary.c ****               {
+ 604:Src/MenuLibrary.c ****                 case 0:
+ 605:Src/MenuLibrary.c ****                 {
+ 606:Src/MenuLibrary.c ****                   //sprintf(str, " English        ");
+ 607:Src/MenuLibrary.c ****                   sprintf(str, "____LANGUAGE____");
+ 998              		.loc 1 607 0
+ARM GAS  /tmp/cccjoBhE.s 			page 29
+
+
+ 999 01a6 124C     		ldr	r4, .L128
+ 1000 01a8 184D     		ldr	r5, .L128+28
+ 1001 01aa 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1002 01ac 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1003 01ae 2B68     		ldr	r3, [r5]
+ 1004 01b0 2370     		strb	r3, [r4]
+ 608:Src/MenuLibrary.c ****                   break;
+ 1005              		.loc 1 608 0
+ 1006 01b2 19E0     		b	.L83
+ 1007              	.L121:
+ 609:Src/MenuLibrary.c ****                 }
+ 610:Src/MenuLibrary.c ****               }
+ 611:Src/MenuLibrary.c ****               break;
+ 612:Src/MenuLibrary.c ****             }
+ 613:Src/MenuLibrary.c ****             case 2:
+ 614:Src/MenuLibrary.c ****             {
+ 615:Src/MenuLibrary.c ****               switch (pointer[3])
+ 1008              		.loc 1 615 0
+ 1009 01b4 F368     		ldr	r3, [r6, #12]
+ 1010 01b6 BBB9     		cbnz	r3, .L83
+ 616:Src/MenuLibrary.c ****               {
+ 617:Src/MenuLibrary.c ****                 case 0:
+ 618:Src/MenuLibrary.c ****                 {
+ 619:Src/MenuLibrary.c ****                   //sprintf(str, " Russian        ");
+ 620:Src/MenuLibrary.c ****                   sprintf(str, "____LANGUAGE____");
+ 1011              		.loc 1 620 0
+ 1012 01b8 0D4C     		ldr	r4, .L128
+ 1013 01ba 144D     		ldr	r5, .L128+28
+ 1014 01bc 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1015 01be 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1016 01c0 2B68     		ldr	r3, [r5]
+ 1017 01c2 2370     		strb	r3, [r4]
+ 621:Src/MenuLibrary.c ****                   break;
+ 1018              		.loc 1 621 0
+ 1019 01c4 10E0     		b	.L83
+ 1020              	.L87:
+ 622:Src/MenuLibrary.c ****                 }
+ 623:Src/MenuLibrary.c ****               }
+ 624:Src/MenuLibrary.c ****               break;
+ 625:Src/MenuLibrary.c ****             }
+ 626:Src/MenuLibrary.c ****           }
+ 627:Src/MenuLibrary.c ****           break;
+ 628:Src/MenuLibrary.c ****         }
+ 629:Src/MenuLibrary.c ****       }
+ 630:Src/MenuLibrary.c ****       break;
+ 631:Src/MenuLibrary.c ****     }
+ 632:Src/MenuLibrary.c ****     case 3:
+ 633:Src/MenuLibrary.c ****     {
+ 634:Src/MenuLibrary.c ****       switch (pointer[1])
+ 1021              		.loc 1 634 0
+ 1022 01c6 7368     		ldr	r3, [r6, #4]
+ 1023 01c8 73B9     		cbnz	r3, .L83
+ 635:Src/MenuLibrary.c ****       {
+ 636:Src/MenuLibrary.c ****         case 0:
+ 637:Src/MenuLibrary.c ****         {
+ 638:Src/MenuLibrary.c ****           //sprintf(str, " Change filament");
+ 639:Src/MenuLibrary.c ****           sprintf(str,"___MAIN MENU____");
+ARM GAS  /tmp/cccjoBhE.s 			page 30
+
+
+ 1024              		.loc 1 639 0
+ 1025 01ca 094C     		ldr	r4, .L128
+ 1026 01cc 0A4D     		ldr	r5, .L128+8
+ 1027 01ce 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1028 01d0 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1029 01d2 2B68     		ldr	r3, [r5]
+ 1030 01d4 2370     		strb	r3, [r4]
+ 640:Src/MenuLibrary.c ****           break;
+ 1031              		.loc 1 640 0
+ 1032 01d6 07E0     		b	.L83
+ 1033              	.L88:
+ 641:Src/MenuLibrary.c ****         }
+ 642:Src/MenuLibrary.c ****       }
+ 643:Src/MenuLibrary.c ****       break;
+ 644:Src/MenuLibrary.c ****     }
+ 645:Src/MenuLibrary.c ****     case 4:
+ 646:Src/MenuLibrary.c ****     {
+ 647:Src/MenuLibrary.c ****       switch (pointer[1])
+ 1034              		.loc 1 647 0
+ 1035 01d8 7368     		ldr	r3, [r6, #4]
+ 1036 01da 2BB9     		cbnz	r3, .L83
+ 648:Src/MenuLibrary.c ****       {
+ 649:Src/MenuLibrary.c ****         case 0:
+ 650:Src/MenuLibrary.c ****         {
+ 651:Src/MenuLibrary.c ****           //sprintf(str, " Help           ");
+ 652:Src/MenuLibrary.c ****           sprintf(str,"___MAIN MENU____");
+ 1037              		.loc 1 652 0
+ 1038 01dc 044C     		ldr	r4, .L128
+ 1039 01de 064D     		ldr	r5, .L128+8
+ 1040 01e0 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1041 01e2 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1042 01e4 2B68     		ldr	r3, [r5]
+ 1043 01e6 2370     		strb	r3, [r4]
+ 1044              	.L83:
+ 653:Src/MenuLibrary.c ****           break;
+ 654:Src/MenuLibrary.c ****         }
+ 655:Src/MenuLibrary.c ****       }
+ 656:Src/MenuLibrary.c ****       break;
+ 657:Src/MenuLibrary.c ****     }
+ 658:Src/MenuLibrary.c ****   }
+ 659:Src/MenuLibrary.c ****   return str;
+ 660:Src/MenuLibrary.c **** }
+ 1045              		.loc 1 660 0
+ 1046 01e8 0148     		ldr	r0, .L128
+ 1047 01ea 70BC     		pop	{r4, r5, r6}
+ 1048              	.LCFI7:
+ 1049              		.cfi_restore 6
+ 1050              		.cfi_restore 5
+ 1051              		.cfi_restore 4
+ 1052              		.cfi_def_cfa_offset 0
+ 1053              	.LVL43:
+ 1054 01ec 7047     		bx	lr
+ 1055              	.L129:
+ 1056 01ee 00BF     		.align	2
+ 1057              	.L128:
+ 1058 01f0 00000000 		.word	.LANCHOR2
+ 1059 01f4 20000000 		.word	.LC5
+ARM GAS  /tmp/cccjoBhE.s 			page 31
+
+
+ 1060 01f8 C4010000 		.word	.LC26
+ 1061 01fc D8010000 		.word	.LC27
+ 1062 0200 EC010000 		.word	.LC28
+ 1063 0204 00020000 		.word	.LC29
+ 1064 0208 14020000 		.word	.LC30
+ 1065 020c 28020000 		.word	.LC31
+ 1066              		.cfi_endproc
+ 1067              	.LFE4:
+ 1069              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1070              		.align	2
+ 1071              	.LC0:
+ 1072 0000 20202020 		.ascii	"    %d\000"
+ 1072      256400
+ 1073 0007 00       		.space	1
+ 1074              	.LC1:
+ 1075 0008 20202025 		.ascii	"   %d\000"
+ 1075      6400
+ 1076 000e 0000     		.space	2
+ 1077              	.LC2:
+ 1078 0010 20202564 		.ascii	"  %d\000"
+ 1078      00
+ 1079 0015 000000   		.space	3
+ 1080              	.LC3:
+ 1081 0018 20256400 		.ascii	" %d\000"
+ 1082              	.LC4:
+ 1083 001c 256400   		.ascii	"%d\000"
+ 1084 001f 00       		.space	1
+ 1085              	.LC5:
+ 1086 0020 20202020 		.ascii	"                \000"
+ 1086      20202020 
+ 1086      20202020 
+ 1086      20202020 
+ 1086      00
+ 1087 0031 000000   		.space	3
+ 1088              	.LC6:
+ 1089 0034 20507269 		.ascii	" Print          \000"
+ 1089      6E742020 
+ 1089      20202020 
+ 1089      20202020 
+ 1089      00
+ 1090 0045 000000   		.space	3
+ 1091              	.LC7:
+ 1092 0048 2066696C 		.ascii	" file 1         \000"
+ 1092      65203120 
+ 1092      20202020 
+ 1092      20202020 
+ 1092      00
+ 1093 0059 000000   		.space	3
+ 1094              	.LC8:
+ 1095 005c 2066696C 		.ascii	" file 2         \000"
+ 1095      65203220 
+ 1095      20202020 
+ 1095      20202020 
+ 1095      00
+ 1096 006d 000000   		.space	3
+ 1097              	.LC9:
+ 1098 0070 2066696C 		.ascii	" file 3         \000"
+ARM GAS  /tmp/cccjoBhE.s 			page 32
+
+
+ 1098      65203320 
+ 1098      20202020 
+ 1098      20202020 
+ 1098      00
+ 1099 0081 000000   		.space	3
+ 1100              	.LC10:
+ 1101 0084 2066696C 		.ascii	" file 4         \000"
+ 1101      65203420 
+ 1101      20202020 
+ 1101      20202020 
+ 1101      00
+ 1102 0095 000000   		.space	3
+ 1103              	.LC11:
+ 1104 0098 2066696C 		.ascii	" file 5         \000"
+ 1104      65203520 
+ 1104      20202020 
+ 1104      20202020 
+ 1104      00
+ 1105 00a9 000000   		.space	3
+ 1106              	.LC12:
+ 1107 00ac 20536574 		.ascii	" Settings       \000"
+ 1107      74696E67 
+ 1107      73202020 
+ 1107      20202020 
+ 1107      00
+ 1108 00bd 000000   		.space	3
+ 1109              	.LC13:
+ 1110 00c0 20547970 		.ascii	" Type of plastic\000"
+ 1110      65206F66 
+ 1110      20706C61 
+ 1110      73746963 
+ 1110      00
+ 1111 00d1 000000   		.space	3
+ 1112              	.LC14:
+ 1113 00d4 20414253 		.ascii	" ABS plastic    \000"
+ 1113      20706C61 
+ 1113      73746963 
+ 1113      20202020 
+ 1113      00
+ 1114 00e5 000000   		.space	3
+ 1115              	.LC15:
+ 1116 00e8 20504C41 		.ascii	" PLA plastic    \000"
+ 1116      20706C61 
+ 1116      73746963 
+ 1116      20202020 
+ 1116      00
+ 1117 00f9 000000   		.space	3
+ 1118              	.LC16:
+ 1119 00fc 20457874 		.ascii	" Extruder temp. \000"
+ 1119      72756465 
+ 1119      72207465 
+ 1119      6D702E20 
+ 1119      00
+ 1120 010d 000000   		.space	3
+ 1121              	.LC17:
+ 1122 0110 2043616C 		.ascii	" Calibrate      \000"
+ 1122      69627261 
+ARM GAS  /tmp/cccjoBhE.s 			page 33
+
+
+ 1122      74652020 
+ 1122      20202020 
+ 1122      00
+ 1123 0121 000000   		.space	3
+ 1124              	.LC18:
+ 1125 0124 20596573 		.ascii	" Yes, do it     \000"
+ 1125      2C20646F 
+ 1125      20697420 
+ 1125      20202020 
+ 1125      00
+ 1126 0135 000000   		.space	3
+ 1127              	.LC19:
+ 1128 0138 204E6F2C 		.ascii	" No, don't do it\000"
+ 1128      20646F6E 
+ 1128      27742064 
+ 1128      6F206974 
+ 1128      00
+ 1129 0149 000000   		.space	3
+ 1130              	.LC20:
+ 1131 014c 20427269 		.ascii	" Brightness     \000"
+ 1131      6768746E 
+ 1131      65737320 
+ 1131      20202020 
+ 1131      00
+ 1132 015d 000000   		.space	3
+ 1133              	.LC21:
+ 1134 0160 204C616E 		.ascii	" Language       \000"
+ 1134      67756167 
+ 1134      65202020 
+ 1134      20202020 
+ 1134      00
+ 1135 0171 000000   		.space	3
+ 1136              	.LC22:
+ 1137 0174 20456E67 		.ascii	" English        \000"
+ 1137      6C697368 
+ 1137      20202020 
+ 1137      20202020 
+ 1137      00
+ 1138 0185 000000   		.space	3
+ 1139              	.LC23:
+ 1140 0188 20527573 		.ascii	" Russian        \000"
+ 1140      7369616E 
+ 1140      20202020 
+ 1140      20202020 
+ 1140      00
+ 1141 0199 000000   		.space	3
+ 1142              	.LC24:
+ 1143 019c 20436861 		.ascii	" Change filament\000"
+ 1143      6E676520 
+ 1143      66696C61 
+ 1143      6D656E74 
+ 1143      00
+ 1144 01ad 000000   		.space	3
+ 1145              	.LC25:
+ 1146 01b0 2048656C 		.ascii	" Help           \000"
+ 1146      70202020 
+ 1146      20202020 
+ARM GAS  /tmp/cccjoBhE.s 			page 34
+
+
+ 1146      20202020 
+ 1146      00
+ 1147 01c1 000000   		.space	3
+ 1148              	.LC26:
+ 1149 01c4 5F5F5F4D 		.ascii	"___MAIN MENU____\000"
+ 1149      41494E20 
+ 1149      4D454E55 
+ 1149      5F5F5F5F 
+ 1149      00
+ 1150 01d5 000000   		.space	3
+ 1151              	.LC27:
+ 1152 01d8 5F5F5345 		.ascii	"__SELECT FILE___\000"
+ 1152      4C454354 
+ 1152      2046494C 
+ 1152      455F5F5F 
+ 1152      00
+ 1153 01e9 000000   		.space	3
+ 1154              	.LC28:
+ 1155 01ec 5F5F5F5F 		.ascii	"____SETTINGS____\000"
+ 1155      53455454 
+ 1155      494E4753 
+ 1155      5F5F5F5F 
+ 1155      00
+ 1156 01fd 000000   		.space	3
+ 1157              	.LC29:
+ 1158 0200 54595045 		.ascii	"TYPE OF PLASTIC_\000"
+ 1158      204F4620 
+ 1158      504C4153 
+ 1158      5449435F 
+ 1158      00
+ 1159 0211 000000   		.space	3
+ 1160              	.LC30:
+ 1161 0214 5F5F5F43 		.ascii	"___CALIBRATE?___\000"
+ 1161      414C4942 
+ 1161      52415445 
+ 1161      3F5F5F5F 
+ 1161      00
+ 1162 0225 000000   		.space	3
+ 1163              	.LC31:
+ 1164 0228 5F5F5F5F 		.ascii	"____LANGUAGE____\000"
+ 1164      4C414E47 
+ 1164      55414745 
+ 1164      5F5F5F5F 
+ 1164      00
+ 1165              		.section	.bss.str.5111,"aw",%nobits
+ 1166              		.align	2
+ 1167              		.set	.LANCHOR1,. + 0
+ 1170              	str.5111:
+ 1171 0000 00000000 		.space	16
+ 1171      00000000 
+ 1171      00000000 
+ 1171      00000000 
+ 1172              		.section	.bss.str.5176,"aw",%nobits
+ 1173              		.align	2
+ 1174              		.set	.LANCHOR2,. + 0
+ 1177              	str.5176:
+ 1178 0000 00000000 		.space	16
+ARM GAS  /tmp/cccjoBhE.s 			page 35
+
+
+ 1178      00000000 
+ 1178      00000000 
+ 1178      00000000 
+ 1179              		.section	.bss.snumber.5079,"aw",%nobits
+ 1180              		.align	2
+ 1181              		.set	.LANCHOR0,. + 0
+ 1184              	snumber.5079:
+ 1185 0000 00000000 		.space	6
+ 1185      0000
+ 1186              		.text
+ 1187              	.Letext0:
+ 1188              		.file 2 "Inc/LCD.h"
+ 1189              		.file 3 "/usr/include/newlib/stdio.h"
+ARM GAS  /tmp/cccjoBhE.s 			page 36
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 MenuLibrary.c
+     /tmp/cccjoBhE.s:19     .text.NumberToString:0000000000000000 $t
+     /tmp/cccjoBhE.s:24     .text.NumberToString:0000000000000000 NumberToString
+     /tmp/cccjoBhE.s:104    .text.NumberToString:0000000000000054 $d
+     /tmp/cccjoBhE.s:115    .text.LCDUpdate:0000000000000000 $t
+     /tmp/cccjoBhE.s:120    .text.LCDUpdate:0000000000000000 LCDUpdate
+     /tmp/cccjoBhE.s:139    .text.LCDUpdate:000000000000000c $d
+     /tmp/cccjoBhE.s:147    .text.LCDUpdate:0000000000000014 $t
+     /tmp/cccjoBhE.s:217    .text.LCDUpdatePeriodsToGo:0000000000000000 $t
+     /tmp/cccjoBhE.s:222    .text.LCDUpdatePeriodsToGo:0000000000000000 LCDUpdatePeriodsToGo
+     /tmp/cccjoBhE.s:243    .text.LCDUpdatePeriodsToGo:0000000000000010 $d
+     /tmp/cccjoBhE.s:251    .text.LCDUpdatePeriodsToGo:0000000000000018 $t
+     /tmp/cccjoBhE.s:312    .text.MenuOption:0000000000000000 $t
+     /tmp/cccjoBhE.s:317    .text.MenuOption:0000000000000000 MenuOption
+     /tmp/cccjoBhE.s:347    .text.MenuOption:000000000000001e $d
+     /tmp/cccjoBhE.s:351    .text.MenuOption:0000000000000026 $t
+     /tmp/cccjoBhE.s:359    .text.MenuOption:0000000000000032 $d
+     /tmp/cccjoBhE.s:365    .text.MenuOption:0000000000000038 $t
+     /tmp/cccjoBhE.s:453    .text.MenuOption:00000000000000c0 $d
+     /tmp/cccjoBhE.s:459    .text.MenuOption:00000000000000c6 $t
+     /tmp/cccjoBhE.s:672    .text.MenuOption:00000000000001f0 $d
+     /tmp/cccjoBhE.s:698    .text.MenuTitle:0000000000000000 $t
+     /tmp/cccjoBhE.s:703    .text.MenuTitle:0000000000000000 MenuTitle
+     /tmp/cccjoBhE.s:733    .text.MenuTitle:000000000000001e $d
+     /tmp/cccjoBhE.s:737    .text.MenuTitle:0000000000000026 $t
+     /tmp/cccjoBhE.s:745    .text.MenuTitle:0000000000000032 $d
+     /tmp/cccjoBhE.s:751    .text.MenuTitle:0000000000000038 $t
+     /tmp/cccjoBhE.s:839    .text.MenuTitle:00000000000000c0 $d
+     /tmp/cccjoBhE.s:845    .text.MenuTitle:00000000000000c6 $t
+     /tmp/cccjoBhE.s:1058   .text.MenuTitle:00000000000001f0 $d
+     /tmp/cccjoBhE.s:1070   .rodata.str1.4:0000000000000000 $d
+     /tmp/cccjoBhE.s:1166   .bss.str.5111:0000000000000000 $d
+     /tmp/cccjoBhE.s:1170   .bss.str.5111:0000000000000000 str.5111
+     /tmp/cccjoBhE.s:1173   .bss.str.5176:0000000000000000 $d
+     /tmp/cccjoBhE.s:1177   .bss.str.5176:0000000000000000 str.5176
+     /tmp/cccjoBhE.s:1180   .bss.snumber.5079:0000000000000000 $d
+     /tmp/cccjoBhE.s:1184   .bss.snumber.5079:0000000000000000 snumber.5079
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+sprintf
+LCDSetToWrite
+LCDSetCommandMode
+LCDEnableOn
+LCDSetCursorPosition
+LCDEnableOff
+LCDSetCharacterMode
+LCDSetACharacter

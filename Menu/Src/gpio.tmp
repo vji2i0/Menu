@@ -1,0 +1,50 @@
+
+#n/** Configure pins as #n #t#t #t* Analog #n #t#t #t* Input #n #t#t #t* Output#n #t#t #t* EVENT_OUT#n #t#t #t* EXTI
+*/
+static void MX_GPIO_Init(void)
+{
+#n
+#tGPIO_InitTypeDef GPIO_InitStruct;
+#n#t/* GPIO Ports Clock Enable */
+#t__HAL_RCC_GPIOC_CLK_ENABLE();
+#t__HAL_RCC_GPIOB_CLK_ENABLE();
+#t__HAL_RCC_GPIOA_CLK_ENABLE();
+#n#t/*Configure GPIO pin Output Level */
+#tHAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_9, GPIO_PIN_RESET);
+#n#t/*Configure GPIO pin Output Level */
+#tHAL_GPIO_WritePin(GPIOB, GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+#n#t/*Configure GPIO pin Output Level */
+#tHAL_GPIO_WritePin(GPIOA, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11, GPIO_PIN_RESET);
+#n#t/*Configure GPIO pins : PC0 PC6 PC7 PC8 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PC9 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_9;
+#tGPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+#tGPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+#tHAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PB13 PB14 PB15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+#tGPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PA8 PA9 PA10 PA11 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
+#tGPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+#tGPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+#tHAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#n#t/*Configure GPIO pin : PA15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_NOPULL;
+#tHAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#n#t/*Configure GPIO pin : PC10 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_10;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_NOPULL;
+#tHAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PB4 PB5 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_NOPULL;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n
+}
+#n

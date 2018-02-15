@@ -1,0 +1,1502 @@
+ARM GAS  /tmp/ccFn57Pd.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"LCD.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.notExactTimeDelay,"ax",%progbits
+  19              		.align	2
+  20              		.global	notExactTimeDelay
+  21              		.thumb
+  22              		.thumb_func
+  24              	notExactTimeDelay:
+  25              	.LFB63:
+  26              		.file 1 "Src/LCD.c"
+   1:Src/LCD.c     **** #include "LCD.h"
+   2:Src/LCD.c     **** #include "stm32f1xx_hal.h"
+   3:Src/LCD.c     **** 
+   4:Src/LCD.c     **** 
+   5:Src/LCD.c     **** 
+   6:Src/LCD.c     **** #define LCD_DB0_PIN GPIO_PIN_6
+   7:Src/LCD.c     **** #define LCD_DB0_PORT GPIOC
+   8:Src/LCD.c     **** #define LCD_DB1_PIN GPIO_PIN_7
+   9:Src/LCD.c     **** #define LCD_DB1_PORT GPIOC
+  10:Src/LCD.c     **** #define LCD_DB2_PIN GPIO_PIN_8
+  11:Src/LCD.c     **** #define LCD_DB2_PORT GPIOC
+  12:Src/LCD.c     **** #define LCD_DB3_PIN GPIO_PIN_9
+  13:Src/LCD.c     **** #define LCD_DB3_PORT GPIOC
+  14:Src/LCD.c     **** #define LCD_DB4_PIN GPIO_PIN_8
+  15:Src/LCD.c     **** #define LCD_DB4_PORT GPIOA
+  16:Src/LCD.c     **** #define LCD_DB5_PIN GPIO_PIN_9
+  17:Src/LCD.c     **** #define LCD_DB5_PORT GPIOA
+  18:Src/LCD.c     **** #define LCD_DB6_PIN GPIO_PIN_10
+  19:Src/LCD.c     **** #define LCD_DB6_PORT GPIOA
+  20:Src/LCD.c     **** #define LCD_DB7_PIN GPIO_PIN_11
+  21:Src/LCD.c     **** #define LCD_DB7_PORT GPIOA
+  22:Src/LCD.c     **** #define LCD_RS_PIN GPIO_PIN_13
+  23:Src/LCD.c     **** #define LCD_RS_PORT GPIOB
+  24:Src/LCD.c     **** #define LCD_RW_PIN GPIO_PIN_14
+  25:Src/LCD.c     **** #define LCD_RW_PORT GPIOB
+  26:Src/LCD.c     **** #define LCD_ENABLE_PIN GPIO_PIN_15
+  27:Src/LCD.c     **** #define LCD_ENABLE_PORT GPIOB
+  28:Src/LCD.c     **** #define DELAY_TIME_BEFORE_ENABLE 2000
+  29:Src/LCD.c     **** #define DELAY_TIME_BEFORE_DISABLE 4000
+  30:Src/LCD.c     **** 
+  31:Src/LCD.c     ****   void notExactTimeDelay(long timeDelay)
+  32:Src/LCD.c     ****   {
+ARM GAS  /tmp/ccFn57Pd.s 			page 2
+
+
+  27              		.loc 1 32 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              	.LVL0:
+  33 0000 82B0     		sub	sp, sp, #8
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  33:Src/LCD.c     ****     volatile long i;
+  34:Src/LCD.c     ****     for(i=0; i<timeDelay; i++)
+  36              		.loc 1 34 0
+  37 0002 0023     		movs	r3, #0
+  38 0004 0193     		str	r3, [sp, #4]
+  39 0006 02E0     		b	.L2
+  40              	.L3:
+  41              		.loc 1 34 0 is_stmt 0 discriminator 3
+  42 0008 019B     		ldr	r3, [sp, #4]
+  43 000a 0133     		adds	r3, r3, #1
+  44 000c 0193     		str	r3, [sp, #4]
+  45              	.L2:
+  46              		.loc 1 34 0 discriminator 1
+  47 000e 019B     		ldr	r3, [sp, #4]
+  48 0010 8342     		cmp	r3, r0
+  49 0012 F9DB     		blt	.L3
+  35:Src/LCD.c     ****     {
+  36:Src/LCD.c     **** 
+  37:Src/LCD.c     ****     }
+  38:Src/LCD.c     ****   }
+  50              		.loc 1 38 0 is_stmt 1
+  51 0014 02B0     		add	sp, sp, #8
+  52              	.LCFI1:
+  53              		.cfi_def_cfa_offset 0
+  54              		@ sp needed
+  55 0016 7047     		bx	lr
+  56              		.cfi_endproc
+  57              	.LFE63:
+  59              		.section	.text.LCDSetToWrite,"ax",%progbits
+  60              		.align	2
+  61              		.global	LCDSetToWrite
+  62              		.thumb
+  63              		.thumb_func
+  65              	LCDSetToWrite:
+  66              	.LFB64:
+  39:Src/LCD.c     **** 
+  40:Src/LCD.c     ****   void LCDSetToWrite()
+  41:Src/LCD.c     ****   {
+  67              		.loc 1 41 0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71 0000 08B5     		push	{r3, lr}
+  72              	.LCFI2:
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 3, -8
+  75              		.cfi_offset 14, -4
+  42:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RW_PORT, LCD_RW_PIN, GPIO_PIN_RESET);
+ARM GAS  /tmp/ccFn57Pd.s 			page 3
+
+
+  76              		.loc 1 42 0
+  77 0002 0348     		ldr	r0, .L7
+  78 0004 4FF48041 		mov	r1, #16384
+  79 0008 0022     		movs	r2, #0
+  80 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+  81              	.LVL1:
+  82 000e 08BD     		pop	{r3, pc}
+  83              	.L8:
+  84              		.align	2
+  85              	.L7:
+  86 0010 000C0140 		.word	1073810432
+  87              		.cfi_endproc
+  88              	.LFE64:
+  90              		.section	.text.LCDSetToRead,"ax",%progbits
+  91              		.align	2
+  92              		.global	LCDSetToRead
+  93              		.thumb
+  94              		.thumb_func
+  96              	LCDSetToRead:
+  97              	.LFB65:
+  43:Src/LCD.c     ****   }
+  44:Src/LCD.c     **** 
+  45:Src/LCD.c     ****   void LCDSetToRead()
+  46:Src/LCD.c     ****   {
+  98              		.loc 1 46 0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102 0000 08B5     		push	{r3, lr}
+ 103              	.LCFI3:
+ 104              		.cfi_def_cfa_offset 8
+ 105              		.cfi_offset 3, -8
+ 106              		.cfi_offset 14, -4
+  47:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RW_PORT, LCD_RW_PIN, GPIO_PIN_SET);
+ 107              		.loc 1 47 0
+ 108 0002 0348     		ldr	r0, .L11
+ 109 0004 4FF48041 		mov	r1, #16384
+ 110 0008 0122     		movs	r2, #1
+ 111 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 112              	.LVL2:
+ 113 000e 08BD     		pop	{r3, pc}
+ 114              	.L12:
+ 115              		.align	2
+ 116              	.L11:
+ 117 0010 000C0140 		.word	1073810432
+ 118              		.cfi_endproc
+ 119              	.LFE65:
+ 121              		.section	.text.LCDSetCommandMode,"ax",%progbits
+ 122              		.align	2
+ 123              		.global	LCDSetCommandMode
+ 124              		.thumb
+ 125              		.thumb_func
+ 127              	LCDSetCommandMode:
+ 128              	.LFB66:
+  48:Src/LCD.c     ****   }
+  49:Src/LCD.c     **** 
+  50:Src/LCD.c     ****   void LCDSetCommandMode()
+ARM GAS  /tmp/ccFn57Pd.s 			page 4
+
+
+  51:Src/LCD.c     ****   {
+ 129              		.loc 1 51 0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133 0000 08B5     		push	{r3, lr}
+ 134              	.LCFI4:
+ 135              		.cfi_def_cfa_offset 8
+ 136              		.cfi_offset 3, -8
+ 137              		.cfi_offset 14, -4
+  52:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS_PIN, GPIO_PIN_RESET);
+ 138              		.loc 1 52 0
+ 139 0002 0348     		ldr	r0, .L15
+ 140 0004 4FF40051 		mov	r1, #8192
+ 141 0008 0022     		movs	r2, #0
+ 142 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 143              	.LVL3:
+ 144 000e 08BD     		pop	{r3, pc}
+ 145              	.L16:
+ 146              		.align	2
+ 147              	.L15:
+ 148 0010 000C0140 		.word	1073810432
+ 149              		.cfi_endproc
+ 150              	.LFE66:
+ 152              		.section	.text.LCDSetCharacterMode,"ax",%progbits
+ 153              		.align	2
+ 154              		.global	LCDSetCharacterMode
+ 155              		.thumb
+ 156              		.thumb_func
+ 158              	LCDSetCharacterMode:
+ 159              	.LFB67:
+  53:Src/LCD.c     ****   }
+  54:Src/LCD.c     **** 
+  55:Src/LCD.c     ****   void LCDSetCharacterMode()
+  56:Src/LCD.c     ****   {
+ 160              		.loc 1 56 0
+ 161              		.cfi_startproc
+ 162              		@ args = 0, pretend = 0, frame = 0
+ 163              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164 0000 08B5     		push	{r3, lr}
+ 165              	.LCFI5:
+ 166              		.cfi_def_cfa_offset 8
+ 167              		.cfi_offset 3, -8
+ 168              		.cfi_offset 14, -4
+  57:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS_PIN, GPIO_PIN_SET);
+ 169              		.loc 1 57 0
+ 170 0002 0348     		ldr	r0, .L19
+ 171 0004 4FF40051 		mov	r1, #8192
+ 172 0008 0122     		movs	r2, #1
+ 173 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 174              	.LVL4:
+ 175 000e 08BD     		pop	{r3, pc}
+ 176              	.L20:
+ 177              		.align	2
+ 178              	.L19:
+ 179 0010 000C0140 		.word	1073810432
+ 180              		.cfi_endproc
+ARM GAS  /tmp/ccFn57Pd.s 			page 5
+
+
+ 181              	.LFE67:
+ 183              		.section	.text.LCDEnableOn,"ax",%progbits
+ 184              		.align	2
+ 185              		.global	LCDEnableOn
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	LCDEnableOn:
+ 190              	.LFB68:
+  58:Src/LCD.c     ****   }
+  59:Src/LCD.c     **** 
+  60:Src/LCD.c     ****   void LCDEnableOn()
+  61:Src/LCD.c     ****   {
+ 191              		.loc 1 61 0
+ 192              		.cfi_startproc
+ 193              		@ args = 0, pretend = 0, frame = 0
+ 194              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195 0000 08B5     		push	{r3, lr}
+ 196              	.LCFI6:
+ 197              		.cfi_def_cfa_offset 8
+ 198              		.cfi_offset 3, -8
+ 199              		.cfi_offset 14, -4
+  62:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_ENABLE_PORT, LCD_ENABLE_PIN, GPIO_PIN_SET);
+ 200              		.loc 1 62 0
+ 201 0002 0348     		ldr	r0, .L23
+ 202 0004 4FF40041 		mov	r1, #32768
+ 203 0008 0122     		movs	r2, #1
+ 204 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 205              	.LVL5:
+ 206 000e 08BD     		pop	{r3, pc}
+ 207              	.L24:
+ 208              		.align	2
+ 209              	.L23:
+ 210 0010 000C0140 		.word	1073810432
+ 211              		.cfi_endproc
+ 212              	.LFE68:
+ 214              		.section	.text.LCDEnableOff,"ax",%progbits
+ 215              		.align	2
+ 216              		.global	LCDEnableOff
+ 217              		.thumb
+ 218              		.thumb_func
+ 220              	LCDEnableOff:
+ 221              	.LFB69:
+  63:Src/LCD.c     ****   }
+  64:Src/LCD.c     **** 
+  65:Src/LCD.c     ****   void LCDEnableOff()
+  66:Src/LCD.c     ****   {
+ 222              		.loc 1 66 0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 0
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 226 0000 08B5     		push	{r3, lr}
+ 227              	.LCFI7:
+ 228              		.cfi_def_cfa_offset 8
+ 229              		.cfi_offset 3, -8
+ 230              		.cfi_offset 14, -4
+  67:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_ENABLE_PORT, LCD_ENABLE_PIN, GPIO_PIN_RESET);
+ 231              		.loc 1 67 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 6
+
+
+ 232 0002 0348     		ldr	r0, .L27
+ 233 0004 4FF40041 		mov	r1, #32768
+ 234 0008 0022     		movs	r2, #0
+ 235 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 236              	.LVL6:
+ 237 000e 08BD     		pop	{r3, pc}
+ 238              	.L28:
+ 239              		.align	2
+ 240              	.L27:
+ 241 0010 000C0140 		.word	1073810432
+ 242              		.cfi_endproc
+ 243              	.LFE69:
+ 245              		.section	.text.SetPins,"ax",%progbits
+ 246              		.align	2
+ 247              		.global	SetPins
+ 248              		.thumb
+ 249              		.thumb_func
+ 251              	SetPins:
+ 252              	.LFB70:
+  68:Src/LCD.c     ****   }
+  69:Src/LCD.c     **** 
+  70:Src/LCD.c     **** 
+  71:Src/LCD.c     ****   void SetPins()
+  72:Src/LCD.c     ****   {
+ 253              		.loc 1 72 0
+ 254              		.cfi_startproc
+ 255              		@ args = 0, pretend = 0, frame = 0
+ 256              		@ frame_needed = 0, uses_anonymous_args = 0
+ 257 0000 10B5     		push	{r4, lr}
+ 258              	.LCFI8:
+ 259              		.cfi_def_cfa_offset 8
+ 260              		.cfi_offset 4, -8
+ 261              		.cfi_offset 14, -4
+  73:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB0_PORT, LCD_DB0_PIN, GPIO_PIN_RESET);
+ 262              		.loc 1 73 0
+ 263 0002 234C     		ldr	r4, .L31
+ 264 0004 2046     		mov	r0, r4
+ 265 0006 4021     		movs	r1, #64
+ 266 0008 0022     		movs	r2, #0
+ 267 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 268              	.LVL7:
+  74:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB1_PORT, LCD_DB1_PIN, GPIO_PIN_RESET);
+ 269              		.loc 1 74 0
+ 270 000e 2046     		mov	r0, r4
+ 271 0010 8021     		movs	r1, #128
+ 272 0012 0022     		movs	r2, #0
+ 273 0014 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 274              	.LVL8:
+  75:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB2_PORT, LCD_DB2_PIN, GPIO_PIN_RESET);
+ 275              		.loc 1 75 0
+ 276 0018 2046     		mov	r0, r4
+ 277 001a 4FF48071 		mov	r1, #256
+ 278 001e 0022     		movs	r2, #0
+ 279 0020 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 280              	.LVL9:
+  76:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB3_PORT, LCD_DB3_PIN, GPIO_PIN_RESET);
+ 281              		.loc 1 76 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 7
+
+
+ 282 0024 2046     		mov	r0, r4
+ 283 0026 4FF40071 		mov	r1, #512
+ 284 002a 0022     		movs	r2, #0
+ 285 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 286              	.LVL10:
+  77:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB4_PORT, LCD_DB4_PIN, GPIO_PIN_RESET);
+ 287              		.loc 1 77 0
+ 288 0030 A4F50064 		sub	r4, r4, #2048
+ 289 0034 2046     		mov	r0, r4
+ 290 0036 4FF48071 		mov	r1, #256
+ 291 003a 0022     		movs	r2, #0
+ 292 003c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 293              	.LVL11:
+  78:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB5_PORT, LCD_DB5_PIN, GPIO_PIN_RESET);
+ 294              		.loc 1 78 0
+ 295 0040 2046     		mov	r0, r4
+ 296 0042 4FF40071 		mov	r1, #512
+ 297 0046 0022     		movs	r2, #0
+ 298 0048 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 299              	.LVL12:
+  79:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB6_PORT, LCD_DB6_PIN, GPIO_PIN_RESET);
+ 300              		.loc 1 79 0
+ 301 004c 2046     		mov	r0, r4
+ 302 004e 4FF48061 		mov	r1, #1024
+ 303 0052 0022     		movs	r2, #0
+ 304 0054 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 305              	.LVL13:
+  80:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_DB7_PORT, LCD_DB7_PIN, GPIO_PIN_RESET);
+ 306              		.loc 1 80 0
+ 307 0058 2046     		mov	r0, r4
+ 308 005a 4FF40061 		mov	r1, #2048
+ 309 005e 0022     		movs	r2, #0
+ 310 0060 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 311              	.LVL14:
+  81:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RS_PORT, LCD_RS_PIN, GPIO_PIN_RESET);
+ 312              		.loc 1 81 0
+ 313 0064 04F58064 		add	r4, r4, #1024
+ 314 0068 2046     		mov	r0, r4
+ 315 006a 4FF40051 		mov	r1, #8192
+ 316 006e 0022     		movs	r2, #0
+ 317 0070 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 318              	.LVL15:
+  82:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_RW_PORT, LCD_RW_PIN, GPIO_PIN_RESET);
+ 319              		.loc 1 82 0
+ 320 0074 2046     		mov	r0, r4
+ 321 0076 4FF48041 		mov	r1, #16384
+ 322 007a 0022     		movs	r2, #0
+ 323 007c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 324              	.LVL16:
+  83:Src/LCD.c     ****     HAL_GPIO_WritePin(LCD_ENABLE_PORT, LCD_ENABLE_PIN, GPIO_PIN_RESET);
+ 325              		.loc 1 83 0
+ 326 0080 2046     		mov	r0, r4
+ 327 0082 4FF40041 		mov	r1, #32768
+ 328 0086 0022     		movs	r2, #0
+ 329 0088 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 330              	.LVL17:
+ 331 008c 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/ccFn57Pd.s 			page 8
+
+
+ 332              	.L32:
+ 333 008e 00BF     		.align	2
+ 334              	.L31:
+ 335 0090 00100140 		.word	1073811456
+ 336              		.cfi_endproc
+ 337              	.LFE70:
+ 339              		.section	.text.LCDSetACharacter,"ax",%progbits
+ 340              		.align	2
+ 341              		.global	LCDSetACharacter
+ 342              		.thumb
+ 343              		.thumb_func
+ 345              	LCDSetACharacter:
+ 346              	.LFB71:
+  84:Src/LCD.c     ****   }
+  85:Src/LCD.c     **** 
+  86:Src/LCD.c     ****   void LCDSetACharacter(char character)
+  87:Src/LCD.c     ****   {
+ 347              		.loc 1 87 0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 0, uses_anonymous_args = 0
+ 351              	.LVL18:
+ 352 0000 10B5     		push	{r4, lr}
+ 353              	.LCFI9:
+ 354              		.cfi_def_cfa_offset 8
+ 355              		.cfi_offset 4, -8
+ 356              		.cfi_offset 14, -4
+ 357 0002 0446     		mov	r4, r0
+  88:Src/LCD.c     ****     if (character & 0b00000001)
+ 358              		.loc 1 88 0
+ 359 0004 10F0010F 		tst	r0, #1
+ 360 0008 05D0     		beq	.L34
+  89:Src/LCD.c     ****     {
+  90:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB0_PORT, LCD_DB0_PIN, GPIO_PIN_SET);
+ 361              		.loc 1 90 0
+ 362 000a 3D48     		ldr	r0, .L51
+ 363              	.LVL19:
+ 364 000c 4021     		movs	r1, #64
+ 365 000e 0122     		movs	r2, #1
+ 366 0010 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 367              	.LVL20:
+ 368 0014 04E0     		b	.L35
+ 369              	.LVL21:
+ 370              	.L34:
+  91:Src/LCD.c     ****     }else{
+  92:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB0_PORT, LCD_DB0_PIN, GPIO_PIN_RESET);
+ 371              		.loc 1 92 0
+ 372 0016 3A48     		ldr	r0, .L51
+ 373              	.LVL22:
+ 374 0018 4021     		movs	r1, #64
+ 375 001a 0022     		movs	r2, #0
+ 376 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 377              	.LVL23:
+ 378              	.L35:
+  93:Src/LCD.c     ****     }
+  94:Src/LCD.c     **** 
+  95:Src/LCD.c     ****     if (character & 0b00000010)
+ARM GAS  /tmp/ccFn57Pd.s 			page 9
+
+
+ 379              		.loc 1 95 0
+ 380 0020 14F0020F 		tst	r4, #2
+ 381 0024 05D0     		beq	.L36
+  96:Src/LCD.c     ****     {
+  97:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB1_PORT, LCD_DB1_PIN, GPIO_PIN_SET);
+ 382              		.loc 1 97 0
+ 383 0026 3648     		ldr	r0, .L51
+ 384 0028 8021     		movs	r1, #128
+ 385 002a 0122     		movs	r2, #1
+ 386 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 387              	.LVL24:
+ 388 0030 04E0     		b	.L37
+ 389              	.L36:
+  98:Src/LCD.c     ****     }else{
+  99:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB1_PORT, LCD_DB1_PIN, GPIO_PIN_RESET);
+ 390              		.loc 1 99 0
+ 391 0032 3348     		ldr	r0, .L51
+ 392 0034 8021     		movs	r1, #128
+ 393 0036 0022     		movs	r2, #0
+ 394 0038 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 395              	.LVL25:
+ 396              	.L37:
+ 100:Src/LCD.c     ****     }
+ 101:Src/LCD.c     **** 
+ 102:Src/LCD.c     ****     if (character & 0b00000100)
+ 397              		.loc 1 102 0
+ 398 003c 14F0040F 		tst	r4, #4
+ 399 0040 06D0     		beq	.L38
+ 103:Src/LCD.c     ****     {
+ 104:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB2_PORT, LCD_DB2_PIN, GPIO_PIN_SET);
+ 400              		.loc 1 104 0
+ 401 0042 2F48     		ldr	r0, .L51
+ 402 0044 4FF48071 		mov	r1, #256
+ 403 0048 0122     		movs	r2, #1
+ 404 004a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 405              	.LVL26:
+ 406 004e 05E0     		b	.L39
+ 407              	.L38:
+ 105:Src/LCD.c     ****     }else{
+ 106:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB2_PORT, LCD_DB2_PIN, GPIO_PIN_RESET);
+ 408              		.loc 1 106 0
+ 409 0050 2B48     		ldr	r0, .L51
+ 410 0052 4FF48071 		mov	r1, #256
+ 411 0056 0022     		movs	r2, #0
+ 412 0058 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 413              	.LVL27:
+ 414              	.L39:
+ 107:Src/LCD.c     ****     }
+ 108:Src/LCD.c     **** 
+ 109:Src/LCD.c     ****     if (character & 0b00001000)
+ 415              		.loc 1 109 0
+ 416 005c 14F0080F 		tst	r4, #8
+ 417 0060 06D0     		beq	.L40
+ 110:Src/LCD.c     ****     {
+ 111:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB3_PORT, LCD_DB3_PIN, GPIO_PIN_SET);
+ 418              		.loc 1 111 0
+ 419 0062 2748     		ldr	r0, .L51
+ARM GAS  /tmp/ccFn57Pd.s 			page 10
+
+
+ 420 0064 4FF40071 		mov	r1, #512
+ 421 0068 0122     		movs	r2, #1
+ 422 006a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 423              	.LVL28:
+ 424 006e 05E0     		b	.L41
+ 425              	.L40:
+ 112:Src/LCD.c     ****     }else{
+ 113:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB3_PORT, LCD_DB3_PIN, GPIO_PIN_RESET);
+ 426              		.loc 1 113 0
+ 427 0070 2348     		ldr	r0, .L51
+ 428 0072 4FF40071 		mov	r1, #512
+ 429 0076 0022     		movs	r2, #0
+ 430 0078 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 431              	.LVL29:
+ 432              	.L41:
+ 114:Src/LCD.c     ****     }
+ 115:Src/LCD.c     ****     if (character & 0b00010000)
+ 433              		.loc 1 115 0
+ 434 007c 14F0100F 		tst	r4, #16
+ 435 0080 06D0     		beq	.L42
+ 116:Src/LCD.c     ****     {
+ 117:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB4_PORT, LCD_DB4_PIN, GPIO_PIN_SET);
+ 436              		.loc 1 117 0
+ 437 0082 2048     		ldr	r0, .L51+4
+ 438 0084 4FF48071 		mov	r1, #256
+ 439 0088 0122     		movs	r2, #1
+ 440 008a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 441              	.LVL30:
+ 442 008e 05E0     		b	.L43
+ 443              	.L42:
+ 118:Src/LCD.c     ****     }else{
+ 119:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB4_PORT, LCD_DB4_PIN, GPIO_PIN_RESET);
+ 444              		.loc 1 119 0
+ 445 0090 1C48     		ldr	r0, .L51+4
+ 446 0092 4FF48071 		mov	r1, #256
+ 447 0096 0022     		movs	r2, #0
+ 448 0098 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 449              	.LVL31:
+ 450              	.L43:
+ 120:Src/LCD.c     ****     }
+ 121:Src/LCD.c     **** 
+ 122:Src/LCD.c     ****     if (character & 0b00100000)
+ 451              		.loc 1 122 0
+ 452 009c 14F0200F 		tst	r4, #32
+ 453 00a0 06D0     		beq	.L44
+ 123:Src/LCD.c     ****     {
+ 124:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB5_PORT, LCD_DB5_PIN, GPIO_PIN_SET);
+ 454              		.loc 1 124 0
+ 455 00a2 1848     		ldr	r0, .L51+4
+ 456 00a4 4FF40071 		mov	r1, #512
+ 457 00a8 0122     		movs	r2, #1
+ 458 00aa FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 459              	.LVL32:
+ 460 00ae 05E0     		b	.L45
+ 461              	.L44:
+ 125:Src/LCD.c     ****     }else{
+ 126:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB5_PORT, LCD_DB5_PIN, GPIO_PIN_RESET);
+ARM GAS  /tmp/ccFn57Pd.s 			page 11
+
+
+ 462              		.loc 1 126 0
+ 463 00b0 1448     		ldr	r0, .L51+4
+ 464 00b2 4FF40071 		mov	r1, #512
+ 465 00b6 0022     		movs	r2, #0
+ 466 00b8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 467              	.LVL33:
+ 468              	.L45:
+ 127:Src/LCD.c     ****     }
+ 128:Src/LCD.c     **** 
+ 129:Src/LCD.c     ****     if (character & 0b01000000)
+ 469              		.loc 1 129 0
+ 470 00bc 14F0400F 		tst	r4, #64
+ 471 00c0 06D0     		beq	.L46
+ 130:Src/LCD.c     ****     {
+ 131:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB6_PORT, LCD_DB6_PIN, GPIO_PIN_SET);
+ 472              		.loc 1 131 0
+ 473 00c2 1048     		ldr	r0, .L51+4
+ 474 00c4 4FF48061 		mov	r1, #1024
+ 475 00c8 0122     		movs	r2, #1
+ 476 00ca FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 477              	.LVL34:
+ 478 00ce 05E0     		b	.L47
+ 479              	.L46:
+ 132:Src/LCD.c     ****     }else{
+ 133:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB6_PORT, LCD_DB6_PIN, GPIO_PIN_RESET);
+ 480              		.loc 1 133 0
+ 481 00d0 0C48     		ldr	r0, .L51+4
+ 482 00d2 4FF48061 		mov	r1, #1024
+ 483 00d6 0022     		movs	r2, #0
+ 484 00d8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 485              	.LVL35:
+ 486              	.L47:
+ 134:Src/LCD.c     ****     }
+ 135:Src/LCD.c     **** 
+ 136:Src/LCD.c     ****     if (character & 0b10000000)
+ 487              		.loc 1 136 0
+ 488 00dc 14F0800F 		tst	r4, #128
+ 489 00e0 06D0     		beq	.L48
+ 137:Src/LCD.c     ****     {
+ 138:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB7_PORT, LCD_DB7_PIN, GPIO_PIN_SET);
+ 490              		.loc 1 138 0
+ 491 00e2 0848     		ldr	r0, .L51+4
+ 492 00e4 4FF40061 		mov	r1, #2048
+ 493 00e8 0122     		movs	r2, #1
+ 494 00ea FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 495              	.LVL36:
+ 496 00ee 10BD     		pop	{r4, pc}
+ 497              	.L48:
+ 139:Src/LCD.c     ****     }else{
+ 140:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB7_PORT, LCD_DB7_PIN, GPIO_PIN_RESET);
+ 498              		.loc 1 140 0
+ 499 00f0 0448     		ldr	r0, .L51+4
+ 500 00f2 4FF40061 		mov	r1, #2048
+ 501 00f6 0022     		movs	r2, #0
+ 502 00f8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 503              	.LVL37:
+ 504 00fc 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/ccFn57Pd.s 			page 12
+
+
+ 505              	.L52:
+ 506 00fe 00BF     		.align	2
+ 507              	.L51:
+ 508 0100 00100140 		.word	1073811456
+ 509 0104 00080140 		.word	1073809408
+ 510              		.cfi_endproc
+ 511              	.LFE71:
+ 513              		.section	.text.LCDSetACommand,"ax",%progbits
+ 514              		.align	2
+ 515              		.global	LCDSetACommand
+ 516              		.thumb
+ 517              		.thumb_func
+ 519              	LCDSetACommand:
+ 520              	.LFB72:
+ 141:Src/LCD.c     ****     }
+ 142:Src/LCD.c     ****   }
+ 143:Src/LCD.c     **** 
+ 144:Src/LCD.c     ****   void LCDSetACommand(char character)
+ 145:Src/LCD.c     ****   {
+ 521              		.loc 1 145 0
+ 522              		.cfi_startproc
+ 523              		@ args = 0, pretend = 0, frame = 0
+ 524              		@ frame_needed = 0, uses_anonymous_args = 0
+ 525              	.LVL38:
+ 526 0000 10B5     		push	{r4, lr}
+ 527              	.LCFI10:
+ 528              		.cfi_def_cfa_offset 8
+ 529              		.cfi_offset 4, -8
+ 530              		.cfi_offset 14, -4
+ 531 0002 0446     		mov	r4, r0
+ 146:Src/LCD.c     ****     if (character & 0b00000001)
+ 532              		.loc 1 146 0
+ 533 0004 10F0010F 		tst	r0, #1
+ 534 0008 05D0     		beq	.L54
+ 147:Src/LCD.c     ****     {
+ 148:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB0_PORT, LCD_DB0_PIN, GPIO_PIN_SET);
+ 535              		.loc 1 148 0
+ 536 000a 3D48     		ldr	r0, .L71
+ 537              	.LVL39:
+ 538 000c 4021     		movs	r1, #64
+ 539 000e 0122     		movs	r2, #1
+ 540 0010 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 541              	.LVL40:
+ 542 0014 04E0     		b	.L55
+ 543              	.LVL41:
+ 544              	.L54:
+ 149:Src/LCD.c     ****     }else{
+ 150:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB0_PORT, LCD_DB0_PIN, GPIO_PIN_RESET);
+ 545              		.loc 1 150 0
+ 546 0016 3A48     		ldr	r0, .L71
+ 547              	.LVL42:
+ 548 0018 4021     		movs	r1, #64
+ 549 001a 0022     		movs	r2, #0
+ 550 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 551              	.LVL43:
+ 552              	.L55:
+ 151:Src/LCD.c     ****     }
+ARM GAS  /tmp/ccFn57Pd.s 			page 13
+
+
+ 152:Src/LCD.c     **** 
+ 153:Src/LCD.c     ****     if (character & 0b00000010)
+ 553              		.loc 1 153 0
+ 554 0020 14F0020F 		tst	r4, #2
+ 555 0024 05D0     		beq	.L56
+ 154:Src/LCD.c     ****     {
+ 155:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB1_PORT, LCD_DB1_PIN, GPIO_PIN_SET);
+ 556              		.loc 1 155 0
+ 557 0026 3648     		ldr	r0, .L71
+ 558 0028 8021     		movs	r1, #128
+ 559 002a 0122     		movs	r2, #1
+ 560 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 561              	.LVL44:
+ 562 0030 04E0     		b	.L57
+ 563              	.L56:
+ 156:Src/LCD.c     ****     }else{
+ 157:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB1_PORT, LCD_DB1_PIN, GPIO_PIN_RESET);
+ 564              		.loc 1 157 0
+ 565 0032 3348     		ldr	r0, .L71
+ 566 0034 8021     		movs	r1, #128
+ 567 0036 0022     		movs	r2, #0
+ 568 0038 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 569              	.LVL45:
+ 570              	.L57:
+ 158:Src/LCD.c     ****     }
+ 159:Src/LCD.c     **** 
+ 160:Src/LCD.c     ****     if (character & 0b00000100)
+ 571              		.loc 1 160 0
+ 572 003c 14F0040F 		tst	r4, #4
+ 573 0040 06D0     		beq	.L58
+ 161:Src/LCD.c     ****     {
+ 162:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB2_PORT, LCD_DB2_PIN, GPIO_PIN_SET);
+ 574              		.loc 1 162 0
+ 575 0042 2F48     		ldr	r0, .L71
+ 576 0044 4FF48071 		mov	r1, #256
+ 577 0048 0122     		movs	r2, #1
+ 578 004a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 579              	.LVL46:
+ 580 004e 05E0     		b	.L59
+ 581              	.L58:
+ 163:Src/LCD.c     ****     }else{
+ 164:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB2_PORT, LCD_DB2_PIN, GPIO_PIN_RESET);
+ 582              		.loc 1 164 0
+ 583 0050 2B48     		ldr	r0, .L71
+ 584 0052 4FF48071 		mov	r1, #256
+ 585 0056 0022     		movs	r2, #0
+ 586 0058 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 587              	.LVL47:
+ 588              	.L59:
+ 165:Src/LCD.c     ****     }
+ 166:Src/LCD.c     **** 
+ 167:Src/LCD.c     ****     if (character & 0b00001000)
+ 589              		.loc 1 167 0
+ 590 005c 14F0080F 		tst	r4, #8
+ 591 0060 06D0     		beq	.L60
+ 168:Src/LCD.c     ****     {
+ 169:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB3_PORT, LCD_DB3_PIN, GPIO_PIN_SET);
+ARM GAS  /tmp/ccFn57Pd.s 			page 14
+
+
+ 592              		.loc 1 169 0
+ 593 0062 2748     		ldr	r0, .L71
+ 594 0064 4FF40071 		mov	r1, #512
+ 595 0068 0122     		movs	r2, #1
+ 596 006a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 597              	.LVL48:
+ 598 006e 05E0     		b	.L61
+ 599              	.L60:
+ 170:Src/LCD.c     ****     }else{
+ 171:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB3_PORT, LCD_DB3_PIN, GPIO_PIN_RESET);
+ 600              		.loc 1 171 0
+ 601 0070 2348     		ldr	r0, .L71
+ 602 0072 4FF40071 		mov	r1, #512
+ 603 0076 0022     		movs	r2, #0
+ 604 0078 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 605              	.LVL49:
+ 606              	.L61:
+ 172:Src/LCD.c     ****     }
+ 173:Src/LCD.c     ****     if (character & 0b00010000)
+ 607              		.loc 1 173 0
+ 608 007c 14F0100F 		tst	r4, #16
+ 609 0080 06D0     		beq	.L62
+ 174:Src/LCD.c     ****     {
+ 175:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB4_PORT, LCD_DB4_PIN, GPIO_PIN_SET);
+ 610              		.loc 1 175 0
+ 611 0082 2048     		ldr	r0, .L71+4
+ 612 0084 4FF48071 		mov	r1, #256
+ 613 0088 0122     		movs	r2, #1
+ 614 008a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 615              	.LVL50:
+ 616 008e 05E0     		b	.L63
+ 617              	.L62:
+ 176:Src/LCD.c     ****     }else{
+ 177:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB4_PORT, LCD_DB4_PIN, GPIO_PIN_RESET);
+ 618              		.loc 1 177 0
+ 619 0090 1C48     		ldr	r0, .L71+4
+ 620 0092 4FF48071 		mov	r1, #256
+ 621 0096 0022     		movs	r2, #0
+ 622 0098 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 623              	.LVL51:
+ 624              	.L63:
+ 178:Src/LCD.c     ****     }
+ 179:Src/LCD.c     **** 
+ 180:Src/LCD.c     ****     if (character & 0b00100000)
+ 625              		.loc 1 180 0
+ 626 009c 14F0200F 		tst	r4, #32
+ 627 00a0 06D0     		beq	.L64
+ 181:Src/LCD.c     ****     {
+ 182:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB5_PORT, LCD_DB5_PIN, GPIO_PIN_SET);
+ 628              		.loc 1 182 0
+ 629 00a2 1848     		ldr	r0, .L71+4
+ 630 00a4 4FF40071 		mov	r1, #512
+ 631 00a8 0122     		movs	r2, #1
+ 632 00aa FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 633              	.LVL52:
+ 634 00ae 05E0     		b	.L65
+ 635              	.L64:
+ARM GAS  /tmp/ccFn57Pd.s 			page 15
+
+
+ 183:Src/LCD.c     ****     }else{
+ 184:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB5_PORT, LCD_DB5_PIN, GPIO_PIN_RESET);
+ 636              		.loc 1 184 0
+ 637 00b0 1448     		ldr	r0, .L71+4
+ 638 00b2 4FF40071 		mov	r1, #512
+ 639 00b6 0022     		movs	r2, #0
+ 640 00b8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 641              	.LVL53:
+ 642              	.L65:
+ 185:Src/LCD.c     ****     }
+ 186:Src/LCD.c     **** 
+ 187:Src/LCD.c     ****     if (character & 0b01000000)
+ 643              		.loc 1 187 0
+ 644 00bc 14F0400F 		tst	r4, #64
+ 645 00c0 06D0     		beq	.L66
+ 188:Src/LCD.c     ****     {
+ 189:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB6_PORT, LCD_DB6_PIN, GPIO_PIN_SET);
+ 646              		.loc 1 189 0
+ 647 00c2 1048     		ldr	r0, .L71+4
+ 648 00c4 4FF48061 		mov	r1, #1024
+ 649 00c8 0122     		movs	r2, #1
+ 650 00ca FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 651              	.LVL54:
+ 652 00ce 05E0     		b	.L67
+ 653              	.L66:
+ 190:Src/LCD.c     ****     }else{
+ 191:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB6_PORT, LCD_DB6_PIN, GPIO_PIN_RESET);
+ 654              		.loc 1 191 0
+ 655 00d0 0C48     		ldr	r0, .L71+4
+ 656 00d2 4FF48061 		mov	r1, #1024
+ 657 00d6 0022     		movs	r2, #0
+ 658 00d8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 659              	.LVL55:
+ 660              	.L67:
+ 192:Src/LCD.c     ****     }
+ 193:Src/LCD.c     **** 
+ 194:Src/LCD.c     ****     if (character & 0b10000000)
+ 661              		.loc 1 194 0
+ 662 00dc 14F0800F 		tst	r4, #128
+ 663 00e0 06D0     		beq	.L68
+ 195:Src/LCD.c     ****     {
+ 196:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB7_PORT, LCD_DB7_PIN, GPIO_PIN_SET);
+ 664              		.loc 1 196 0
+ 665 00e2 0848     		ldr	r0, .L71+4
+ 666 00e4 4FF40061 		mov	r1, #2048
+ 667 00e8 0122     		movs	r2, #1
+ 668 00ea FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 669              	.LVL56:
+ 670 00ee 10BD     		pop	{r4, pc}
+ 671              	.L68:
+ 197:Src/LCD.c     ****     }else{
+ 198:Src/LCD.c     ****       HAL_GPIO_WritePin(LCD_DB7_PORT, LCD_DB7_PIN, GPIO_PIN_RESET);
+ 672              		.loc 1 198 0
+ 673 00f0 0448     		ldr	r0, .L71+4
+ 674 00f2 4FF40061 		mov	r1, #2048
+ 675 00f6 0022     		movs	r2, #0
+ 676 00f8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ARM GAS  /tmp/ccFn57Pd.s 			page 16
+
+
+ 677              	.LVL57:
+ 678 00fc 10BD     		pop	{r4, pc}
+ 679              	.L72:
+ 680 00fe 00BF     		.align	2
+ 681              	.L71:
+ 682 0100 00100140 		.word	1073811456
+ 683 0104 00080140 		.word	1073809408
+ 684              		.cfi_endproc
+ 685              	.LFE72:
+ 687              		.section	.text.LCDSetCursorPosition,"ax",%progbits
+ 688              		.align	2
+ 689              		.global	LCDSetCursorPosition
+ 690              		.thumb
+ 691              		.thumb_func
+ 693              	LCDSetCursorPosition:
+ 694              	.LFB73:
+ 199:Src/LCD.c     ****     }
+ 200:Src/LCD.c     ****   }
+ 201:Src/LCD.c     **** 
+ 202:Src/LCD.c     **** 
+ 203:Src/LCD.c     ****   void LCDSetCursorPosition(int y, int x)
+ 204:Src/LCD.c     ****   {
+ 695              		.loc 1 204 0
+ 696              		.cfi_startproc
+ 697              		@ args = 0, pretend = 0, frame = 0
+ 698              		@ frame_needed = 0, uses_anonymous_args = 0
+ 699              	.LVL58:
+ 700 0000 08B5     		push	{r3, lr}
+ 701              	.LCFI11:
+ 702              		.cfi_def_cfa_offset 8
+ 703              		.cfi_offset 3, -8
+ 704              		.cfi_offset 14, -4
+ 705              	.LVL59:
+ 205:Src/LCD.c     ****     int row = 0;
+ 206:Src/LCD.c     ****     int colomn = 0;
+ 207:Src/LCD.c     ****     switch (y)
+ 706              		.loc 1 207 0
+ 707 0002 0328     		cmp	r0, #3
+ 708 0004 05D0     		beq	.L75
+ 709 0006 0428     		cmp	r0, #4
+ 710 0008 05D0     		beq	.L76
+ 711 000a 0228     		cmp	r0, #2
+ 712 000c 05D0     		beq	.L79
+ 205:Src/LCD.c     ****     int row = 0;
+ 713              		.loc 1 205 0
+ 714 000e 0020     		movs	r0, #0
+ 715              	.LVL60:
+ 716 0010 04E0     		b	.L77
+ 717              	.LVL61:
+ 718              	.L75:
+ 208:Src/LCD.c     ****     {
+ 209:Src/LCD.c     ****       case 1: row = 0;
+ 210:Src/LCD.c     ****       break;
+ 211:Src/LCD.c     ****       case 2: row = 4;
+ 212:Src/LCD.c     ****       break;
+ 213:Src/LCD.c     ****       case 3: row = 1;
+ 719              		.loc 1 213 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 17
+
+
+ 720 0012 0120     		movs	r0, #1
+ 721              	.LVL62:
+ 214:Src/LCD.c     ****       break;
+ 722              		.loc 1 214 0
+ 723 0014 02E0     		b	.L77
+ 724              	.LVL63:
+ 725              	.L76:
+ 215:Src/LCD.c     ****       case 4: row = 5;
+ 726              		.loc 1 215 0
+ 727 0016 0520     		movs	r0, #5
+ 728              	.LVL64:
+ 729 0018 00E0     		b	.L77
+ 730              	.LVL65:
+ 731              	.L79:
+ 211:Src/LCD.c     ****       break;
+ 732              		.loc 1 211 0
+ 733 001a 0420     		movs	r0, #4
+ 734              	.LVL66:
+ 735              	.L77:
+ 216:Src/LCD.c     ****     }
+ 217:Src/LCD.c     ****     if ((x>=1) && (x<=16))
+ 736              		.loc 1 217 0
+ 737 001c 4B1E     		subs	r3, r1, #1
+ 738 001e 0F2B     		cmp	r3, #15
+ 739 0020 01D8     		bhi	.L80
+ 218:Src/LCD.c     ****     {
+ 219:Src/LCD.c     ****       colomn = x-1;
+ 740              		.loc 1 219 0
+ 741 0022 1946     		mov	r1, r3
+ 742              	.LVL67:
+ 743 0024 01E0     		b	.L78
+ 744              	.LVL68:
+ 745              	.L80:
+ 220:Src/LCD.c     ****     }else{
+ 221:Src/LCD.c     ****       row=0;
+ 222:Src/LCD.c     ****       colomn=0;
+ 746              		.loc 1 222 0
+ 747 0026 0021     		movs	r1, #0
+ 748              	.LVL69:
+ 221:Src/LCD.c     ****       colomn=0;
+ 749              		.loc 1 221 0
+ 750 0028 0846     		mov	r0, r1
+ 751              	.LVL70:
+ 752              	.L78:
+ 223:Src/LCD.c     ****     }
+ 224:Src/LCD.c     ****     LCDSetACommand(0b10000000+16*row+colomn);
+ 753              		.loc 1 224 0
+ 754 002a 0830     		adds	r0, r0, #8
+ 755              	.LVL71:
+ 756 002c 01EB0010 		add	r0, r1, r0, lsl #4
+ 757              	.LVL72:
+ 758 0030 C0B2     		uxtb	r0, r0
+ 759 0032 FFF7FEFF 		bl	LCDSetACommand
+ 760              	.LVL73:
+ 761 0036 08BD     		pop	{r3, pc}
+ 762              		.cfi_endproc
+ 763              	.LFE73:
+ARM GAS  /tmp/ccFn57Pd.s 			page 18
+
+
+ 765              		.section	.text.LCDSet,"ax",%progbits
+ 766              		.align	2
+ 767              		.global	LCDSet
+ 768              		.thumb
+ 769              		.thumb_func
+ 771              	LCDSet:
+ 772              	.LFB74:
+ 225:Src/LCD.c     ****   }
+ 226:Src/LCD.c     **** 
+ 227:Src/LCD.c     ****   void LCDSet(unsigned int phase)
+ 228:Src/LCD.c     ****   {
+ 773              		.loc 1 228 0
+ 774              		.cfi_startproc
+ 775              		@ args = 0, pretend = 0, frame = 0
+ 776              		@ frame_needed = 0, uses_anonymous_args = 0
+ 777              	.LVL74:
+ 778 0000 08B5     		push	{r3, lr}
+ 779              	.LCFI12:
+ 780              		.cfi_def_cfa_offset 8
+ 781              		.cfi_offset 3, -8
+ 782              		.cfi_offset 14, -4
+ 229:Src/LCD.c     ****     switch (phase)
+ 783              		.loc 1 229 0
+ 784 0002 0138     		subs	r0, r0, #1
+ 785              	.LVL75:
+ 786 0004 0C28     		cmp	r0, #12
+ 787 0006 34D8     		bhi	.L82
+ 788 0008 DFE800F0 		tbb	[pc, r0]
+ 789              	.L85:
+ 790 000c 07       		.byte	(.L84-.L85)/2
+ 791 000d 0C       		.byte	(.L86-.L85)/2
+ 792 000e 0F       		.byte	(.L87-.L85)/2
+ 793 000f 13       		.byte	(.L88-.L85)/2
+ 794 0010 16       		.byte	(.L89-.L85)/2
+ 795 0011 19       		.byte	(.L90-.L85)/2
+ 796 0012 1D       		.byte	(.L91-.L85)/2
+ 797 0013 20       		.byte	(.L92-.L85)/2
+ 798 0014 23       		.byte	(.L93-.L85)/2
+ 799 0015 27       		.byte	(.L94-.L85)/2
+ 800 0016 2A       		.byte	(.L95-.L85)/2
+ 801 0017 2D       		.byte	(.L96-.L85)/2
+ 802 0018 31       		.byte	(.L97-.L85)/2
+ 803 0019 00       		.p2align 1
+ 804              	.L84:
+ 230:Src/LCD.c     ****     {
+ 231:Src/LCD.c     ****       case 1:
+ 232:Src/LCD.c     ****       {
+ 233:Src/LCD.c     ****         LCDSetToWrite();
+ 805              		.loc 1 233 0
+ 806 001a FFF7FEFF 		bl	LCDSetToWrite
+ 807              	.LVL76:
+ 234:Src/LCD.c     ****         LCDSetCommandMode();
+ 808              		.loc 1 234 0
+ 809 001e FFF7FEFF 		bl	LCDSetCommandMode
+ 810              	.LVL77:
+ 235:Src/LCD.c     ****         break;
+ 811              		.loc 1 235 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 19
+
+
+ 812 0022 08BD     		pop	{r3, pc}
+ 813              	.L86:
+ 236:Src/LCD.c     ****       }
+ 237:Src/LCD.c     ****       case 2:
+ 238:Src/LCD.c     ****       {
+ 239:Src/LCD.c     ****         LCDEnableOn();
+ 814              		.loc 1 239 0
+ 815 0024 FFF7FEFF 		bl	LCDEnableOn
+ 816              	.LVL78:
+ 240:Src/LCD.c     ****         break;
+ 817              		.loc 1 240 0
+ 818 0028 08BD     		pop	{r3, pc}
+ 819              	.L87:
+ 241:Src/LCD.c     ****       }
+ 242:Src/LCD.c     ****       case 3:
+ 243:Src/LCD.c     ****       {
+ 244:Src/LCD.c     ****         LCDSetACommand(0b00111000);
+ 820              		.loc 1 244 0
+ 821 002a 3820     		movs	r0, #56
+ 822 002c FFF7FEFF 		bl	LCDSetACommand
+ 823              	.LVL79:
+ 245:Src/LCD.c     ****         break;
+ 824              		.loc 1 245 0
+ 825 0030 08BD     		pop	{r3, pc}
+ 826              	.L88:
+ 246:Src/LCD.c     ****       }
+ 247:Src/LCD.c     ****       case 4:
+ 248:Src/LCD.c     ****       {
+ 249:Src/LCD.c     ****         LCDEnableOff();
+ 827              		.loc 1 249 0
+ 828 0032 FFF7FEFF 		bl	LCDEnableOff
+ 829              	.LVL80:
+ 250:Src/LCD.c     ****         break;
+ 830              		.loc 1 250 0
+ 831 0036 08BD     		pop	{r3, pc}
+ 832              	.L89:
+ 251:Src/LCD.c     ****       }
+ 252:Src/LCD.c     ****       case 5:
+ 253:Src/LCD.c     ****       {
+ 254:Src/LCD.c     ****         LCDEnableOn();
+ 833              		.loc 1 254 0
+ 834 0038 FFF7FEFF 		bl	LCDEnableOn
+ 835              	.LVL81:
+ 255:Src/LCD.c     ****         break;
+ 836              		.loc 1 255 0
+ 837 003c 08BD     		pop	{r3, pc}
+ 838              	.L90:
+ 256:Src/LCD.c     ****       }
+ 257:Src/LCD.c     ****       case 6:
+ 258:Src/LCD.c     ****       {
+ 259:Src/LCD.c     ****         LCDSetACommand(0b00001110);
+ 839              		.loc 1 259 0
+ 840 003e 0E20     		movs	r0, #14
+ 841 0040 FFF7FEFF 		bl	LCDSetACommand
+ 842              	.LVL82:
+ 260:Src/LCD.c     ****         break;
+ 843              		.loc 1 260 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 20
+
+
+ 844 0044 08BD     		pop	{r3, pc}
+ 845              	.L91:
+ 261:Src/LCD.c     ****       }
+ 262:Src/LCD.c     ****       case 7:
+ 263:Src/LCD.c     ****       {
+ 264:Src/LCD.c     ****         LCDEnableOff();
+ 846              		.loc 1 264 0
+ 847 0046 FFF7FEFF 		bl	LCDEnableOff
+ 848              	.LVL83:
+ 265:Src/LCD.c     ****         break;
+ 849              		.loc 1 265 0
+ 850 004a 08BD     		pop	{r3, pc}
+ 851              	.L92:
+ 266:Src/LCD.c     ****       }
+ 267:Src/LCD.c     ****       case 8:
+ 268:Src/LCD.c     ****       {
+ 269:Src/LCD.c     ****         LCDEnableOn();
+ 852              		.loc 1 269 0
+ 853 004c FFF7FEFF 		bl	LCDEnableOn
+ 854              	.LVL84:
+ 270:Src/LCD.c     ****         break;
+ 855              		.loc 1 270 0
+ 856 0050 08BD     		pop	{r3, pc}
+ 857              	.L93:
+ 271:Src/LCD.c     ****       }
+ 272:Src/LCD.c     ****       case 9:
+ 273:Src/LCD.c     ****       {
+ 274:Src/LCD.c     ****         LCDSetACommand(0b00000001);
+ 858              		.loc 1 274 0
+ 859 0052 0120     		movs	r0, #1
+ 860 0054 FFF7FEFF 		bl	LCDSetACommand
+ 861              	.LVL85:
+ 275:Src/LCD.c     ****         break;
+ 862              		.loc 1 275 0
+ 863 0058 08BD     		pop	{r3, pc}
+ 864              	.L94:
+ 276:Src/LCD.c     ****       }
+ 277:Src/LCD.c     ****       case 10:
+ 278:Src/LCD.c     ****       {
+ 279:Src/LCD.c     ****         LCDEnableOff();
+ 865              		.loc 1 279 0
+ 866 005a FFF7FEFF 		bl	LCDEnableOff
+ 867              	.LVL86:
+ 280:Src/LCD.c     ****         break;
+ 868              		.loc 1 280 0
+ 869 005e 08BD     		pop	{r3, pc}
+ 870              	.L95:
+ 281:Src/LCD.c     ****       }
+ 282:Src/LCD.c     ****       case 11:
+ 283:Src/LCD.c     ****       {
+ 284:Src/LCD.c     ****         LCDEnableOn();
+ 871              		.loc 1 284 0
+ 872 0060 FFF7FEFF 		bl	LCDEnableOn
+ 873              	.LVL87:
+ 285:Src/LCD.c     ****         break;
+ 874              		.loc 1 285 0
+ 875 0064 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/ccFn57Pd.s 			page 21
+
+
+ 876              	.L96:
+ 286:Src/LCD.c     ****       }
+ 287:Src/LCD.c     ****       case 12:
+ 288:Src/LCD.c     ****       {
+ 289:Src/LCD.c     ****         LCDSetACommand(0b00000110);
+ 877              		.loc 1 289 0
+ 878 0066 0620     		movs	r0, #6
+ 879 0068 FFF7FEFF 		bl	LCDSetACommand
+ 880              	.LVL88:
+ 290:Src/LCD.c     ****         break;
+ 881              		.loc 1 290 0
+ 882 006c 08BD     		pop	{r3, pc}
+ 883              	.L97:
+ 291:Src/LCD.c     ****       }
+ 292:Src/LCD.c     ****       case 13:
+ 293:Src/LCD.c     ****       {
+ 294:Src/LCD.c     ****         LCDEnableOff();
+ 884              		.loc 1 294 0
+ 885 006e FFF7FEFF 		bl	LCDEnableOff
+ 886              	.LVL89:
+ 887              	.L82:
+ 888 0072 08BD     		pop	{r3, pc}
+ 889              		.cfi_endproc
+ 890              	.LFE74:
+ 892              		.section	.text.LCDSetPeriodsToGo,"ax",%progbits
+ 893              		.align	2
+ 894              		.global	LCDSetPeriodsToGo
+ 895              		.thumb
+ 896              		.thumb_func
+ 898              	LCDSetPeriodsToGo:
+ 899              	.LFB75:
+ 295:Src/LCD.c     ****         break;
+ 296:Src/LCD.c     ****       }
+ 297:Src/LCD.c     ****     }
+ 298:Src/LCD.c     ****   }
+ 299:Src/LCD.c     **** 
+ 300:Src/LCD.c     ****   unsigned int LCDSetPeriodsToGo(unsigned int phase)
+ 301:Src/LCD.c     ****   {
+ 900              		.loc 1 301 0
+ 901              		.cfi_startproc
+ 902              		@ args = 0, pretend = 0, frame = 8
+ 903              		@ frame_needed = 0, uses_anonymous_args = 0
+ 904              		@ link register save eliminated.
+ 905              	.LVL90:
+ 906 0000 82B0     		sub	sp, sp, #8
+ 907              	.LCFI13:
+ 908              		.cfi_def_cfa_offset 8
+ 302:Src/LCD.c     ****     volatile int j=0;
+ 909              		.loc 1 302 0
+ 910 0002 0023     		movs	r3, #0
+ 911 0004 0193     		str	r3, [sp, #4]
+ 303:Src/LCD.c     ****     switch (phase)
+ 912              		.loc 1 303 0
+ 913 0006 0138     		subs	r0, r0, #1
+ 914              	.LVL91:
+ 915 0008 0C28     		cmp	r0, #12
+ 916 000a 2ED8     		bhi	.L100
+ARM GAS  /tmp/ccFn57Pd.s 			page 22
+
+
+ 917 000c DFE800F0 		tbb	[pc, r0]
+ 918              	.L102:
+ 919 0010 07       		.byte	(.L101-.L102)/2
+ 920 0011 0A       		.byte	(.L103-.L102)/2
+ 921 0012 0D       		.byte	(.L104-.L102)/2
+ 922 0013 10       		.byte	(.L105-.L102)/2
+ 923 0014 13       		.byte	(.L106-.L102)/2
+ 924 0015 16       		.byte	(.L107-.L102)/2
+ 925 0016 19       		.byte	(.L108-.L102)/2
+ 926 0017 1C       		.byte	(.L109-.L102)/2
+ 927 0018 1F       		.byte	(.L110-.L102)/2
+ 928 0019 22       		.byte	(.L111-.L102)/2
+ 929 001a 25       		.byte	(.L112-.L102)/2
+ 930 001b 28       		.byte	(.L113-.L102)/2
+ 931 001c 2B       		.byte	(.L114-.L102)/2
+ 932 001d 00       		.p2align 1
+ 933              	.L101:
+ 304:Src/LCD.c     ****     {
+ 305:Src/LCD.c     ****       case 1:
+ 306:Src/LCD.c     ****       {
+ 307:Src/LCD.c     ****         j=0;
+ 934              		.loc 1 307 0
+ 935 001e 0023     		movs	r3, #0
+ 936 0020 0193     		str	r3, [sp, #4]
+ 308:Src/LCD.c     ****         break;
+ 937              		.loc 1 308 0
+ 938 0022 22E0     		b	.L100
+ 939              	.L103:
+ 309:Src/LCD.c     ****       }
+ 310:Src/LCD.c     ****       case 2:
+ 311:Src/LCD.c     ****       {
+ 312:Src/LCD.c     ****         j=0;
+ 940              		.loc 1 312 0
+ 941 0024 0023     		movs	r3, #0
+ 942 0026 0193     		str	r3, [sp, #4]
+ 313:Src/LCD.c     ****         break;
+ 943              		.loc 1 313 0
+ 944 0028 1FE0     		b	.L100
+ 945              	.L104:
+ 314:Src/LCD.c     ****       }
+ 315:Src/LCD.c     ****       case 3:
+ 316:Src/LCD.c     ****       {
+ 317:Src/LCD.c     ****         j=0;
+ 946              		.loc 1 317 0
+ 947 002a 0023     		movs	r3, #0
+ 948 002c 0193     		str	r3, [sp, #4]
+ 318:Src/LCD.c     ****         break;
+ 949              		.loc 1 318 0
+ 950 002e 1CE0     		b	.L100
+ 951              	.L105:
+ 319:Src/LCD.c     ****       }
+ 320:Src/LCD.c     ****       case 4:
+ 321:Src/LCD.c     ****       {
+ 322:Src/LCD.c     ****         j=9;
+ 952              		.loc 1 322 0
+ 953 0030 0923     		movs	r3, #9
+ 954 0032 0193     		str	r3, [sp, #4]
+ARM GAS  /tmp/ccFn57Pd.s 			page 23
+
+
+ 323:Src/LCD.c     ****         break;
+ 955              		.loc 1 323 0
+ 956 0034 19E0     		b	.L100
+ 957              	.L106:
+ 324:Src/LCD.c     ****       }
+ 325:Src/LCD.c     ****       case 5:
+ 326:Src/LCD.c     ****       {
+ 327:Src/LCD.c     ****         j=0;
+ 958              		.loc 1 327 0
+ 959 0036 0023     		movs	r3, #0
+ 960 0038 0193     		str	r3, [sp, #4]
+ 328:Src/LCD.c     ****         break;
+ 961              		.loc 1 328 0
+ 962 003a 16E0     		b	.L100
+ 963              	.L107:
+ 329:Src/LCD.c     ****       }
+ 330:Src/LCD.c     ****       case 6:
+ 331:Src/LCD.c     ****       {
+ 332:Src/LCD.c     ****         j=0;
+ 964              		.loc 1 332 0
+ 965 003c 0023     		movs	r3, #0
+ 966 003e 0193     		str	r3, [sp, #4]
+ 333:Src/LCD.c     ****         break;
+ 967              		.loc 1 333 0
+ 968 0040 13E0     		b	.L100
+ 969              	.L108:
+ 334:Src/LCD.c     ****       }
+ 335:Src/LCD.c     ****       case 7:
+ 336:Src/LCD.c     ****       {
+ 337:Src/LCD.c     ****         j=9;
+ 970              		.loc 1 337 0
+ 971 0042 0923     		movs	r3, #9
+ 972 0044 0193     		str	r3, [sp, #4]
+ 338:Src/LCD.c     ****         break;
+ 973              		.loc 1 338 0
+ 974 0046 10E0     		b	.L100
+ 975              	.L109:
+ 339:Src/LCD.c     ****       }
+ 340:Src/LCD.c     ****       case 8:
+ 341:Src/LCD.c     ****       {
+ 342:Src/LCD.c     ****         j=0;
+ 976              		.loc 1 342 0
+ 977 0048 0023     		movs	r3, #0
+ 978 004a 0193     		str	r3, [sp, #4]
+ 343:Src/LCD.c     ****         break;
+ 979              		.loc 1 343 0
+ 980 004c 0DE0     		b	.L100
+ 981              	.L110:
+ 344:Src/LCD.c     ****       }
+ 345:Src/LCD.c     ****       case 9:
+ 346:Src/LCD.c     ****       {
+ 347:Src/LCD.c     ****         j=0;
+ 982              		.loc 1 347 0
+ 983 004e 0023     		movs	r3, #0
+ 984 0050 0193     		str	r3, [sp, #4]
+ 348:Src/LCD.c     ****         break;
+ 985              		.loc 1 348 0
+ARM GAS  /tmp/ccFn57Pd.s 			page 24
+
+
+ 986 0052 0AE0     		b	.L100
+ 987              	.L111:
+ 349:Src/LCD.c     ****       }
+ 350:Src/LCD.c     ****       case 10:
+ 351:Src/LCD.c     ****       {
+ 352:Src/LCD.c     ****         j=9;
+ 988              		.loc 1 352 0
+ 989 0054 0923     		movs	r3, #9
+ 990 0056 0193     		str	r3, [sp, #4]
+ 353:Src/LCD.c     ****         break;
+ 991              		.loc 1 353 0
+ 992 0058 07E0     		b	.L100
+ 993              	.L112:
+ 354:Src/LCD.c     ****       }
+ 355:Src/LCD.c     ****       case 11:
+ 356:Src/LCD.c     ****       {
+ 357:Src/LCD.c     ****         j=0;
+ 994              		.loc 1 357 0
+ 995 005a 0023     		movs	r3, #0
+ 996 005c 0193     		str	r3, [sp, #4]
+ 358:Src/LCD.c     ****         break;
+ 997              		.loc 1 358 0
+ 998 005e 04E0     		b	.L100
+ 999              	.L113:
+ 359:Src/LCD.c     ****       }
+ 360:Src/LCD.c     ****       case 12:
+ 361:Src/LCD.c     ****       {
+ 362:Src/LCD.c     ****         j=0;
+ 1000              		.loc 1 362 0
+ 1001 0060 0023     		movs	r3, #0
+ 1002 0062 0193     		str	r3, [sp, #4]
+ 363:Src/LCD.c     ****         break;
+ 1003              		.loc 1 363 0
+ 1004 0064 01E0     		b	.L100
+ 1005              	.L114:
+ 364:Src/LCD.c     ****       }
+ 365:Src/LCD.c     ****       case 13:
+ 366:Src/LCD.c     ****       {
+ 367:Src/LCD.c     ****         j=40;
+ 1006              		.loc 1 367 0
+ 1007 0066 2823     		movs	r3, #40
+ 1008 0068 0193     		str	r3, [sp, #4]
+ 1009              	.L100:
+ 368:Src/LCD.c     ****         break;
+ 369:Src/LCD.c     ****       }
+ 370:Src/LCD.c     ****      }
+ 371:Src/LCD.c     ****     return j;
+ 1010              		.loc 1 371 0
+ 1011 006a 0198     		ldr	r0, [sp, #4]
+ 1012              	.LVL92:
+ 372:Src/LCD.c     ****   }
+ 1013              		.loc 1 372 0
+ 1014 006c 02B0     		add	sp, sp, #8
+ 1015              	.LCFI14:
+ 1016              		.cfi_def_cfa_offset 0
+ 1017              		@ sp needed
+ 1018 006e 7047     		bx	lr
+ARM GAS  /tmp/ccFn57Pd.s 			page 25
+
+
+ 1019              		.cfi_endproc
+ 1020              	.LFE75:
+ 1022              		.text
+ 1023              	.Letext0:
+ 1024              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 1025              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 1026              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f100xb.h"
+ 1027              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 1028              		.file 6 "Drivers/CMSIS/Include/core_cm3.h"
+ARM GAS  /tmp/ccFn57Pd.s 			page 26
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 LCD.c
+     /tmp/ccFn57Pd.s:19     .text.notExactTimeDelay:0000000000000000 $t
+     /tmp/ccFn57Pd.s:24     .text.notExactTimeDelay:0000000000000000 notExactTimeDelay
+     /tmp/ccFn57Pd.s:60     .text.LCDSetToWrite:0000000000000000 $t
+     /tmp/ccFn57Pd.s:65     .text.LCDSetToWrite:0000000000000000 LCDSetToWrite
+     /tmp/ccFn57Pd.s:86     .text.LCDSetToWrite:0000000000000010 $d
+     /tmp/ccFn57Pd.s:91     .text.LCDSetToRead:0000000000000000 $t
+     /tmp/ccFn57Pd.s:96     .text.LCDSetToRead:0000000000000000 LCDSetToRead
+     /tmp/ccFn57Pd.s:117    .text.LCDSetToRead:0000000000000010 $d
+     /tmp/ccFn57Pd.s:122    .text.LCDSetCommandMode:0000000000000000 $t
+     /tmp/ccFn57Pd.s:127    .text.LCDSetCommandMode:0000000000000000 LCDSetCommandMode
+     /tmp/ccFn57Pd.s:148    .text.LCDSetCommandMode:0000000000000010 $d
+     /tmp/ccFn57Pd.s:153    .text.LCDSetCharacterMode:0000000000000000 $t
+     /tmp/ccFn57Pd.s:158    .text.LCDSetCharacterMode:0000000000000000 LCDSetCharacterMode
+     /tmp/ccFn57Pd.s:179    .text.LCDSetCharacterMode:0000000000000010 $d
+     /tmp/ccFn57Pd.s:184    .text.LCDEnableOn:0000000000000000 $t
+     /tmp/ccFn57Pd.s:189    .text.LCDEnableOn:0000000000000000 LCDEnableOn
+     /tmp/ccFn57Pd.s:210    .text.LCDEnableOn:0000000000000010 $d
+     /tmp/ccFn57Pd.s:215    .text.LCDEnableOff:0000000000000000 $t
+     /tmp/ccFn57Pd.s:220    .text.LCDEnableOff:0000000000000000 LCDEnableOff
+     /tmp/ccFn57Pd.s:241    .text.LCDEnableOff:0000000000000010 $d
+     /tmp/ccFn57Pd.s:246    .text.SetPins:0000000000000000 $t
+     /tmp/ccFn57Pd.s:251    .text.SetPins:0000000000000000 SetPins
+     /tmp/ccFn57Pd.s:335    .text.SetPins:0000000000000090 $d
+     /tmp/ccFn57Pd.s:340    .text.LCDSetACharacter:0000000000000000 $t
+     /tmp/ccFn57Pd.s:345    .text.LCDSetACharacter:0000000000000000 LCDSetACharacter
+     /tmp/ccFn57Pd.s:508    .text.LCDSetACharacter:0000000000000100 $d
+     /tmp/ccFn57Pd.s:514    .text.LCDSetACommand:0000000000000000 $t
+     /tmp/ccFn57Pd.s:519    .text.LCDSetACommand:0000000000000000 LCDSetACommand
+     /tmp/ccFn57Pd.s:682    .text.LCDSetACommand:0000000000000100 $d
+     /tmp/ccFn57Pd.s:688    .text.LCDSetCursorPosition:0000000000000000 $t
+     /tmp/ccFn57Pd.s:693    .text.LCDSetCursorPosition:0000000000000000 LCDSetCursorPosition
+     /tmp/ccFn57Pd.s:766    .text.LCDSet:0000000000000000 $t
+     /tmp/ccFn57Pd.s:771    .text.LCDSet:0000000000000000 LCDSet
+     /tmp/ccFn57Pd.s:790    .text.LCDSet:000000000000000c $d
+     /tmp/ccFn57Pd.s:893    .text.LCDSetPeriodsToGo:0000000000000000 $t
+     /tmp/ccFn57Pd.s:898    .text.LCDSetPeriodsToGo:0000000000000000 LCDSetPeriodsToGo
+     /tmp/ccFn57Pd.s:919    .text.LCDSetPeriodsToGo:0000000000000010 $d
+                     .debug_frame:0000000000000010 $d
+     /tmp/ccFn57Pd.s:803    .text.LCDSet:0000000000000019 $d
+     /tmp/ccFn57Pd.s:803    .text.LCDSet:000000000000001a $t
+     /tmp/ccFn57Pd.s:932    .text.LCDSetPeriodsToGo:000000000000001d $d
+     /tmp/ccFn57Pd.s:932    .text.LCDSetPeriodsToGo:000000000000001e $t
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
